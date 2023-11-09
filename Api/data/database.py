@@ -1,16 +1,14 @@
-import mariadb # CHANGE TO WORK WITH POSTGRESQL
-from mariadb import connect # SEE PROPER CONNECTOR FOR POSTGRESQL
+import psycopg2 
 from data.db_password import password
-from mariadb.connections import Connection
 
 
-def _get_connection() -> Connection:
-    return connect(
-        user='root',
-        password=f'{password}',
-        host='localhost',
-        port=3306,
-        database='forum'
+def _get_connection():
+    return psycopg2.connect(
+        host = 'localhost',
+        user = 'postgres',
+        database = 'jobmatch',
+        password = password,
+        port = 5432
     )
 
 
@@ -49,7 +47,7 @@ def update_queries_transaction(sql_queries: tuple[str], sql_params: tuple[tuple]
 
             conn.commit()
             return True
-        except mariadb.Error as error:
+        except psycopg2.Error as error:
             print(f"Database update failed: {error}")
             conn.rollback()
             return False
