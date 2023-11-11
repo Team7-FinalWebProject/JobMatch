@@ -2,6 +2,9 @@
 *.pem
 db_password.py
 db_data/config.py
+*.1.bkp
+*.2.bkp
+*.3.bkp
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
