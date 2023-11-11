@@ -6,7 +6,8 @@ def _get_connection():
     return psycopg2.connect(
         host = 'localhost',
         user = 'postgres',
-        database = 'jobmatch',
+        dbname = 'postgres',
+        options='-c search_path=jobmatch',
         password = password,
         port = 5432
     )
