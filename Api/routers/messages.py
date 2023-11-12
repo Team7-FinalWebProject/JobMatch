@@ -7,6 +7,7 @@ from common.auth import professional_or_401, company_or_401
 
 messages_router = APIRouter(prefix='/messages')
 
+#TODO Figure out a way to add audio recording ass message
 
 @messages_router.post('/{receiver_id}')
 def send_message(receiver_id: int, x_token: str, message: Message):
