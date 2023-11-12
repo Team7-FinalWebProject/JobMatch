@@ -37,12 +37,17 @@ CREATE TABLE jobmatch.companies (
     id integer NOT NULL,
     description character varying(255),
     location character varying(255),
-    picture path,
+    picture text,
     username character varying(100),
     company_name character varying(100),
     password text
 );
 
+
+INSERT INTO jobmatch.companies (id, description, location, picture, username, company_name, password)
+VALUES
+(1, 'We are Pepsi. The famous drink creators.', 'New York, USA', 'data/logos/pepsi-logo-2400x2400-20220513-2.png', 'pepsi1', 'Pepsi', '401ae4b510ca91651cdbc4a7140922ad256105d84eedb34c42f5b17463a8e98c'),
+(2, 'The video game services creators.', 'Los Angeles, USA', 'data/logos/steam-logo-transparent.png', 'steamer666', 'Steam', '401ae4b510ca91651cdbc4a7140922ad256105d84eedb34c42f5b17463a8e98c');
 
 ALTER TABLE jobmatch.companies OWNER TO postgres;
 
@@ -92,12 +97,16 @@ CREATE TABLE jobmatch.company_ads (
     description character varying(255) NOT NULL,
     status character varying(255) NOT NULL,
     skill_set character varying(255) NOT NULL,
-    "skill level" integer DEFAULT 1 NOT NULL,
+    skill_level integer DEFAULT 1 NOT NULL,
     professional_id integer,
     company_id integer,
     match_request_job_ad_id integer
 );
 
+INSERT INTO jobmatch.company_ads (id, salary_range, description, status, skill_set, skill_level, professional_id, company_id, match_request_job_ad_id)
+VALUES (1, 2500, 'I can create a complete API server for you. With 10 years of experience, I am the developer for you.',
+'active', '.net, c#, python, docker, django, react.js', 10, 1, 2, 1),
+(2, 3000, 'You want an exclusive high end website? I can do it for you!', 'active', 'python, javascript, react.js', 5, 2, 1, 2);
 
 ALTER TABLE jobmatch.company_ads OWNER TO postgres;
 
@@ -150,6 +159,10 @@ CREATE TABLE jobmatch.job_ads (
     company_id integer,
     professional_id integer
 );
+
+INSERT INTO jobmatch.job_ads (id, salary_range, location, status, requirements, company_id, professional_id)
+VALUES (1, 2000, 'Remote', 'active', 'python, django, sql, postgresql', 2, 1),
+(2, 3500, 'New York, USA', 'active', 'C#, ASP.NET, react.js, Docker', 1, 2);
 
 
 ALTER TABLE jobmatch.job_ads OWNER TO postgres;
@@ -253,9 +266,13 @@ ALTER SEQUENCE jobmatch.job_ads_status_seq OWNER TO postgres;
 CREATE TABLE jobmatch.messages (
     job_ad_id integer,
     company_ad_id integer,
-    content integer
+    content text,
+    audio_recording BYTEA DEFAULT NULL
 );
 
+INSERT INTO jobmatch.messages (job_ad_id, company_ad_id, content, audio_recording)
+VALUES (1, 1, 'We would like to discuss further requirements.', NULL),
+(2, 2, 'Welcome aboard. We will contact you with further instructions.', NULL);
 
 ALTER TABLE jobmatch.messages OWNER TO postgres;
 
@@ -275,7 +292,10 @@ CREATE TABLE jobmatch.professionals (
     password text
 );
 
-
+INSERT INTO jobmatch.professionals (id, summary, location, status, picture, username, first_name, last_name, password)
+VALUES
+(1, 'I am a developer with 10 years of experience.', 'Sofia, Bulgaria', 'active', NULL, 'devel123', 'Ivan', 'Ivanov', '401ae4b510ca91651cdbc4a7140922ad256105d84eedb34c42f5b17463a8e98c'),
+(2, 'I am a developer with 5 years of experience.', 'Los Angeles, USA', 'active', NULL, 'jason666', 'Jason', 'Momoa', '401ae4b510ca91651cdbc4a7140922ad256105d84eedb34c42f5b17463a8e98c');
 ALTER TABLE jobmatch.professionals OWNER TO postgres;
 
 --
@@ -557,4 +577,3 @@ ALTER TABLE ONLY jobmatch.company_ads
 --
 -- PostgreSQL database dump complete
 --
-
