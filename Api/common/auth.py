@@ -49,7 +49,7 @@ def create_token(user: Company | Professional) -> str:
     payload = {
         "id": user.id,
         "username": user.username,
-        "registration_date": user.registration_date.strftime("%Y-%m-%d %H:%M:%S"),
+        "registration_date": user.registration_date.strftime("%Y-%m-%d %H:%M:%S"), #TODO: see if needed! 
         "issued": str(datetime.now())
     }
 
