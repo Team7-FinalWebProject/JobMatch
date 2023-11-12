@@ -16,6 +16,7 @@ def send_message(receiver_id: int, x_token: str, message: Message):
 
     if prof:
         return messages_service.create(prof, receiver_id, message)
-    else:
+    elif comp:
         return messages_service.create(comp, receiver_id, message)
-        
+    else:
+        return Unauthorized(content='You are not logged in')
