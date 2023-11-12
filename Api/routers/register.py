@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Response, Query
 from services import register_service
-from common import auth
+# from common import auth
 
 register_router = APIRouter(prefix='/register')
 
