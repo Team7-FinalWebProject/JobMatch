@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 
 from routers.login import login_router
-from routers.register import registration_router
+from routers.register import register_router
 
 
 
@@ -28,7 +28,7 @@ app.add_middleware(
 )
 
 app.include_router(login_router)
-app.include_router(registration_router)
+app.include_router(register_router)
 
 
 
