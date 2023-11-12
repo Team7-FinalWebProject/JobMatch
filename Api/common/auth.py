@@ -33,7 +33,7 @@ def company_or_401(token: str) -> Company:
     
 
 def professional_or_401(token: str) -> Professional:
-    '''Authenticate a company profile.
+    '''Authenticate a professional's profile.
        Returns a Professional object.'''
     try:
         payload = _base_auth(token)
