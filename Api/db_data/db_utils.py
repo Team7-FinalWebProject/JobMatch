@@ -37,13 +37,11 @@ def delete_db():
 def mysql_io(io, binary, dump):
     environ['PGPASSWORD'] = password
     if io == 'import':
-        process = run(args=[binary, f'--username={_USER}', f'--dbname={_DBNAME}', f'--file={
-                      current_directory + dump}'], stdin=PIPE, stdout=PIPE, stderr=PIPE, universal_newlines=True)
+        process = run(args=[binary, f'--username={_USER}', f'--dbname={_DBNAME}', f'--file={current_directory + dump}'], stdin=PIPE, stdout=PIPE, stderr=PIPE, universal_newlines=True)
         print('DB imported successfully' if not process.stderr or not process.stderr.strip(
         ) else process.stderr)
     elif io == 'dump':
-        process = run(args=[binary, f'--username={_USER}', f'--dbname={_DBNAME}', f'--schema={
-                      _SCHEMA}'], stdin=PIPE, stdout=PIPE, stderr=PIPE, universal_newlines=True)
+        process = run(args=[binary, f'--username={_USER}', f'--dbname={_DBNAME}', f'--schema={_SCHEMA}'], stdin=PIPE, stdout=PIPE, stderr=PIPE, universal_newlines=True)
         if process.stderr and process.stderr.strip():
             print(f"Error: {process.stderr}")
         else:
@@ -84,8 +82,7 @@ def main(silent_export=False, silent_import=False):
         try:
             delete_db()
         except:
-            print(f'DB schema {
-                  _SCHEMA} does not exist or other error, skipping drop')
+            print(f'DB schema {_SCHEMA} does not exist or other error, skipping drop')
 
     def imp(copy=True):
         if copy:

@@ -37,7 +37,10 @@ CREATE TABLE jobmatch.companies (
     id integer NOT NULL,
     description character varying(255),
     location character varying(255),
-    picture path
+    picture path,
+    username character varying(100),
+    company_name character varying(100),
+    password text
 );
 
 
@@ -90,7 +93,9 @@ CREATE TABLE jobmatch.company_ads (
     status character varying(255) NOT NULL,
     skill_set character varying(255) NOT NULL,
     "skill level" integer DEFAULT 1 NOT NULL,
-    professional integer
+    professional_id integer,
+    company_id integer,
+    match_request_job_ad_id integer
 );
 
 
@@ -133,18 +138,6 @@ ALTER SEQUENCE jobmatch.company_ads_id_seq1 OWNED BY jobmatch.company_ads.id;
 
 
 --
--- Name: company_requests; Type: TABLE; Schema: jobmatch; Owner: postgres
---
-
-CREATE TABLE jobmatch.company_requests (
-    c_id integer NOT NULL,
-    job_add_id integer NOT NULL
-);
-
-
-ALTER TABLE jobmatch.company_requests OWNER TO postgres;
-
---
 -- Name: job_ads; Type: TABLE; Schema: jobmatch; Owner: postgres
 --
 
@@ -154,7 +147,8 @@ CREATE TABLE jobmatch.job_ads (
     location character varying(255) NOT NULL,
     status character varying(128) DEFAULT 'active'::character varying NOT NULL,
     requirements text NOT NULL,
-    company integer
+    company_id integer,
+    professional_id integer
 );
 
 
@@ -253,6 +247,19 @@ CREATE SEQUENCE jobmatch.job_ads_status_seq
 ALTER SEQUENCE jobmatch.job_ads_status_seq OWNER TO postgres;
 
 --
+-- Name: messages; Type: TABLE; Schema: jobmatch; Owner: postgres
+--
+
+CREATE TABLE jobmatch.messages (
+    job_ad_id integer,
+    company_ad_id integer,
+    content integer
+);
+
+
+ALTER TABLE jobmatch.messages OWNER TO postgres;
+
+--
 -- Name: professionals; Type: TABLE; Schema: jobmatch; Owner: postgres
 --
 
@@ -261,7 +268,11 @@ CREATE TABLE jobmatch.professionals (
     summary character varying(255),
     location character varying(255),
     status character varying(128) DEFAULT 'active'::character varying NOT NULL,
-    picture path
+    picture path,
+    username character varying(100),
+    first_name character varying(100),
+    last_name character varying(100),
+    password text
 );
 
 
@@ -304,18 +315,6 @@ ALTER SEQUENCE jobmatch.professionals_id_seq1 OWNED BY jobmatch.professionals.id
 
 
 --
--- Name: professionals_requests; Type: TABLE; Schema: jobmatch; Owner: postgres
---
-
-CREATE TABLE jobmatch.professionals_requests (
-    p_id integer NOT NULL,
-    comp_add_id integer NOT NULL
-);
-
-
-ALTER TABLE jobmatch.professionals_requests OWNER TO postgres;
-
---
 -- Name: companies id; Type: DEFAULT; Schema: jobmatch; Owner: postgres
 --
 
@@ -347,7 +346,7 @@ ALTER TABLE ONLY jobmatch.professionals ALTER COLUMN id SET DEFAULT nextval('job
 -- Data for Name: companies; Type: TABLE DATA; Schema: jobmatch; Owner: postgres
 --
 
-COPY jobmatch.companies (id, description, location, picture) FROM stdin;
+COPY jobmatch.companies (id, description, location, picture, username, company_name, password) FROM stdin;
 \.
 
 
@@ -355,15 +354,7 @@ COPY jobmatch.companies (id, description, location, picture) FROM stdin;
 -- Data for Name: company_ads; Type: TABLE DATA; Schema: jobmatch; Owner: postgres
 --
 
-COPY jobmatch.company_ads (id, salary_range, description, status, skill_set, "skill level", professional) FROM stdin;
-\.
-
-
---
--- Data for Name: company_requests; Type: TABLE DATA; Schema: jobmatch; Owner: postgres
---
-
-COPY jobmatch.company_requests (c_id, job_add_id) FROM stdin;
+COPY jobmatch.company_ads (id, salary_range, description, status, skill_set, "skill level", professional_id, company_id, match_request_job_ad_id) FROM stdin;
 \.
 
 
@@ -371,7 +362,15 @@ COPY jobmatch.company_requests (c_id, job_add_id) FROM stdin;
 -- Data for Name: job_ads; Type: TABLE DATA; Schema: jobmatch; Owner: postgres
 --
 
-COPY jobmatch.job_ads (id, salary_range, location, status, requirements, company) FROM stdin;
+COPY jobmatch.job_ads (id, salary_range, location, status, requirements, company_id, professional_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: messages; Type: TABLE DATA; Schema: jobmatch; Owner: postgres
+--
+
+COPY jobmatch.messages (job_ad_id, company_ad_id, content) FROM stdin;
 \.
 
 
@@ -379,15 +378,7 @@ COPY jobmatch.job_ads (id, salary_range, location, status, requirements, company
 -- Data for Name: professionals; Type: TABLE DATA; Schema: jobmatch; Owner: postgres
 --
 
-COPY jobmatch.professionals (id, summary, location, status, picture) FROM stdin;
-\.
-
-
---
--- Data for Name: professionals_requests; Type: TABLE DATA; Schema: jobmatch; Owner: postgres
---
-
-COPY jobmatch.professionals_requests (p_id, comp_add_id) FROM stdin;
+COPY jobmatch.professionals (id, summary, location, status, picture, username, first_name, last_name, password) FROM stdin;
 \.
 
 
@@ -492,14 +483,6 @@ ALTER TABLE ONLY jobmatch.company_ads
 
 
 --
--- Name: company_requests company_requests_pkey; Type: CONSTRAINT; Schema: jobmatch; Owner: postgres
---
-
-ALTER TABLE ONLY jobmatch.company_requests
-    ADD CONSTRAINT company_requests_pkey PRIMARY KEY (c_id, job_add_id);
-
-
---
 -- Name: job_ads job_ads_pkey; Type: CONSTRAINT; Schema: jobmatch; Owner: postgres
 --
 
@@ -516,43 +499,51 @@ ALTER TABLE ONLY jobmatch.professionals
 
 
 --
--- Name: professionals_requests professionals_requests_pkey; Type: CONSTRAINT; Schema: jobmatch; Owner: postgres
---
-
-ALTER TABLE ONLY jobmatch.professionals_requests
-    ADD CONSTRAINT professionals_requests_pkey PRIMARY KEY (p_id, comp_add_id);
-
-
---
 -- Name: job_ads comp_id; Type: FK CONSTRAINT; Schema: jobmatch; Owner: postgres
 --
 
 ALTER TABLE ONLY jobmatch.job_ads
-    ADD CONSTRAINT comp_id FOREIGN KEY (company) REFERENCES jobmatch.companies(id);
+    ADD CONSTRAINT comp_id FOREIGN KEY (company_id) REFERENCES jobmatch.companies(id);
 
 
 --
--- Name: company_requests comp_id; Type: FK CONSTRAINT; Schema: jobmatch; Owner: postgres
+-- Name: company_ads fk_company_ads_companies; Type: FK CONSTRAINT; Schema: jobmatch; Owner: postgres
 --
 
-ALTER TABLE ONLY jobmatch.company_requests
-    ADD CONSTRAINT comp_id FOREIGN KEY (c_id) REFERENCES jobmatch.companies(id);
-
-
---
--- Name: professionals_requests company_ad; Type: FK CONSTRAINT; Schema: jobmatch; Owner: postgres
---
-
-ALTER TABLE ONLY jobmatch.professionals_requests
-    ADD CONSTRAINT company_ad FOREIGN KEY (comp_add_id) REFERENCES jobmatch.company_ads(id);
+ALTER TABLE ONLY jobmatch.company_ads
+    ADD CONSTRAINT fk_company_ads_companies FOREIGN KEY (company_id) REFERENCES jobmatch.companies(id);
 
 
 --
--- Name: company_requests jadd_id; Type: FK CONSTRAINT; Schema: jobmatch; Owner: postgres
+-- Name: company_ads fk_company_ads_job_ads; Type: FK CONSTRAINT; Schema: jobmatch; Owner: postgres
 --
 
-ALTER TABLE ONLY jobmatch.company_requests
-    ADD CONSTRAINT jadd_id FOREIGN KEY (job_add_id) REFERENCES jobmatch.job_ads(id);
+ALTER TABLE ONLY jobmatch.company_ads
+    ADD CONSTRAINT fk_company_ads_job_ads FOREIGN KEY (match_request_job_ad_id) REFERENCES jobmatch.job_ads(id);
+
+
+--
+-- Name: job_ads fk_job_ads_professionals; Type: FK CONSTRAINT; Schema: jobmatch; Owner: postgres
+--
+
+ALTER TABLE ONLY jobmatch.job_ads
+    ADD CONSTRAINT fk_job_ads_professionals FOREIGN KEY (professional_id) REFERENCES jobmatch.professionals(id);
+
+
+--
+-- Name: messages fk_messages_company_ads; Type: FK CONSTRAINT; Schema: jobmatch; Owner: postgres
+--
+
+ALTER TABLE ONLY jobmatch.messages
+    ADD CONSTRAINT fk_messages_company_ads FOREIGN KEY (company_ad_id) REFERENCES jobmatch.company_ads(id);
+
+
+--
+-- Name: messages fk_messages_job_ads; Type: FK CONSTRAINT; Schema: jobmatch; Owner: postgres
+--
+
+ALTER TABLE ONLY jobmatch.messages
+    ADD CONSTRAINT fk_messages_job_ads FOREIGN KEY (job_ad_id) REFERENCES jobmatch.job_ads(id);
 
 
 --
@@ -560,15 +551,7 @@ ALTER TABLE ONLY jobmatch.company_requests
 --
 
 ALTER TABLE ONLY jobmatch.company_ads
-    ADD CONSTRAINT prof_id FOREIGN KEY (professional) REFERENCES jobmatch.professionals(id);
-
-
---
--- Name: professionals_requests professional; Type: FK CONSTRAINT; Schema: jobmatch; Owner: postgres
---
-
-ALTER TABLE ONLY jobmatch.professionals_requests
-    ADD CONSTRAINT professional FOREIGN KEY (p_id) REFERENCES jobmatch.professionals(id);
+    ADD CONSTRAINT prof_id FOREIGN KEY (professional_id) REFERENCES jobmatch.professionals(id);
 
 
 --
