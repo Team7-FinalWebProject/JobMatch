@@ -35,3 +35,20 @@ class Professional(BaseModel):
 class LoginData(BaseModel):
     username: str
     password: str
+
+
+class Message(BaseModel):
+    id: int | None = None
+    sender_id: int
+    receiver_id: int
+    content: str
+    audio_recording: bytes | None = None
+
+    @classmethod
+    def from_query_result(cls, id, sender_id, receiver_id, content, audio_recording):
+        return cls(
+            id=id,
+            sender_id=sender_id,
+            receiver_id=receiver_id,
+            content=content,
+            audio_recording=audio_recording)
