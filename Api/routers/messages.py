@@ -16,7 +16,7 @@ def view_professional_messages(company_username: str, x_token: str = Header(defa
     prof = professional_or_401(x_token) if x_token else None
 
     if prof:
-        return messages_service.get_messages(prof, company_username)
+        return messages_service.get_prof_messages(prof, company_username)
     else:
         return Unauthorized(content=_ERROR_MESSAGE)
 
@@ -26,7 +26,7 @@ def view_company_messages(prof_username: str, x_token: str = Header(default=None
     company = company_or_401(x_token) if x_token else None
 
     if company:
-        return messages_service.get_messages(company, prof_username)
+        return messages_service.get_comp_messages(company, prof_username)
     else:
         return Unauthorized(content=_ERROR_MESSAGE)
     

@@ -39,16 +39,16 @@ class LoginData(BaseModel):
 
 class Message(BaseModel):
     id: int | None = None
-    sender_id: int
-    receiver_id: int
+    sender_username: str
+    receiver_username: str
     content: str
     audio_recording: bytes | None = None
 
     @classmethod
-    def from_query_result(cls, id, sender_id, receiver_id, content, audio_recording):
+    def from_query_result(cls, id, sender_username, receiver_username, content, audio_recording):
         return cls(
             id=id,
-            sender_id=sender_id,
-            receiver_id=receiver_id,
+            sender_username=sender_username,
+            receiver_username=receiver_username,
             content=content,
             audio_recording=audio_recording)
