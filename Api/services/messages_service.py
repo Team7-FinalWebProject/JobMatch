@@ -2,18 +2,9 @@ from data.models import Message, Professional, Company
 from data.database import read_query, insert_query
 
 
-def get_prof_messages(sender: Professional, receiver_username: str):
+def get_messages(sender: Professional | Company, receiver_username: str):
     data = read_query(
-        '''SELECT * FROM messsages WHERE sender = ? AND receiver = ?''',
-        (sender.username, receiver_username)
-    )
-
-    return (Message.from_query_result(*row) for row in data)
-
-
-def get_comp_messages(sender: Company, receiver_username: str):
-    data = read_query(
-        '''SELECT * FROM messsages WHERE sender = ? AND receiver = ?''',
+        '''SELECT * FROM messsages WHERE sender_username = ? AND receiver_username = ?''',
         (sender.username, receiver_username)
     )
 

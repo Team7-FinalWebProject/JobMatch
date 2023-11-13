@@ -42,13 +42,11 @@ class Message(BaseModel):
     sender_username: str
     receiver_username: str
     content: str
-    audio_recording: bytes | None = None
 
     @classmethod
-    def from_query_result(cls, id, sender_username, receiver_username, content, audio_recording):
+    def from_query_result(cls, id, sender_username, receiver_username, content):
         return cls(
             id=id,
             sender_username=sender_username,
             receiver_username=receiver_username,
-            content=content,
-            audio_recording=audio_recording)
+            content=content)
