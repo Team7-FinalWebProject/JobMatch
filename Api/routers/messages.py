@@ -1,22 +1,41 @@
 from services import messages_service
-from fastapi import APIRouter
-from data.responses import NotFound, Success, Unauthorized, Forbidden
+from fastapi import APIRouter, Header
+from data.responses import NotFound, Unauthorized
 from data.models import Message
 from common.auth import professional_or_401, company_or_401
 
 
 messages_router = APIRouter(prefix='/messages')
+_ERROR_MESSAGE = 'You are not logged in!'
 
 #TODO Figure out a way to add audio recording ass message
 
-@messages_router.post('/{receiver_id}')
-def send_message(receiver_id: int, x_token: str, message: Message):
+
+@messages_router.get('/{company_username}')
+def view_professional_messages(company_username: str, x_token: str = Header(default=None)):
+    prof = professional_or_401(x_token) if x_token else None
+    if prof:
+        return messages_service.get_messages(prof, company_username)
+    else:
+        return Unauthorized(content=_ERROR_MESSAGE)
+
+
+@messages_router.get('/{prof_username}')
+def view_company_messages(prof_username: str, x_token: str = Header(default=None)):
+    company = company_or_401(x_token) if x_token else None
+    if company:
+        return messages_service.get_messages(company, prof_username)
+    else:
+        return Unauthorized(content=_ERROR_MESSAGE)
+    
+
+@messages_router.post('/{receiver_username}')
+def send_message(receiver_username: str, message: Message, x_token: str = Header(default=None)):
     prof = professional_or_401(x_token) if x_token else None
     comp = company_or_401(x_token) if x_token else None
-
     if prof:
-        return messages_service.create(prof, receiver_id, message)
+        return messages_service.create(prof, receiver_username, message)
     elif comp:
-        return messages_service.create(comp, receiver_id, message)
+        return messages_service.create(comp, receiver_username, message)
     else:
-        return Unauthorized(content='You are not logged in')
+        return Unauthorized(content=_ERROR_MESSAGE)
