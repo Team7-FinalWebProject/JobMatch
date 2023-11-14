@@ -1,6 +1,6 @@
 import jwt
 from common.secret import _JWT_SECRET
-from data.responses import Unauthorized, ExpiredException
+from data.responses import Unauthorized, ExpiredException, BadRequest
 from data.models.company import Company
 from data.models.professional import Professional
 from data.models.user import User
@@ -28,7 +28,7 @@ def user_or_401(token: str):
     except ExpiredException:
         raise Unauthorized(content='Expired token.')
     except Exception:
-        raise Unauthorized(content='Unexpected error occured')
+        raise BadRequest(content='Unexpected error occured')
     
 
 def create_token(user: User) -> str:
