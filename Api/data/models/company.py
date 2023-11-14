@@ -7,14 +7,16 @@ class Company(BaseModel):
     address: str
     picture: bytes | None = None
     approved: bool | None = None
+    user_id: int
 
     @classmethod
-    def from_query_result(cls, id, name, description, address, picture, approved):
+    def from_query_result(cls, id, name, description, address, picture, approved, user_id):
         return cls(
             id=id,
             name=name,
             description=description,
             address=address,
             picture=picture,
-            approved=approved)
+            approved=approved,
+            user_id=user_id)
 
