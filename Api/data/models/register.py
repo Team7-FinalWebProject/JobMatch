@@ -20,24 +20,3 @@ class RegisterUserData(BaseModel):
             return value
         raise ValueError(
             "Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character (@$!%*?&).")
-    
-
-class CompanyRegisterData(BaseModel):
-    id: int | None = None
-    name: str
-    description: str
-    address: str
-    picture: bytes | None = None
-    approved: bool
-
-    # @classmethod
-    # def from_query_result(cls, id, name, description, address, picture, approved):
-    #     return cls(
-    #         id=id,
-    #         name=name,
-    #         description=description,
-    #         address=address,
-    #         picture=picture,
-    #         approved=approved)
-
-
