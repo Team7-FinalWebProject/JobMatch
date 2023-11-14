@@ -2,15 +2,19 @@ from pydantic import BaseModel
 
 class Company(BaseModel):
     id: int | None = None
-    username: str
-    company_name: str
-    password: str
+    name: str
+    description: str
+    address: str
+    picture: bytes | None = None
+    approved: bool | None = None
 
     @classmethod
-    def from_query_result(cls, id, username, company_name, password):
+    def from_query_result(cls, id, name, description, address, picture, approved):
         return cls(
             id=id,
-            username=username,
-            company_name=company_name,
-            password=password)
+            name=name,
+            description=description,
+            address=address,
+            picture=picture,
+            approved=approved)
 
