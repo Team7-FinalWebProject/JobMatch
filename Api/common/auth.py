@@ -1,7 +1,8 @@
 import jwt
 from common.secret import _JWT_SECRET
 from data.responses import Unauthorized, ExpiredException
-from data.models import Company, Professional
+from data.models.company import Company
+from data.models.professional import Professional
 from datetime import datetime, timedelta
 
 

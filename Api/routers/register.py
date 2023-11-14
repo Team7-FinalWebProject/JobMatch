@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from data.responses import BadRequest
-from data.models import RegisterUserData
+from data.models.register import RegisterUserData
 from services import register_service
 
 

@@ -1,6 +1,7 @@
 from data.database import read_query, insert_query, update_query, update_queries_transaction
-from data.models import Professional, Company
-from register_service import _hash_password
+from data.models.professional import Professional
+from data.models.company import Company
+from services.register_service import _hash_password
 from secrets import compare_digest
 
 
