@@ -38,8 +38,8 @@ class Professional(BaseModel):
     
 
 class LoginData(BaseModel):
-    username: str
-    password: str
+    username: Allowed_Username
+    password: [Annotated[str, StringConstraints(min_length=8, max_length=30)]]
 
 #TODO: there is some code duplication. find a way to reduce that
 
