@@ -1,8 +1,12 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, StringConstraints, field_validator
+from typing import Annotated, Optional
+
+
+Allowed_Username = Annotated[str, StringConstraints(pattern=r'^\w{2,20}$')]
 
 
 class Company(BaseModel):
-    id: int
+    id: int | None = None
     username: str
     company_name: str
     password: str
@@ -17,7 +21,7 @@ class Company(BaseModel):
 
 
 class Professional(BaseModel):
-    id: int
+    id: int | None = None
     username: str
     first_name: str
     last_name: str
@@ -32,9 +36,54 @@ class Professional(BaseModel):
             last_name=last_name,
             password=password)
     
+
 class LoginData(BaseModel):
     username: str
     password: str
+
+#TODO: there is some code duplication. find a way to reduce that
+
+class RegisterCompanyData(BaseModel):
+    username: Allowed_Username
+    company_name: str
+    password: Optional[Annotated[str, StringConstraints(min_length=8, max_length=30)]] = None
+
+    @field_validator('password', mode='before')
+    @classmethod
+    def validate_password(cls, value):
+        '''Iterates over password and checks
+           if it contains all of the types of chars'''
+        if (
+            any(c.islower() for c in value) and
+            any(c.isupper() for c in value) and
+            any(c.isdigit() for c in value) and
+            any(c in "@$!%*?&" for c in value)
+        ):
+            return value
+        raise ValueError(
+            "Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character (@$!%*?&).")
+
+
+class RegisterProfessionalData(BaseModel):
+    username: Allowed_Username
+    firstname: str
+    lastname: str
+    password: Optional[Annotated[str, StringConstraints(min_length=8, max_length=30)]] = None
+
+    @field_validator('password', mode='before')
+    @classmethod
+    def validate_password(cls, value):
+        '''Iterates over password and checks
+           if it contains all of the types of chars'''
+        if (
+            any(c.islower() for c in value) and
+            any(c.isupper() for c in value) and
+            any(c.isdigit() for c in value) and
+            any(c in "@$!%*?&" for c in value)
+        ):
+            return value
+        raise ValueError(
+            "Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character (@$!%*?&).")
 
 
 class Message(BaseModel):
