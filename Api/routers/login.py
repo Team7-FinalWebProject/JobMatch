@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Response, Query
-from data.models import LoginData
+from data.models.login import LoginData
 from services import login_service
 from common.auth import create_token
 

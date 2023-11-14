@@ -1,5 +1,7 @@
 from data.database import read_query, insert_query, update_query, update_queries_transaction
-from data.models import User, Company, Professional
+from data.models.user import User
+from data.models.company import Company
+from data.models.professional import Professional
 from hashlib import sha256
 from secrets import compare_digest
 

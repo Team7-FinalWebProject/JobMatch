@@ -1,4 +1,6 @@
-from data.models import Message, Professional, Company
+from data.models.message import Message
+from data.models.professional import Professional
+from data.models.company import Company
 from data.database import read_query, insert_query
 
 

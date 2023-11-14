@@ -1,7 +1,7 @@
 from services import messages_service
 from fastapi import APIRouter, Header
 from data.responses import NotFound, Unauthorized
-from data.models import Message
+from data.models.message import Message
 from common.auth import professional_or_401, company_or_401
 
 
