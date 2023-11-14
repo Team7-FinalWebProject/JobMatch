@@ -37,7 +37,7 @@ CREATE TABLE jobmatch.companies (
     id integer NOT NULL,
     name character varying(100) NOT NULL,
     description text DEFAULT ''::text NOT NULL,
-    addresss character varying(100) NOT NULL,
+    address character varying(100) NOT NULL,
     picture bytea,
     approved boolean DEFAULT false NOT NULL
 );
@@ -52,10 +52,11 @@ ALTER TABLE jobmatch.companies OWNER TO postgres;
 CREATE TABLE jobmatch.company_offers (
     id integer NOT NULL,
     company_id integer NOT NULL,
-    salary_range integer,
-    requirements text,
     status character varying DEFAULT 'active'::character varying NOT NULL,
-    chosen_professional_id integer
+    chosen_professional_id integer,
+    requirements jsonb,
+    min_salary integer DEFAULT 0 NOT NULL,
+    max_salary integer DEFAULT 2147483647 NOT NULL
 );
 
 
@@ -198,12 +199,12 @@ ALTER SEQUENCE jobmatch.messages_id_seq OWNED BY jobmatch.messages.id;
 CREATE TABLE jobmatch.professional_offers (
     id integer NOT NULL,
     professional_id integer NOT NULL,
-    salary_range integer,
     description text DEFAULT ''::text NOT NULL,
-    skill_set text,
-    skill_level text,
     chosen_company_offer_id integer,
-    status character varying(100) DEFAULT 'active'::character varying NOT NULL
+    status character varying(100) DEFAULT 'active'::character varying NOT NULL,
+    skills jsonb,
+    min_salary integer DEFAULT 0 NOT NULL,
+    max_salary integer DEFAULT 2147483647 NOT NULL
 );
 
 
@@ -404,7 +405,7 @@ ALTER TABLE ONLY jobmatch.users ALTER COLUMN id SET DEFAULT nextval('jobmatch.us
 -- Data for Name: companies; Type: TABLE DATA; Schema: jobmatch; Owner: postgres
 --
 
-COPY jobmatch.companies (id, name, description, addresss, picture, approved) FROM stdin;
+COPY jobmatch.companies (id, name, description, address, picture, approved) FROM stdin;
 \.
 
 
@@ -412,7 +413,7 @@ COPY jobmatch.companies (id, name, description, addresss, picture, approved) FRO
 -- Data for Name: company_offers; Type: TABLE DATA; Schema: jobmatch; Owner: postgres
 --
 
-COPY jobmatch.company_offers (id, company_id, salary_range, requirements, status, chosen_professional_id) FROM stdin;
+COPY jobmatch.company_offers (id, company_id, status, chosen_professional_id, requirements, min_salary, max_salary) FROM stdin;
 \.
 
 
@@ -444,7 +445,7 @@ COPY jobmatch.messages (id, sender_username, receiver_username, content) FROM st
 -- Data for Name: professional_offers; Type: TABLE DATA; Schema: jobmatch; Owner: postgres
 --
 
-COPY jobmatch.professional_offers (id, professional_id, salary_range, description, skill_set, skill_level, chosen_company_offer_id, status) FROM stdin;
+COPY jobmatch.professional_offers (id, professional_id, description, chosen_company_offer_id, status, skills, min_salary, max_salary) FROM stdin;
 \.
 
 
