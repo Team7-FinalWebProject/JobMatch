@@ -1,17 +1,26 @@
 from pydantic import BaseModel
 
+
 class Professional(BaseModel):
     id: int | None = None
-    username: str
     first_name: str
     last_name: str
-    password: str
+    address: str
+    user_id: int
+    summary: str
+    default_offer_id: int | None = None
+    picture: bytes | None = None
+    approved: bool | None = None
 
     @classmethod
-    def from_query_result(cls, id, username, first_name, last_name, password):
+    def from_query_result(cls, id, first_name, last_name, address, user_id, summary, default_offer_id, picture, approved):
         return cls(
             id=id,
-            username=username,
             first_name=first_name,
             last_name=last_name,
-            password=password)
+            address=address,
+            user_id=user_id,
+            summary=summary,
+            default_offer_id=default_offer_id,
+            picture=picture,
+            approved=approved)
