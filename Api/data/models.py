@@ -41,11 +41,10 @@ class LoginData(BaseModel):
     username: Allowed_Username
     password: [Annotated[str, StringConstraints(min_length=8, max_length=30)]]
 
-#TODO: there is some code duplication. find a way to reduce that
 
-class RegisterCompanyData(BaseModel):
+class RegisterUserData(BaseModel):
     username: Allowed_Username
-    company_name: str
+    approved: bool
     password: Optional[Annotated[str, StringConstraints(min_length=8, max_length=30)]] = None
 
     @field_validator('password', mode='before')
@@ -64,26 +63,17 @@ class RegisterCompanyData(BaseModel):
             "Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character (@$!%*?&).")
 
 
-class RegisterProfessionalData(BaseModel):
-    username: Allowed_Username
-    firstname: str
-    lastname: str
-    password: Optional[Annotated[str, StringConstraints(min_length=8, max_length=30)]] = None
+class User(BaseModel):
+    id: int | None = None
+    username: str
+    approved: bool
 
-    @field_validator('password', mode='before')
     @classmethod
-    def validate_password(cls, value):
-        '''Iterates over password and checks
-           if it contains all of the types of chars'''
-        if (
-            any(c.islower() for c in value) and
-            any(c.isupper() for c in value) and
-            any(c.isdigit() for c in value) and
-            any(c in "@$!%*?&" for c in value)
-        ):
-            return value
-        raise ValueError(
-            "Password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character (@$!%*?&).")
+    def from_query_result(cls, id, username, approved):
+        return cls(
+            id=id,
+            username=username,
+            approved=approved)
 
 
 class Message(BaseModel):
