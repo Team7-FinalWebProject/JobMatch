@@ -1,12 +1,10 @@
-from pydantic import BaseModel, StringConstraints, field_validator
-from typing import Annotated, Optional
-
-Allowed_Username = Annotated[str, StringConstraints(pattern=r'^\w{2,20}$')]
+from pydantic import BaseModel, field_validator
+from common.constraints import Allowed_Username, Allowed_Register_Password
 
 class RegisterUserData(BaseModel):
     username: Allowed_Username
     approved: bool
-    password: Optional[Annotated[str, StringConstraints(min_length=8, max_length=30)]] = None
+    password: Allowed_Register_Password = None
 
     @field_validator('password', mode='before')
     @classmethod
