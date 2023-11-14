@@ -39,13 +39,9 @@ CREATE TABLE jobmatch.companies (
     description text DEFAULT ''::text NOT NULL,
     address character varying(100) NOT NULL,
     picture bytea,
-    approved boolean DEFAULT false NOT NULL
+    approved boolean DEFAULT false NOT NULL,
+    user_id integer NOT NULL
 );
-
-INSERT INTO jobmatch.companies(id, name, description, address, picture, approved)
-VALUES (1, 'Pepsi', 'We make the fizzy drink', 'Los Angeles, California', NULL, true),
-(2, 'Steam', 'We provide video games', 'Los Angeles, California', NULL, true),
-(3, 'Avid', 'We provide high tech gear', 'New York, USA', NULL, true);
 
 
 ALTER TABLE jobmatch.companies OWNER TO postgres;
@@ -63,11 +59,6 @@ CREATE TABLE jobmatch.company_offers (
     min_salary integer DEFAULT 0 NOT NULL,
     max_salary integer DEFAULT 2147483647 NOT NULL
 );
-
-INSERT INTO jobmatch.company_offers(id, company_id, status, chosen_professional_id, requirements, min_salary, max_salary)
-VALUES (1, 1, 'active', NULL, '{"English":{ "7" : "Native"}, "Computers":{ "10" : "Master"}}', 3000, 8000),
-(2, 2, 'active', NULL, '{"English":{ "5" : "Advanced"}, "Computers":{ "5" : "Advanced"}}', 2500, 5500),
-(3, 3, 'active', NULL, '{"English":{ "4" : "Advanced"}, "Computers":{ "3" : "Entry"}}', 1500, 2500);
 
 
 ALTER TABLE jobmatch.company_offers OWNER TO postgres;
@@ -127,6 +118,7 @@ CREATE TABLE jobmatch.company_requests (
     professional_offer_id integer
 );
 
+
 ALTER TABLE jobmatch.company_requests OWNER TO postgres;
 
 --
@@ -150,21 +142,6 @@ ALTER SEQUENCE jobmatch.company_interactions_id_seq OWNER TO postgres;
 
 ALTER SEQUENCE jobmatch.company_interactions_id_seq OWNED BY jobmatch.company_requests.id;
 
-
---
--- Name: company_users; Type: TABLE; Schema: jobmatch; Owner: postgres
---
-
-CREATE TABLE jobmatch.company_users (
-    company_id integer NOT NULL,
-    user_id integer NOT NULL,
-    approved boolean DEFAULT false NOT NULL
-);
-
-INSERT INTO jobmatch.company_users(company_id, user_id, approved)
-VALUES (1, 4, true), (2, 5, true);
-
-ALTER TABLE jobmatch.company_users OWNER TO postgres;
 
 --
 -- Name: messages; Type: TABLE; Schema: jobmatch; Owner: postgres
@@ -217,16 +194,6 @@ CREATE TABLE jobmatch.professional_offers (
     max_salary integer DEFAULT 2147483647 NOT NULL
 );
 
-INSERT INTO jobmatch.professional_offers(id, professional_id, description, chosen_company_offer_id, status, skills, min_salary, max_salary)
-VALUES 
-    (1, 1, 'I can create a AAA title video game', 1, 'active', 
-    '{"English": {"7": "Native"}, "Computers": {"10": "Master"}}', 3000, 10000),
-
-    (2, 2, 'You need a data scientist? I am the man for the job.', 2, 'active', 
-    '{"English": {"4": "Advanced"}, "Computers": {"5": "Experienced"}}', 2000, 4000),
-
-    (3, 3, 'I can build simple servers', 3, 'active',
-    '{"English": {"10": "Native"}, "Computers": {"3": "Entry"}}', 1300, 2300);
 
 ALTER TABLE jobmatch.professional_offers OWNER TO postgres;
 
@@ -262,8 +229,6 @@ CREATE TABLE jobmatch.professional_requests (
     company_offer_id integer NOT NULL
 );
 
-INSERT INTO jobmatch.professional_requests(id, professional_offer_id, company_offer_id)
-VALUES (1, 1, 1), (2, 2, 2), (3, 3, 3);
 
 ALTER TABLE jobmatch.professional_requests OWNER TO postgres;
 
@@ -305,11 +270,6 @@ CREATE TABLE jobmatch.professionals (
     approved boolean DEFAULT false NOT NULL
 );
 
-INSERT INTO jobmatch.professionals(id, first_name, last_name, address, user_id, summary, default_offer_id, picture, approved)
-VALUES (1, 'John', 'Ivanov', 'bul.Skobelev, 24, Sofia, BG', 1, '10 years of experience in C# ASP.NET development', 1, NULL, true),
-(2, 'Michael', 'Livingston', 'Ubbo-Emmunslaan str., Amsterdam, NE', 2, 'Experienced Python developer', 2, NULL, true),
-(3, 'William', 'Pique', 'Buterpark str., London, GBT', 3, 'Junior Java developer', 3, NULL, false);
-
 
 ALTER TABLE jobmatch.professionals OWNER TO postgres;
 
@@ -342,18 +302,10 @@ ALTER SEQUENCE jobmatch.professionals_id_seq OWNED BY jobmatch.professionals.id;
 CREATE TABLE jobmatch.users (
     id integer NOT NULL,
     username character varying(100) NOT NULL,
-    approved boolean DEFAULT false NOT NULL,
     admin boolean DEFAULT false NOT NULL,
     password bytea NOT NULL
 );
 
-INSERT INTO jobmatch.users(id, username, approved, admin, password)
-VALUES (1, 'testuser1', true, false, '401ae4b510ca91651cdbc4a7140922ad256105d84eedb34c42f5b17463a8e98c'),
-(2, 'testuser2', true, false, '401ae4b510ca91651cdbc4a7140922ad256105d84eedb34c42f5b17463a8e98c'),
-(3, 'testuser3', false, false, '401ae4b510ca91651cdbc4a7140922ad256105d84eedb34c42f5b17463a8e98c'),
-(4, 'testuser4', true, false, '401ae4b510ca91651cdbc4a7140922ad256105d84eedb34c42f5b17463a8e98c'),
-(5, 'testuser5', true, false, '401ae4b510ca91651cdbc4a7140922ad256105d84eedb34c42f5b17463a8e98c'),
-(6, 'adminuser', true, true, '401ae4b510ca91651cdbc4a7140922ad256105d84eedb34c42f5b17463a8e98c');
 
 ALTER TABLE jobmatch.users OWNER TO postgres;
 
@@ -439,7 +391,10 @@ ALTER TABLE ONLY jobmatch.users ALTER COLUMN id SET DEFAULT nextval('jobmatch.us
 -- Data for Name: companies; Type: TABLE DATA; Schema: jobmatch; Owner: postgres
 --
 
-COPY jobmatch.companies (id, name, description, address, picture, approved) FROM stdin;
+COPY jobmatch.companies (id, name, description, address, picture, approved, user_id) FROM stdin;
+1	Pepsi	We make the fizzy drink	Los Angeles, California	\N	t	4
+2	Steam	We provide video games	Los Angeles, California	\N	t	5
+3	Avid	We provide high tech gear	New York, USA	\N	t	7
 \.
 
 
@@ -448,6 +403,9 @@ COPY jobmatch.companies (id, name, description, address, picture, approved) FROM
 --
 
 COPY jobmatch.company_offers (id, company_id, status, chosen_professional_id, requirements, min_salary, max_salary) FROM stdin;
+1	1	active	\N	{"English": {"7": "Native"}, "Computers": {"10": "Master"}}	3000	8000
+2	2	active	\N	{"English": {"5": "Advanced"}, "Computers": {"5": "Advanced"}}	2500	5500
+3	3	active	\N	{"English": {"4": "Advanced"}, "Computers": {"3": "Entry"}}	1500	2500
 \.
 
 
@@ -456,14 +414,6 @@ COPY jobmatch.company_offers (id, company_id, status, chosen_professional_id, re
 --
 
 COPY jobmatch.company_requests (id, company_offer_id, professional_id, professional_offer_id) FROM stdin;
-\.
-
-
---
--- Data for Name: company_users; Type: TABLE DATA; Schema: jobmatch; Owner: postgres
---
-
-COPY jobmatch.company_users (company_id, user_id, approved) FROM stdin;
 \.
 
 
@@ -480,6 +430,9 @@ COPY jobmatch.messages (id, sender_username, receiver_username, content) FROM st
 --
 
 COPY jobmatch.professional_offers (id, professional_id, description, chosen_company_offer_id, status, skills, min_salary, max_salary) FROM stdin;
+1	1	I can create a AAA title video game	1	active	{"English": {"7": "Native"}, "Computers": {"10": "Master"}}	3000	10000
+2	2	You need a data scientist? I am the man for the job.	2	active	{"English": {"4": "Advanced"}, "Computers": {"5": "Experienced"}}	2000	4000
+3	3	I can build simple servers	3	active	{"English": {"10": "Native"}, "Computers": {"3": "Entry"}}	1300	2300
 \.
 
 
@@ -488,6 +441,9 @@ COPY jobmatch.professional_offers (id, professional_id, description, chosen_comp
 --
 
 COPY jobmatch.professional_requests (id, professional_offer_id, company_offer_id) FROM stdin;
+1	1	1
+2	2	2
+3	3	3
 \.
 
 
@@ -496,6 +452,9 @@ COPY jobmatch.professional_requests (id, professional_offer_id, company_offer_id
 --
 
 COPY jobmatch.professionals (id, first_name, last_name, address, user_id, summary, default_offer_id, picture, approved) FROM stdin;
+1	John	Ivanov	bul.Skobelev, 24, Sofia, BG	1	10 years of experience in C# ASP.NET development	1	\N	t
+2	Michael	Livingston	Ubbo-Emmunslaan str., Amsterdam, NE	2	Experienced Python developer	2	\N	t
+3	William	Pique	Buterpark str., London, GBT	3	Junior Java developer	3	\N	f
 \.
 
 
@@ -503,7 +462,14 @@ COPY jobmatch.professionals (id, first_name, last_name, address, user_id, summar
 -- Data for Name: users; Type: TABLE DATA; Schema: jobmatch; Owner: postgres
 --
 
-COPY jobmatch.users (id, username, admin, approved, password) FROM stdin;
+COPY jobmatch.users (id, username, admin, password) FROM stdin;
+1	testuser1	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+2	testuser2	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+3	testuser3	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+4	testuser4	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+5	testuser5	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+6	adminuser	t	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+7	testuser6	f	\\x74657374
 \.
 
 
@@ -628,19 +594,19 @@ ALTER TABLE ONLY jobmatch.users
 
 
 --
+-- Name: companies unq_companies; Type: CONSTRAINT; Schema: jobmatch; Owner: postgres
+--
+
+ALTER TABLE ONLY jobmatch.companies
+    ADD CONSTRAINT unq_companies UNIQUE (user_id);
+
+
+--
 -- Name: company_requests unq_company_requests_professional_id; Type: CONSTRAINT; Schema: jobmatch; Owner: postgres
 --
 
 ALTER TABLE ONLY jobmatch.company_requests
     ADD CONSTRAINT unq_company_requests_professional_id UNIQUE (professional_id);
-
-
---
--- Name: company_users unq_company_users_user_id; Type: CONSTRAINT; Schema: jobmatch; Owner: postgres
---
-
-ALTER TABLE ONLY jobmatch.company_users
-    ADD CONSTRAINT unq_company_users_user_id UNIQUE (user_id);
 
 
 --
@@ -652,6 +618,14 @@ ALTER TABLE ONLY jobmatch.professional_requests
 
 
 --
+-- Name: professionals unq_professionals; Type: CONSTRAINT; Schema: jobmatch; Owner: postgres
+--
+
+ALTER TABLE ONLY jobmatch.professionals
+    ADD CONSTRAINT unq_professionals UNIQUE (user_id);
+
+
+--
 -- Name: users unq_users_username; Type: CONSTRAINT; Schema: jobmatch; Owner: postgres
 --
 
@@ -660,19 +634,11 @@ ALTER TABLE ONLY jobmatch.users
 
 
 --
--- Name: company_users fk_company_admins_companies; Type: FK CONSTRAINT; Schema: jobmatch; Owner: postgres
+-- Name: companies fk_companies_users; Type: FK CONSTRAINT; Schema: jobmatch; Owner: postgres
 --
 
-ALTER TABLE ONLY jobmatch.company_users
-    ADD CONSTRAINT fk_company_admins_companies FOREIGN KEY (company_id) REFERENCES jobmatch.companies(id);
-
-
---
--- Name: company_users fk_company_admins_users; Type: FK CONSTRAINT; Schema: jobmatch; Owner: postgres
---
-
-ALTER TABLE ONLY jobmatch.company_users
-    ADD CONSTRAINT fk_company_admins_users FOREIGN KEY (user_id) REFERENCES jobmatch.users(id);
+ALTER TABLE ONLY jobmatch.companies
+    ADD CONSTRAINT fk_companies_users FOREIGN KEY (user_id) REFERENCES jobmatch.users(id);
 
 
 --
@@ -782,3 +748,4 @@ ALTER TABLE ONLY jobmatch.professionals
 --
 -- PostgreSQL database dump complete
 --
+
