@@ -1,20 +1,62 @@
 from pydantic import BaseModel
+from data.models.offer import CompanyOffer_NoUserId
 
 class Company(BaseModel):
     id: int | None = None
+    user_id: int
+    name: str
+    description: str | None = None
+    address: str
+    picture: bytes | None = None
+
+    @classmethod
+    def from_query_result(cls, id, user_id, name, description, address, picture):
+        return cls(
+            id=id,
+            user_id=user_id,
+            name=name,
+            description=description,
+            address=address,
+            picture=picture)
+
+
+class Company_Username(BaseModel):
+    id: int | None = None
+    username: str
     name: str
     description: str
     address: str
     picture: bytes | None = None
-    approved: bool | None = None
 
     @classmethod
-    def from_query_result(cls, id, name, description, address, picture, approved):
+    def from_query_result(cls, id, username, name, description, address, picture):
         return cls(
             id=id,
+            username=username,
+            name=name,
+            description=description,
+            address=address,
+            picture=picture)
+    
+class Company_W_Offers(BaseModel):
+    id: int | None = None
+    username: str
+    name: str
+    description: str
+    address: str
+    picture: bytes | None = None
+    offers: list[CompanyOffer_NoUserId]
+
+    @classmethod
+    def from_query_result(cls, id, username, name, description, address, picture, offers):
+        return cls(
+            id=id,
+            username=username,
             name=name,
             description=description,
             address=address,
             picture=picture,
-            approved=approved)
+            offers=offers)
+
+
 
