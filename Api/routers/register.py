@@ -1,39 +1,32 @@
-from fastapi import APIRouter, Header
-from common.auth import user_or_401
-from data.responses import BadRequest, Unauthorized
-from data.models.register import RegisterUserData
-from data.models.professional import Professional
-from data.models.company import Company
+from fastapi import APIRouter
+from data.responses import BadRequest, Conflict
+from data.models.register import RegisterProfessionalData, RegisterCompanyData
 from services import register_service
 
 
 register_router = APIRouter(prefix='/register')
 
 
-@register_router.post('/users', tags=["Signup"])
-def register_user(user_data: RegisterUserData):
-    if register_service.check_user_exist(user_data.username):
-        return BadRequest(status_code=400, content=f'Username is already taken!')
-    else:
-        user = register_service.create_user(
-            user_data.username, user_data.approved, user_data.password)
-        return user
-
-
 @register_router.post('/professionals', tags=["Signup"])
-def register_professional(prof_data: Professional, x_token: str = Header(default=None)):
-    user = user_or_401(x_token) if x_token else None
-    if user:
-        return register_service.create_professional(prof_data)
+def register_professional(user_data: RegisterProfessionalData):
+    if register_service.check_user_exist(user_data.username):
+        return BadRequest(content=f'Username is already taken!')
     else:
-        return Unauthorized(content='Not logged in')
-    
+        user, prof = register_service.create_professional(user_data)
+        if not user and not prof:
+            return Conflict(content='Unexpected error occured')
+        else:
+            return register_service.prof_response_object(user, prof)
+        
 
 @register_router.post('/companies', tags=["Signup"])
-def register_company(comp_data: Company, x_token: str = Header(default=None)):
-    user = user_or_401(x_token) if x_token else None
-    if user:
-        return register_service.create_company(comp_data)
+def register_company(comp_data: RegisterCompanyData):
+    if register_service.check_user_exist(comp_data.username):
+        return BadRequest(content=f'Username is already taken!')
     else:
-        return Unauthorized(content='Not logged in')
-    
+        user, company = register_service.create_company(comp_data)
+        if not user and not company:
+            return Conflict(content='Unexpected error occured.')
+        else:
+            return register_service.company_response_object(user, company)
+

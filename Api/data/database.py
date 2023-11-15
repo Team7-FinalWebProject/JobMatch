@@ -52,3 +52,18 @@ def update_queries_transaction(sql_queries: tuple[str], sql_params: tuple[tuple]
             print(f"Database update failed: {error}")
             conn.rollback()
             return False
+
+
+def insert_queries_trasnaction(sql_queries: tuple[str], sql_params: tuple[tuple]) -> int:
+    with _get_connection() as conn:
+        try:
+            cursor = conn.cursor()
+            for i in range(len(sql_queries)):
+                cursor.execute(sql_queries[i], sql_params[i])
+
+            conn.commit()
+            return cursor.lastrowid
+        except psycopg2.Error as error:
+            print(f"Database update failed: {error}")
+            conn.rollback()
+            return False
