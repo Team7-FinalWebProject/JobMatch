@@ -25,6 +25,79 @@ CREATE SCHEMA jobmatch;
 
 ALTER SCHEMA jobmatch OWNER TO postgres;
 
+--
+-- Name: check_user_id_admin_not_in_professionals_or_companies(); Type: FUNCTION; Schema: jobmatch; Owner: postgres
+--
+
+CREATE FUNCTION jobmatch.check_user_id_admin_not_in_professionals_or_companies() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  IF NEW.admin AND (
+    EXISTS (SELECT 1 FROM jobmatch.professionals WHERE jobmatch.professionals.user_id = NEW.id) OR
+    EXISTS (SELECT 1 FROM jobmatch.companies WHERE jobmatch.companies.user_id = NEW.id)
+  ) THEN
+    RAISE EXCEPTION 'id for admin cannot be the same as user_id in jobmatch.companies or jobmatch.professionals';
+  END IF;
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION jobmatch.check_user_id_admin_not_in_professionals_or_companies() OWNER TO postgres;
+
+--
+-- Name: check_user_id_companies_not_in_professionals(); Type: FUNCTION; Schema: jobmatch; Owner: postgres
+--
+
+CREATE FUNCTION jobmatch.check_user_id_companies_not_in_professionals() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM jobmatch.professionals WHERE jobmatch.professionals.user_id = NEW.user_id) THEN
+    RAISE EXCEPTION 'user_id in jobmatch.companies cannot be the same as jobmatch.professionals';
+  END IF;
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION jobmatch.check_user_id_companies_not_in_professionals() OWNER TO postgres;
+
+--
+-- Name: check_user_id_professionals_not_in_companies(); Type: FUNCTION; Schema: jobmatch; Owner: postgres
+--
+
+CREATE FUNCTION jobmatch.check_user_id_professionals_not_in_companies() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM jobmatch.companies WHERE jobmatch.companies.user_id = NEW.user_id) THEN
+    RAISE EXCEPTION 'user_id in jobmatch.professionals cannot be the same as jobmatch.companies';
+  END IF;
+  RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION jobmatch.check_user_id_professionals_not_in_companies() OWNER TO postgres;
+
+--
+-- Name: insert_into_companies_and_users(text, bytea, text, text, text); Type: PROCEDURE; Schema: jobmatch; Owner: postgres
+--
+
+CREATE PROCEDURE jobmatch.insert_into_companies_and_users(IN new_username text, IN new_password bytea, IN new_name text, IN new_description text, IN new_address text)
+    LANGUAGE plpgsql
+    AS $_$
+BEGIN
+  WITH new_user_id AS (INSERT INTO jobmatch.users (username,password) VALUES ($1,$2) RETURNING id)
+  INSERT INTO jobmatch.companies (user_id,name,description,address) VALUES (new_user_id,$3,$4,$5) RETURNING id;
+END;
+$_$;
+
+
+ALTER PROCEDURE jobmatch.insert_into_companies_and_users(IN new_username text, IN new_password bytea, IN new_name text, IN new_description text, IN new_address text) OWNER TO postgres;
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -47,6 +120,40 @@ CREATE TABLE jobmatch.companies (
 ALTER TABLE jobmatch.companies OWNER TO postgres;
 
 --
+-- Name: users; Type: TABLE; Schema: jobmatch; Owner: postgres
+--
+
+CREATE TABLE jobmatch.users (
+    id integer NOT NULL,
+    username character varying(100) NOT NULL,
+    admin boolean DEFAULT false NOT NULL,
+    password bytea NOT NULL
+);
+
+
+ALTER TABLE jobmatch.users OWNER TO postgres;
+
+--
+-- Name: companies_view; Type: VIEW; Schema: jobmatch; Owner: postgres
+--
+
+CREATE VIEW jobmatch.companies_view AS
+ SELECT c.id AS company_id,
+    c.user_id AS company_user_id,
+    c.name AS company_name,
+    c.description AS company_description,
+    c.address AS company_address,
+    c.picture AS company_picture,
+    c.approved AS company_approved,
+    u.username AS company_username,
+    u.password AS company_password
+   FROM (jobmatch.companies c
+     LEFT JOIN jobmatch.users u ON ((u.id = c.user_id)));
+
+
+ALTER VIEW jobmatch.companies_view OWNER TO postgres;
+
+--
 -- Name: company_offers; Type: TABLE; Schema: jobmatch; Owner: postgres
 --
 
@@ -57,7 +164,8 @@ CREATE TABLE jobmatch.company_offers (
     chosen_professional_id integer,
     requirements jsonb,
     min_salary integer DEFAULT 0 NOT NULL,
-    max_salary integer DEFAULT 2147483647 NOT NULL
+    max_salary integer DEFAULT 2147483647 NOT NULL,
+    CONSTRAINT cns_company_offers_status_is_valid CHECK (((status)::text = ANY ((ARRAY['active'::character varying, 'archived'::character varying])::text[])))
 );
 
 
@@ -191,7 +299,8 @@ CREATE TABLE jobmatch.professional_offers (
     status character varying(100) DEFAULT 'active'::character varying NOT NULL,
     skills jsonb,
     min_salary integer DEFAULT 0 NOT NULL,
-    max_salary integer DEFAULT 2147483647 NOT NULL
+    max_salary integer DEFAULT 2147483647 NOT NULL,
+    CONSTRAINT cns_professional_offers_status_is_valid CHECK (((status)::text = ANY ((ARRAY['active'::character varying, 'private'::character varying, 'hidden'::character varying, 'matched'::character varying])::text[])))
 );
 
 
@@ -294,20 +403,6 @@ ALTER SEQUENCE jobmatch.professionals_id_seq OWNER TO postgres;
 
 ALTER SEQUENCE jobmatch.professionals_id_seq OWNED BY jobmatch.professionals.id;
 
-
---
--- Name: users; Type: TABLE; Schema: jobmatch; Owner: postgres
---
-
-CREATE TABLE jobmatch.users (
-    id integer NOT NULL,
-    username character varying(100) NOT NULL,
-    admin boolean DEFAULT false NOT NULL,
-    password bytea NOT NULL
-);
-
-
-ALTER TABLE jobmatch.users OWNER TO postgres;
 
 --
 -- Name: users_id_seq; Type: SEQUENCE; Schema: jobmatch; Owner: postgres
@@ -526,7 +621,7 @@ SELECT pg_catalog.setval('jobmatch.professionals_id_seq', 1, false);
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: jobmatch; Owner: postgres
 --
 
-SELECT pg_catalog.setval('jobmatch.users_id_seq', 1, false);
+SELECT pg_catalog.setval('jobmatch.users_id_seq', 7, true);
 
 
 --
@@ -631,6 +726,27 @@ ALTER TABLE ONLY jobmatch.professionals
 
 ALTER TABLE ONLY jobmatch.users
     ADD CONSTRAINT unq_users_username UNIQUE (username);
+
+
+--
+-- Name: users check_user_id_admin_not_in_professionals_or_companies; Type: TRIGGER; Schema: jobmatch; Owner: postgres
+--
+
+CREATE TRIGGER check_user_id_admin_not_in_professionals_or_companies BEFORE INSERT OR UPDATE ON jobmatch.users FOR EACH ROW EXECUTE FUNCTION jobmatch.check_user_id_admin_not_in_professionals_or_companies();
+
+
+--
+-- Name: companies check_user_id_companies_not_in_professionals; Type: TRIGGER; Schema: jobmatch; Owner: postgres
+--
+
+CREATE TRIGGER check_user_id_companies_not_in_professionals BEFORE INSERT OR UPDATE ON jobmatch.companies FOR EACH ROW EXECUTE FUNCTION jobmatch.check_user_id_companies_not_in_professionals();
+
+
+--
+-- Name: professionals check_user_id_professionals_not_in_companies; Type: TRIGGER; Schema: jobmatch; Owner: postgres
+--
+
+CREATE TRIGGER check_user_id_professionals_not_in_companies BEFORE INSERT OR UPDATE ON jobmatch.professionals FOR EACH ROW EXECUTE FUNCTION jobmatch.check_user_id_professionals_not_in_companies();
 
 
 --
