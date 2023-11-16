@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from routers.login import login_router
 from routers.register import register_router
+from routers.search import search_router, admin_router
 
 
 
@@ -29,6 +30,8 @@ app.add_middleware(
 
 app.include_router(login_router)
 app.include_router(register_router)
+app.include_router(search_router)
+app.include_router(admin_router)
 
 
 

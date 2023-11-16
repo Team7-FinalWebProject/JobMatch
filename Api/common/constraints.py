@@ -15,4 +15,5 @@ Allowed_Skill_Levels = Annotated[int, lambda n: _SKILL_LEVELS[0] <= n <= _SKILL_
 _USE_STATIC = False
 def switch_skills_mode():
     _USE_STATIC = ~_USE_STATIC
+Skills = dict[str, tuple[int, str]] if not _USE_STATIC else dict[Allowed_Skill_Names, tuple[Allowed_Skill_Levels, str]]
 ####-------------------------------------------------------------------------------------------####

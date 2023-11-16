@@ -30,7 +30,7 @@ def get_unapproved_company_by_id(id: int):
 # --view all companies (+filters)
 def get_approved_companies():
     data = read_query(
-        '''SELECT c.id, u.username, c.name, c.description, c.address, c.picture, c.approved 
+        '''SELECT c.id, u.username, c.name, c.description, c.address, c.picture
             FROM companies c
             LEFT JOIN users u
             ON c.user_id=u.id
@@ -40,7 +40,7 @@ def get_approved_companies():
 
 def get_unapproved_companies():
     data = read_query(
-        '''SELECT c.id, u.username, c.name, c.description, c.address, c.picture, c.approved 
+        '''SELECT c.id, u.username, c.name, c.description, c.address, c.picture
             FROM companies c
             LEFT JOIN users u
             ON c.user_id=u.id
@@ -95,7 +95,7 @@ def get_unapproved_professionals():
 # --view company offer
 def get_approved_company_offer_by_id(id: int):
     data = read_query(
-        '''SELECT co.id, co.company_id, co.status, co.chosen_professional_id, co.requirements, co.min_salary, co.max_salary 
+        '''SELECT co.id, co.company_id, co.chosen_professional_id, co.status, co.requirements, co.min_salary, co.max_salary 
             FROM company_offers co
             LEFT JOIN companies c
             ON co.company_id=c.id
@@ -105,9 +105,9 @@ def get_approved_company_offer_by_id(id: int):
     return reader_one(CompanyOffer, data)
 
 # --view all company offers (+filters, filters: active/inactive, salary, requirements, ++)
-def get_company_offers():
+def get_approved_company_offers():
     data = read_query(
-        '''SELECT co.id, co.company_id, co.status, co.chosen_professional_id, co.requirements, co.min_salary, co.max_salary 
+        '''SELECT co.id, co.company_id, co.chosen_professional_id, co.status, co.requirements, co.min_salary, co.max_salary 
             FROM company_offers co
             LEFT JOIN companies c
             ON co.company_id=c.id
@@ -116,11 +116,26 @@ def get_company_offers():
     return reader_many(CompanyOffer, data)
 
 # --view professional offer (hide hidden)
-def get_professional_offer_by_id(id: int):
-    pass
+def get_approved_professional_offer_by_id(id: int):
+    data = read_query(
+        '''SELECT po.id, po.professional_id, po.chosen_company_offer_id, po.description, po.status, po.skills, po.min_salary, po.max_salary 
+            FROM professional_offers po
+            LEFT JOIN professionals p
+            ON po.professional_id=p.id
+            WHERE po.id = %s
+            AND p.approved = %s''',
+        (id, True,))
+    return reader_one(ProfessionalOffer, data)
 
 # --view all professional offers (self, self=professional, filters: active/inactive)
 # --view all professional offers (hide inactive, private and hidden) (+filters salary, requirements, ++)
-def get_professional_offers():
-    pass
+def get_approved_professional_offers():
+    data = read_query(
+        '''SELECT po.id, po.professional_id, po.chosen_company_offer_id, po.description, po.status, po.skills, po.min_salary, po.max_salary 
+            FROM professional_offers po
+            LEFT JOIN professionals p
+            ON po.professional_id=p.id
+            WHERE p.approved = %s''',
+        (True,))
+    return reader_many(ProfessionalOffer, data)
 

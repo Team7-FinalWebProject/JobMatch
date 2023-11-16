@@ -1,17 +1,9 @@
 from pydantic import BaseModel
-from common.constraints import Allowed_Skill_Names as skill_name, Allowed_Skill_Levels as skill_level, _USE_STATIC
-
-class SkillsStatic(BaseModel):
-    skills: dict[skill_name, dict[skill_level, str]]
-
-class SkillsDynamitc(BaseModel):
-    skills: dict[str, dict[int, str]]
-
-Skills = SkillsDynamitc if not _USE_STATIC else SkillsStatic
+from common.constraints import Skills
 
 class ProfessionalOffer(BaseModel):
     id: int | None = None
-    professional_id: int | None = None
+    professional_id: int
     ###Add another model without offer id and full offer instead?
     chosen_company_offer_id: int | None = None
     description: str | None = None
@@ -21,17 +13,17 @@ class ProfessionalOffer(BaseModel):
     max_salary: int | None = None
 
     @classmethod
-    def from_query_result(cls, id, default_offer_id, first_name, last_name, summary, address, picture):
+    def from_query_result(cls, id, professional_id, chosen_company_offer_id, description, status, skills, min_salary, max_salary):
         return cls(
             id=id,
-            default_offer_id=default_offer_id,
-            first_name=first_name,
-            last_name=last_name,
-            summary=summary,
-            address=address,
-            picture=picture)
+            professional_id=professional_id,
+            chosen_company_offer_id=chosen_company_offer_id,
+            description=description,
+            status=status,
+            skills=skills,
+            min_salary=min_salary,
+            max_salary=max_salary)
     
-
 class ProfessionalOffer_NoProfessionalId(BaseModel):
     id: int | None = None
     ###Add another model without offer id and full offer instead?
@@ -43,15 +35,15 @@ class ProfessionalOffer_NoProfessionalId(BaseModel):
     max_salary: int | None = None
 
     @classmethod
-    def from_query_result(cls, id, default_offer_id, first_name, last_name, summary, address, picture):
+    def from_query_result(cls, id, chosen_company_offer_id, description, status, skills, min_salary, max_salary):
         return cls(
             id=id,
-            default_offer_id=default_offer_id,
-            first_name=first_name,
-            last_name=last_name,
-            summary=summary,
-            address=address,
-            picture=picture)
+            chosen_company_offer_id=chosen_company_offer_id,
+            description=description,
+            status=status,
+            skills=skills,
+            min_salary=min_salary,
+            max_salary=max_salary)
     
 
 class CompanyOffer(BaseModel):

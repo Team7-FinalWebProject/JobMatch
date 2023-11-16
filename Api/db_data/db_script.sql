@@ -498,9 +498,9 @@ COPY jobmatch.companies (id, name, description, address, picture, approved, user
 --
 
 COPY jobmatch.company_offers (id, company_id, status, chosen_professional_id, requirements, min_salary, max_salary) FROM stdin;
-1	1	active	\N	{"English": {"7": "Native"}, "Computers": {"10": "Master"}}	3000	8000
-2	2	active	\N	{"English": {"5": "Advanced"}, "Computers": {"5": "Advanced"}}	2500	5500
-3	3	active	\N	{"English": {"4": "Advanced"}, "Computers": {"3": "Entry"}}	1500	2500
+1	1	active	\N	{"English": [7, "Native"], "Computers": [10, "Master"]}	3000	8000
+2	2	active	\N	{"English": [5, "Advanced"], "Computers": [5, "Advanced"]}	2500	5500
+3	3	active	\N	{"English": [4, "Advanced"], "Computers": [3, "Entry"]}	1500	2500
 \.
 
 
@@ -525,9 +525,9 @@ COPY jobmatch.messages (id, sender_username, receiver_username, content) FROM st
 --
 
 COPY jobmatch.professional_offers (id, professional_id, description, chosen_company_offer_id, status, skills, min_salary, max_salary) FROM stdin;
-1	1	I can create a AAA title video game	1	active	{"English": {"7": "Native"}, "Computers": {"10": "Master"}}	3000	10000
-2	2	You need a data scientist? I am the man for the job.	2	active	{"English": {"4": "Advanced"}, "Computers": {"5": "Experienced"}}	2000	4000
-3	3	I can build simple servers	3	active	{"English": {"10": "Native"}, "Computers": {"3": "Entry"}}	1300	2300
+2	2	You need a data scientist? I am the man for the job.	2	active	{"English": [10, "Native"], "Computers": [3, "Entry"]}	2000	4000
+1	1	I can create a AAA title video game	1	active	{"English": [7, "Native"], "Computers": [10, "Master"]}	3000	10000
+3	3	I can build simple servers	3	active	{"English": [10, "Native"], "Computers": [3, "Entry"]}	1300	2300
 \.
 
 
