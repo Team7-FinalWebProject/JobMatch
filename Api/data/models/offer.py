@@ -11,7 +11,7 @@ Skills = SkillsDynamitc if not _USE_STATIC else SkillsStatic
 
 class ProfessionalOffer(BaseModel):
     id: int | None = None
-    professional_id: int
+    professional_id: int | None = None
     ###Add another model without offer id and full offer instead?
     chosen_company_offer_id: int | None = None
     description: str | None = None
