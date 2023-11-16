@@ -23,8 +23,8 @@ def find_prof_by_username(username: str, fuser=False, fpassword=False):
     data = read_query(
         '''SELECT u.id, u.username, p.*, u.password 
            FROM users AS u
-           RIGHT JOIN professionals AS p ON u.id = p.user_id
-           WHERE u.username = ?''', (username,))
+           JOIN professionals AS p ON u.id = p.user_id
+           WHERE u.username = %s''', (username,))
     
     if data and ~(fuser ^ fpassword):
         return data[0][-1].decode('utf-8'), next(
@@ -37,8 +37,8 @@ def find_company_by_username(username: str, fuser=False, fpassword=False):
     data = read_query(
         '''SELECT u.id, u.username, c.*, u.password
            FROM users AS u
-           RIGHT JOIN companies AS c ON u.id = c.user_id
-           WHERE u.username = ?''', (username,))
+           JOIN companies AS c ON u.id = c.user_id
+           WHERE u.username = %s''', (username,))
     
     if data and ~(fuser ^ fpassword):
         return data[0][-1].decode('utf-8'), next(

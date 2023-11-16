@@ -18,8 +18,8 @@ def edit(new_data: Professional, old_data: Professional):
             picture=new_data.picture or old_data.picture)
 
         update_query(
-            '''UPADTE professionals SET default_offer_id = ?, first_name = ?, last_name = ?,
-            summary = ?, address = ?, picture = ? WHERE id = ?''',
+            '''UPDATE professionals SET default_offer_id = %s, first_name = %s, last_name = %s,
+            summary = %s, address = %s, picture = %s WHERE id = %s''',
             (merged.default_offer_id, merged.first_name, merged.last_name, 
                 merged.summary, merged.address, merged.picture, merged.id))
         
@@ -34,7 +34,7 @@ def create_offer(offer: ProfessionalOffer, prof: Professional):
         generated_id = insert_query(
             '''INSERT INTO professional_offers (professional_id, description, 
             chosen_company_offer_id, status, skills, min_salary, max_salary)
-            VALUES (?, ?, ?, ?, ?, ?, ?)''', 
+            VALUES (%s, %s, %s, %s, %s, %s, %s?)''', 
             (prof.id, offer.description, offer.chosen_company_offer_id,
                 offer.status, offer.skills, offer.min_salary, offer.max_salary))
         
@@ -54,7 +54,7 @@ def create_offer(offer: ProfessionalOffer, prof: Professional):
 
 def set_def_offer(offer_id: int, prof_id: int):
     rowcount = update_query(
-        '''UPDATE professionals SET default_offer_id = ? WHERE id = ?''',
+        '''UPDATE professionals SET default_offer_id = %s WHERE id = %s''',
         (offer_id, prof_id))
 
     return rowcount
@@ -62,7 +62,7 @@ def set_def_offer(offer_id: int, prof_id: int):
 
 def get_offer_by_id(offer_id: int):
     data = read_query(
-        '''SELECT * FROM professional_offers WHERE id = ?''',
+        '''SELECT * FROM professional_offers WHERE id = %s''',
         (offer_id,))
     
     return next((ProfessionalOffer.from_query_result(*row) for row in data), None)
@@ -70,7 +70,7 @@ def get_offer_by_id(offer_id: int):
 
 def get_offer_by_prof_id(prof_id: int):
     data = read_query(
-        '''SELECT * FROM professional_offers WHERE professional_id = ?''',
+        '''SELECT * FROM professional_offers WHERE professional_id = %s''',
         (prof_id,))
     
     return next((ProfessionalOffer.from_query_result(*row) for row in data), None)
@@ -89,8 +89,8 @@ def edit_offer(new_offer: ProfessionalOffer, old_offer: ProfessionalOffer):
             max_salary=new_offer.max_salary or old_offer.max_salary)
 
         update_query(
-            '''UPADTE professional_offers SET professional_id = ?, chosen_company_offer_id = ?,
-               description = ?, status = ?, skills = ?, min_salary = ?, max_salary = ? WHERE id = ?''',
+            '''UPADTE professional_offers SET professional_id = %s, chosen_company_offer_id = %s,
+               description = %s, status = %s, skills = %s, min_salary = %s, max_salary = %s WHERE id = %s''',
             (merged.professional_id, merged.chosen_company_offer_id, merged.description, 
             merged.status, merged.skills, merged.min_salary, merged.max_salary, merged.id))
         
@@ -106,7 +106,7 @@ def match():
 
 def get_requests(offer_id: int):
     data = read_query(
-        '''SELECT * FROM professional_requests WHERE professional_offer_id = ?''',
+        '''SELECT * FROM professional_requests WHERE professional_offer_id = %s''',
         (offer_id,))
 
     if len(data) > 0:

@@ -5,7 +5,7 @@ from data.database import read_query, insert_query
 
 def get_messages(sender: User, receiver_username: str):
     data = read_query(
-        '''SELECT * FROM messsages WHERE sender_username = ? AND receiver_username = ?''',
+        '''SELECT * FROM messsages WHERE sender_username = %s AND receiver_username = %s''',
         (sender.username, receiver_username)
     )
 
@@ -15,7 +15,7 @@ def get_messages(sender: User, receiver_username: str):
 def create(sender: User, receiver_username: str, message: Message):
     generated_id = insert_query(
         '''INSERT INTO messages(sender, receiver, content) 
-           VALUES(?, ?, ?)''', (sender.username, receiver_username, message.content)
+           VALUES(%s, %s, %s)''', (sender.username, receiver_username, message.content)
     )
 
     message.id = generated_id

@@ -16,12 +16,12 @@ def create_professional(user: RegisterProfessionalData, password: str):
 
     queries = (
         '''INSERT INTO users(username, approved, admin, password) 
-           VALUES (?, ?, ?, ?)''',
+           VALUES (%s, %s, %s, %s)''',
         
         '''INSERT INTO professionals(
            first_name, last_name, address, user_id, summary, 
            default_offer_id, picture, approved)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?)'''
+           VALUES (%s, %s, %s, %s, %s, %s, %s, %s)'''
     )
     params = ((user.username, user.approved, user.admin, curr_pass),
               (user.first_name, user.last_name, user.address, user.user_id,
@@ -50,11 +50,11 @@ def create_company(company_data: RegisterCompanyData, password: str):
 
     queries = (
         '''INSERT INTO users(username, approved, admin, password) 
-           VALUES (?, ?, ?, ?)''',
+           VALUES (%s, %s, %s, %s)''',
         
         '''INSERT INTO companies(name, description, address, 
            picture, approved, user_id)
-           VALUES (?, ?, ?, ?, ?, ?)''')
+           VALUES (%s, %s, %s, %s, %s, %s)''')
     
     params = ((company_data.username, company_data.approved, 
                company_data.admin, curr_pass),
@@ -80,7 +80,7 @@ def create_company(company_data: RegisterCompanyData, password: str):
 
 def check_user_exist(nickname:str) -> bool:
     return any(read_query(
-        "SELECT * FROM users WHERE username = ?",
+        "SELECT * FROM users WHERE username = %s",
         (nickname,)))
 
 
