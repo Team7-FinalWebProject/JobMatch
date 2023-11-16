@@ -26,8 +26,8 @@ def insert_query(sql: str, sql_params=()) -> int:
         cursor = conn.cursor()
         cursor.execute(sql, sql_params)
         conn.commit()
-
-        return cursor.lastrowid
+        last_row_id = cursor.fetchone()
+        return last_row_id[0] if last_row_id else None
 
 
 def update_query(sql: str, sql_params=()) -> bool:
@@ -67,3 +67,11 @@ def insert_queries_trasnaction(sql_queries: tuple[str], sql_params: tuple[tuple]
             print(f"Database update failed: {error}")
             conn.rollback()
             return False
+        
+#TODO check for implementations
+def multi_read_query_trasnaction(sql_queries: tuple[str], sql_params: tuple[tuple]) -> list:
+    with _get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.executemany(sql_queries, sql_params)
+        
+        return list(cursor)

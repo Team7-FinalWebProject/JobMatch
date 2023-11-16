@@ -82,7 +82,7 @@ def _is_authenticated(token: str) -> bool:
 # CURRENTLY OUT OF USE
 
 
-# def user_or_401(token: str):
+# def _user_or_401(token: str):
 #     try:
 #         payload = _base_auth(token)
 #         return User.from_query_result(**payload)

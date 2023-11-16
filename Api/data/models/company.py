@@ -3,7 +3,7 @@ from data.models.offer import CompanyOffer_NoCompanyId
 
 class Company(BaseModel):
     id: int | None = None
-    user_id: int
+    user_id: int | None = None
     name: str
     description: str | None = None
     address: str

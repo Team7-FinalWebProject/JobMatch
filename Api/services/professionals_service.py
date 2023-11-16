@@ -1,7 +1,7 @@
 from psycopg2 import IntegrityError
 from data.models.professional import Professional, ProfessionalRequest
 from data.models.offer import ProfessionalOffer
-from data.database import update_query, insert_query, read_query, update_queries_transaction, insert_queries_trasnaction
+from data.database import update_query, insert_query, read_query
 
 
 
@@ -19,8 +19,8 @@ def edit(new_data: Professional, old_data: Professional):
 
         update_query(
             '''UPDATE professionals SET default_offer_id = %s, first_name = %s, last_name = %s,
-            summary = %s, address = %s, picture = %s WHERE id = %s''',
-            (merged.default_offer_id, merged.first_name, merged.last_name, 
+               summary = %s, address = %s, picture = %s WHERE id = %s''',
+               (merged.default_offer_id, merged.first_name, merged.last_name, 
                 merged.summary, merged.address, merged.picture, merged.id))
         
         return merged
@@ -33,9 +33,9 @@ def create_offer(offer: ProfessionalOffer, prof: Professional):
     try:
         generated_id = insert_query(
             '''INSERT INTO professional_offers (professional_id, description, 
-            chosen_company_offer_id, status, skills, min_salary, max_salary)
-            VALUES (%s, %s, %s, %s, %s, %s, %s?)''', 
-            (prof.id, offer.description, offer.chosen_company_offer_id,
+               chosen_company_offer_id, status, skills, min_salary, max_salary)
+               VALUES (%s, %s, %s, %s, %s, %s, %s)''', 
+               (prof.id, offer.description, offer.chosen_company_offer_id,
                 offer.status, offer.skills, offer.min_salary, offer.max_salary))
         
         return ProfessionalOffer(

@@ -1,10 +1,8 @@
-from data.database import read_query, insert_query, insert_queries_trasnaction
-from data.models.user import User
+from data.database import read_query, insert_query
 from data.models.register import RegisterProfessionalData, RegisterCompanyData
 from data.models.professional import Professional
 from data.models.company import Company
 from hashlib import sha256
-from psycopg2 import IntegrityError
 
 
 def _hash_password(password: str):
@@ -16,14 +14,14 @@ def create_professional(user: RegisterProfessionalData, password: str):
 
     user_id = insert_query(
         '''INSERT INTO users(username, password) 
-            VALUES (%s, %s)''', (user.username, curr_pass))
+           VALUES (%s, %s) RETURNING id''', (user.username, curr_pass))
     
     prof_id = insert_query(
         '''INSERT INTO professionals(
-            first_name, last_name, address, user_id, summary)
-            VALUES (%s, %s, %s, %s, %s)''', 
-            (user.first_name, user.last_name, 
-            user.address, user_id, user.summary))
+           first_name, last_name, address, user_id, summary)
+           VALUES (%s, %s, %s, %s, %s) RETURNING id''', 
+           (user.first_name, user.last_name, 
+           user.address, user_id, user.summary))
     
     prof = Professional(
         id=prof_id, user_id=user_id,
@@ -38,13 +36,18 @@ def create_company(company_data: RegisterCompanyData, password: str):
 
     user_id = insert_query(
         '''INSERT INTO users(username, password) 
-           VALUES (%s, %s)''', (company_data.username, curr_pass))
+           VALUES (%s, %s) RETURNING id''', 
+           (company_data.username, curr_pass))
     
+    print(user_id)
+
     company_id = insert_query(
         '''INSERT INTO companies(name, description, address, user_id)
-           VALUES (%s, %s, %s, %s)''', 
+           VALUES (%s, %s, %s, %s) RETURNING id''', 
            (company_data.company_name, company_data.description,
             company_data.address, user_id))
+    
+    print(company_id)
     
     company = Company(
         id=company_id, user_id=user_id, name=company_data.company_name,
@@ -52,7 +55,6 @@ def create_company(company_data: RegisterCompanyData, password: str):
         picture=None)
     
     return company
-    
     
 
 def check_user_exist(nickname:str) -> bool:

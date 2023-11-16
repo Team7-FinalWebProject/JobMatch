@@ -5,10 +5,13 @@ from data.responses import NotFound, Unauthorized
 from data.models.message import Message
 from common.auth import user_or_401
 
+
 messages_router = APIRouter(prefix='/messages')
 _ERROR_MESSAGE = 'You are not logged in!'
 
+
 #TODO Figure out a way to add audio recording ass message
+#TODO See for the most optimal way to aquire the user.
 
 
 @messages_router.get('/{receiver_username}')
