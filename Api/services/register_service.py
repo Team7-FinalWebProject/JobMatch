@@ -86,6 +86,7 @@ def check_user_exist(nickname:str) -> bool:
 
 def prof_response_object(user: User, professional: Professional):
     return {
+        "id": professional.id,
         "user_id": professional.user_id,
         "username": user.username,
         "first_name": professional.first_name,
@@ -96,6 +97,7 @@ def prof_response_object(user: User, professional: Professional):
 
 def company_response_object(user: User, company: Company):
     return {
+        "id": company.id,
         "user_id": company.user_id,
         "username": user.username,
         "company_name": company.name,
