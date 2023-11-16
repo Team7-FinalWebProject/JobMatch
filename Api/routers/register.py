@@ -12,7 +12,11 @@ def register_professional(user_data: RegisterProfessionalData):
     if register_service.check_user_exist(user_data.username):
         return BadRequest(content=f'Username is already taken!')
     else:
-        user, prof = register_service.create_professional(user_data)
+        if not user_data.password:
+            user, prof = register_service.create_professional(user_data, 
+                                                              register_service.generate_random_password(user_data))
+        else:
+            user, prof = register_service.create_professional(user_data, user_data.password)
         if not user and not prof:
             return Conflict(content='Unexpected error occured')
         else:
@@ -24,7 +28,11 @@ def register_company(comp_data: RegisterCompanyData):
     if register_service.check_user_exist(comp_data.username):
         return BadRequest(content=f'Username is already taken!')
     else:
-        user, company = register_service.create_company(comp_data)
+        if not comp_data.password:
+            user, company = register_service.create_company(comp_data, 
+                                                            register_service.generate_random_password(comp_data))
+        else:
+            user, company = register_service.create_company(comp_data, comp_data.password)
         if not user and not company:
             return Conflict(content='Unexpected error occured.')
         else:
