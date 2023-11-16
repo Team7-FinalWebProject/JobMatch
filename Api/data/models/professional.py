@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from data.models.offer import ProfessionalOffer_NoUserId
+from data.models.offer import ProfessionalOffer_NoProfessionalId
 
 
 class Professional(BaseModel):
@@ -57,7 +57,7 @@ class Professional_W_Offers(BaseModel):
     summary: str
     address: str
     picture: bytes | None = None
-    offers: list[ProfessionalOffer_NoUserId]
+    offers: list[ProfessionalOffer_NoProfessionalId]
 
     @classmethod
     def from_query_result(cls, id, username, default_offer_id, first_name, last_name, summary, address, picture, offers):

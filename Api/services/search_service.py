@@ -1,6 +1,7 @@
 from data.database import read_query
 from data.models.company import Company, Company_Username
 from data.models.professional import Professional, Professional_Username
+from data.models.offer import CompanyOffer, ProfessionalOffer
 from data.readers import reader_one, reader_many
 
 # --view company
@@ -98,13 +99,21 @@ def get_approved_company_offer_by_id(id: int):
             FROM company_offers co
             LEFT JOIN companies c
             ON co.company_id=c.id
-            WHERE c.approved = %s''',
-        (True,))
-    return data
+            WHERE co.id = %s
+            AND c.approved = %s''',
+        (id, True,))
+    return reader_one(CompanyOffer, data)
 
 # --view all company offers (+filters, filters: active/inactive, salary, requirements, ++)
 def get_company_offers():
-    pass
+    data = read_query(
+        '''SELECT co.id, co.company_id, co.status, co.chosen_professional_id, co.requirements, co.min_salary, co.max_salary 
+            FROM company_offers co
+            LEFT JOIN companies c
+            ON co.company_id=c.id
+            WHERE c.approved = %s''',
+        (True,))
+    return reader_many(CompanyOffer, data)
 
 # --view professional offer (hide hidden)
 def get_professional_offer_by_id(id: int):
