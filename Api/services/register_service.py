@@ -1,4 +1,4 @@
-from data.database import read_query, insert_queries_trasnaction
+from data.database import read_query, insert_query, insert_queries_trasnaction
 from data.models.user import User
 from data.models.register import RegisterProfessionalData, RegisterCompanyData
 from data.models.professional import Professional
@@ -14,68 +14,45 @@ def _hash_password(password: str):
 def create_professional(user: RegisterProfessionalData, password: str):
     curr_pass = _hash_password(password)
 
-    queries = (
-        '''INSERT INTO users(username, approved, admin, password) 
-           VALUES (%s, %s, %s, %s)''',
-        
-        '''INSERT INTO professionals(
-           first_name, last_name, address, user_id, summary, 
-           default_offer_id, picture, approved)
-           VALUES (%s, %s, %s, %s, %s, %s, %s, %s)'''
-    )
-    params = ((user.username, user.approved, user.admin, curr_pass),
-              (user.first_name, user.last_name, user.address, user.user_id,
-               user.summary, user.default_offer_id, user.picture, user.approved))
-    try:
-        generated_id = insert_queries_trasnaction(queries, params)
-        
-        curr_user = User(
-            id=generated_id, username=user.username, 
-            approved=user.approved, admin=user.admin)
-        
-        prof = Professional(
-            id=generated_id, user_id=curr_user.id, 
-            first_name=user.first_name, last_name=user.last_name, 
-            address=user.address, summary=user.summary, 
-            default_offer_id=user.default_offer_id, picture=user.picture, 
-            approved=user.approved)
-        
-        return curr_user, prof
-    except IntegrityError:
-        return None
+    user_id = insert_query(
+        '''INSERT INTO users(username, password) 
+            VALUES (%s, %s)''', (user.username, curr_pass))
     
+    prof_id = insert_query(
+        '''INSERT INTO professionals(
+            first_name, last_name, address, user_id, summary)
+            VALUES (%s, %s, %s, %s, %s)''', 
+            (user.first_name, user.last_name, 
+            user.address, user_id, user.summary))
+    
+    prof = Professional(
+        id=prof_id, user_id=user_id,
+        first_name=user.first_name, last_name=user.last_name, 
+        address=user.address, summary=user.summary)
+    
+    return prof
+
 
 def create_company(company_data: RegisterCompanyData, password: str):
     curr_pass = _hash_password(password)
 
-    queries = (
-        '''INSERT INTO users(username, approved, admin, password) 
-           VALUES (%s, %s, %s, %s)''',
-        
-        '''INSERT INTO companies(name, description, address, 
-           picture, approved, user_id)
-           VALUES (%s, %s, %s, %s, %s, %s)''')
+    user_id = insert_query(
+        '''INSERT INTO users(username, password) 
+           VALUES (%s, %s)''', (company_data.username, curr_pass))
     
-    params = ((company_data.username, company_data.approved, 
-               company_data.admin, curr_pass),
-              (company_data.company_name, company_data.description, 
-               company_data.address,company_data.picture, 
-               company_data.approved, company_data.user_id))
-    try:
-        generated_id = insert_queries_trasnaction(queries, params)
-        
-        curr_user = User(
-            id=generated_id, username=company_data.username, 
-            approved=company_data.approved, admin=company_data.admin)
-        
-        company = Company(
-            id=generated_id, user_id=curr_user.id, name=company_data.company_name,
-            description=company_data.description, address=company_data.address,
-            picture=company_data.picture)
-        
-        return curr_user, company
-    except IntegrityError:
-        return None
+    company_id = insert_query(
+        '''INSERT INTO companies(name, description, address, user_id)
+           VALUES (%s, %s, %s, %s)''', 
+           (company_data.company_name, company_data.description,
+            company_data.address, user_id))
+    
+    company = Company(
+        id=company_id, user_id=user_id, name=company_data.company_name,
+        description=company_data.description, address=company_data.address,
+        picture=None)
+    
+    return company
+    
     
 
 def check_user_exist(nickname:str) -> bool:
@@ -84,7 +61,7 @@ def check_user_exist(nickname:str) -> bool:
         (nickname,)))
 
 
-def prof_response_object(user: User, professional: Professional):
+def prof_response_object(user, professional: Professional):
     return {
         "id": professional.id,
         "user_id": professional.user_id,
@@ -95,7 +72,7 @@ def prof_response_object(user: User, professional: Professional):
     }
 
 
-def company_response_object(user: User, company: Company):
+def company_response_object(user, company: Company):
     return {
         "id": company.id,
         "user_id": company.user_id,

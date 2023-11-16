@@ -4,14 +4,10 @@ from pydantic import BaseModel
 class User(BaseModel):
     id: int | None = None
     username: str
-    approved: bool
-    admin: bool
 
     @classmethod
-    def from_query_result(cls, id, username, approved, admin):
+    def from_query_result(cls, id, username):
         return cls(
             id=id,
-            username=username,
-            approved=approved,
-            admin=admin)
+            username=username)
 
