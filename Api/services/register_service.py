@@ -23,13 +23,11 @@ def create_professional(user: RegisterProfessionalData, password: str):
            (user.first_name, user.last_name, 
            user.address, user_id, user.summary))
     
-    prof = Professional(
+    return Professional(
         id=prof_id, user_id=user_id,
         first_name=user.first_name, last_name=user.last_name, 
         address=user.address, summary=user.summary)
     
-    return prof
-
 
 def create_company(company_data: RegisterCompanyData, password: str):
     curr_pass = _hash_password(password)
@@ -38,8 +36,6 @@ def create_company(company_data: RegisterCompanyData, password: str):
         '''INSERT INTO users(username, password) 
            VALUES (%s, %s) RETURNING id''', 
            (company_data.username, curr_pass))
-    
-    print(user_id)
 
     company_id = insert_query(
         '''INSERT INTO companies(name, description, address, user_id)
@@ -47,14 +43,10 @@ def create_company(company_data: RegisterCompanyData, password: str):
            (company_data.company_name, company_data.description,
             company_data.address, user_id))
     
-    print(company_id)
-    
-    company = Company(
+    return Company(
         id=company_id, user_id=user_id, name=company_data.company_name,
         description=company_data.description, address=company_data.address,
         picture=None)
-    
-    return company
     
 
 def check_user_exist(nickname:str) -> bool:

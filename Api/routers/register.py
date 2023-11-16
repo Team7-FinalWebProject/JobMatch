@@ -13,14 +13,13 @@ def register_professional(user_data: RegisterProfessionalData):
         return BadRequest(content=f'Username is already taken!')
     else:
         if not user_data.password:
-            prof = register_service.create_professional(user_data, 
-                                                              register_service.generate_random_password(user_data))
-        else:
-            prof = register_service.create_professional(user_data, user_data.password)
+            random_pass = register_service.generate_random_password(user_data)
+            prof = register_service.create_professional(user_data, random_pass)
+            #TODO: Deside best way to return random pass to client
+        prof = register_service.create_professional(user_data, user_data.password)
         if not prof:
             return Conflict(content='Unexpected error occured')
-        else:
-            return register_service.prof_response_object(user_data, prof)
+        return register_service.prof_response_object(user_data, prof)
         
 
 @register_router.post('/companies', tags=["Signup"])
@@ -29,12 +28,11 @@ def register_company(comp_data: RegisterCompanyData):
         return BadRequest(content=f'Username is already taken!')
     else:
         if not comp_data.password:
-            company = register_service.create_company(comp_data, 
-                                                            register_service.generate_random_password(comp_data))
-        else:
-            company = register_service.create_company(comp_data, comp_data.password)
+            random_pass = register_service.generate_random_password(comp_data)
+            company = register_service.create_company(comp_data, random_pass)
+            #TODO: Deside best way to return random password to client
+        company = register_service.create_company(comp_data, comp_data.password)
         if not company:
             return Conflict(content='Unexpected error occured.')
-        else:
-            return register_service.company_response_object(comp_data, company)
+        return register_service.company_response_object(comp_data, company)
 
