@@ -9,7 +9,7 @@ class RegisterProfessionalData(BaseModel):
     first_name: str
     last_name: str
     address: str
-    user_id: str
+    user_id: str | None = None
     summary: str
     default_offer_id: int | None = None
     picture: bytes | None = None

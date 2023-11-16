@@ -12,7 +12,7 @@ def _hash_password(password: str):
 
 
 def create_professional(user: RegisterProfessionalData, password: str):
-    password = _hash_password(password)
+    curr_pass = _hash_password(password)
 
     queries = (
         '''INSERT INTO users(username, approved, admin, password) 
@@ -23,7 +23,7 @@ def create_professional(user: RegisterProfessionalData, password: str):
            default_offer_id, picture, approved)
            VALUES (?, ?, ?, ?, ?, ?, ?, ?)'''
     )
-    params = ((user.username, user.approved, user.admin, password),
+    params = ((user.username, user.approved, user.admin, curr_pass),
               (user.first_name, user.last_name, user.address, user.user_id,
                user.summary, user.default_offer_id, user.picture, user.approved))
     try:
@@ -46,7 +46,7 @@ def create_professional(user: RegisterProfessionalData, password: str):
     
 
 def create_company(company_data: RegisterCompanyData, password: str):
-    password = _hash_password(password)
+    curr_pass = _hash_password(password)
 
     queries = (
         '''INSERT INTO users(username, approved, admin, password) 
@@ -57,7 +57,7 @@ def create_company(company_data: RegisterCompanyData, password: str):
            VALUES (?, ?, ?, ?, ?, ?)''')
     
     params = ((company_data.username, company_data.approved, 
-               company_data.admin, password),
+               company_data.admin, curr_pass),
               (company_data.company_name, company_data.description, 
                company_data.address,company_data.picture, 
                company_data.approved, company_data.user_id))
