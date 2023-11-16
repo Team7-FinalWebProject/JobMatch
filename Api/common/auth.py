@@ -21,22 +21,51 @@ def _base_auth(token: str) -> bool:
         return ExpiredException
 
 
-def user_or_401(token: str):
+def company_or_401(token: str) -> Company:
+    '''Authenticate a company profile.
+       Returns a Company object.'''
     try:
         payload = _base_auth(token)
-        return User.from_query_result(**payload)
+        return Company.from_query_result(**payload)
     except ExpiredException:
-        raise Unauthorized(content='Expired token.')
+        raise Unauthorized(status_code=401,
+                            detail='Expired token.')
     except Exception:
-        raise BadRequest(content='Unexpected error occured')
+        raise Unauthorized(status_code=401)
     
 
-def create_token(user: User) -> str:
+def professional_or_401(token: str) -> Professional:
+    '''Authenticate a professional's profile.
+       Returns a Professional object.'''
+    try:
+        payload = _base_auth(token)
+        return Professional.from_query_result(**payload)
+    except ExpiredException:
+        raise Unauthorized(status_code=401,
+                            detail='Expired token.')
+    except Exception:
+        raise Unauthorized(status_code=401)
+    
+
+def create_prof_token(prof: Professional) -> str:
     payload = {
-        "id": user.id,
-        "username": user.username,
-        "approved": user.approved,
-        "admin": user.admin,
+        "id": prof.id,
+        "user_id": prof.user_id,
+        "first_name": prof.first_name,
+        "last_name": prof.last_name,
+        "address": prof.address,
+        "issued": str(datetime.now())
+    }
+
+    return jwt.encode(payload, _JWT_SECRET, algorithm="HS256")
+
+
+def create_company_token(comp: Company) -> str:
+    payload = {
+        "id": comp.id,
+        "user_id": comp.user_id,
+        "name": comp.name,
+        "address": comp.address,
         "issued": str(datetime.now())
     }
 
@@ -50,29 +79,15 @@ def _is_authenticated(token: str) -> bool:
 
 
 
-# CURRENTLY OUT OF USE DUE TO User entity in db
+# CURRENTLY OUT OF USE
 
-# def company_or_401(token: str) -> Company:
-#     '''Authenticate a company profile.
-#        Returns a Company object.'''
+
+# def user_or_401(token: str):
 #     try:
 #         payload = _base_auth(token)
-#         return Company.from_query_result(**payload)
+#         return User.from_query_result(**payload)
 #     except ExpiredException:
-#         raise Unauthorized(status_code=401,
-#                             detail='Expired token.')
+#         raise Unauthorized(content='Expired token.')
 #     except Exception:
-#         raise Unauthorized(status_code=401)
+#         raise BadRequest(content='Unexpected error occured')
     
-
-# def professional_or_401(token: str) -> Professional:
-#     '''Authenticate a professional's profile.
-#        Returns a Professional object.'''
-#     try:
-#         payload = _base_auth(token)
-#         return Professional.from_query_result(**payload)
-#     except ExpiredException:
-#         raise Unauthorized(status_code=401,
-#                             detail='Expired token.')
-#     except Exception:
-#         raise Unauthorized(status_code=401)
