@@ -21,10 +21,9 @@ class ProfessionalOffer(BaseModel):
     max_salary: int | None = None
 
     @classmethod
-    def from_query_result(cls, id, user_id, default_offer_id, first_name, last_name, summary, address, picture):
+    def from_query_result(cls, id, default_offer_id, first_name, last_name, summary, address, picture):
         return cls(
             id=id,
-            user_id=user_id,
             default_offer_id=default_offer_id,
             first_name=first_name,
             last_name=last_name,
@@ -33,7 +32,7 @@ class ProfessionalOffer(BaseModel):
             picture=picture)
     
 
-class ProfessionalOffer_NoUserId(BaseModel):
+class ProfessionalOffer_NoProfessionalId(BaseModel):
     id: int | None = None
     ###Add another model without offer id and full offer instead?
     chosen_company_offer_id: int | None = None
@@ -44,10 +43,9 @@ class ProfessionalOffer_NoUserId(BaseModel):
     max_salary: int | None = None
 
     @classmethod
-    def from_query_result(cls, id, user_id, default_offer_id, first_name, last_name, summary, address, picture):
+    def from_query_result(cls, id, default_offer_id, first_name, last_name, summary, address, picture):
         return cls(
             id=id,
-            user_id=user_id,
             default_offer_id=default_offer_id,
             first_name=first_name,
             last_name=last_name,
@@ -77,7 +75,7 @@ class CompanyOffer(BaseModel):
             min_salary=min_salary,
             max_salary=max_salary)
     
-class CompanyOffer_NoUserId(BaseModel):
+class CompanyOffer_NoCompanyId(BaseModel):
     id: int | None = None
     ###Add another model without professional Id and full professional instead?
     chosen_professional_id: int | None = None
@@ -87,10 +85,9 @@ class CompanyOffer_NoUserId(BaseModel):
     max_salary: int | None = None
 
     @classmethod
-    def from_query_result(cls, id, company_id, chosen_professional_id, status, requirements, min_salary,max_salary):
+    def from_query_result(cls, id, chosen_professional_id, status, requirements, min_salary,max_salary):
         return cls(
             id = id,
-            company_id = company_id,
             chosen_professional_id = chosen_professional_id,
             status=status,
             requirements=requirements,
