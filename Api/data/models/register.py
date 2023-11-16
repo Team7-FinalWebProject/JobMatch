@@ -6,7 +6,7 @@ class RegisterProfessionalData(BaseModel):
     username: Allowed_Username
     password: Allowed_Register_Password = None
     admin: str | None = None
-    first_name: staticmethod
+    first_name: str
     last_name: str
     address: str
     user_id: str
