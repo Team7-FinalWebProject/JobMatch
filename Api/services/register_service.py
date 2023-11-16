@@ -11,8 +11,8 @@ def _hash_password(password: str):
     return sha256(password.encode('utf-8')).hexdigest()
 
 
-def create_professional(user: RegisterProfessionalData):
-    password = _hash_password(user.password)
+def create_professional(user: RegisterProfessionalData, password: str):
+    password = _hash_password(password)
 
     queries = (
         '''INSERT INTO users(username, approved, admin, password) 
@@ -45,8 +45,8 @@ def create_professional(user: RegisterProfessionalData):
         return None
     
 
-def create_company(company_data: RegisterCompanyData):
-    password = _hash_password(company_data.password)
+def create_company(company_data: RegisterCompanyData, password: str):
+    password = _hash_password(password)
 
     queries = (
         '''INSERT INTO users(username, approved, admin, password) 
@@ -86,6 +86,7 @@ def check_user_exist(nickname:str) -> bool:
 
 def prof_response_object(user: User, professional: Professional):
     return {
+        "id": professional.id,
         "user_id": professional.user_id,
         "username": user.username,
         "first_name": professional.first_name,
@@ -96,6 +97,7 @@ def prof_response_object(user: User, professional: Professional):
 
 def company_response_object(user: User, company: Company):
     return {
+        "id": company.id,
         "user_id": company.user_id,
         "username": user.username,
         "company_name": company.name,
@@ -104,6 +106,32 @@ def company_response_object(user: User, company: Company):
     }
 
 
+def generate_random_password(registation_data: RegisterCompanyData | RegisterProfessionalData):
+    import random
+    import string
+
+    max_length = 10
+
+    lower_case = string.ascii_lowercase
+    upper_case = string.ascii_uppercase
+    numbers = string.digits
+    special_chars = "@$!%*?&"
+
+    password_set = (
+            random.choice(lower_case) +
+            random.choice(upper_case) +
+            random.choice(numbers) +
+            random.choice(special_chars))
+
+    valid = registation_data.validate_password(password_set)
+    if valid:
+        password_set += ''.join(
+            random.choice(string.ascii_letters + string.digits + special_chars)
+            for _ in range(max_length - len(password_set)))
+
+    password_list = list(password_set)
+    random.shuffle(password_list)
+    return ''.join(password_list)
 
 
 
