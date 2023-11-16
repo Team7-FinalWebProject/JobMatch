@@ -1,28 +1,32 @@
 from psycopg2 import IntegrityError
-from data.models.professional import Professional
+from data.models.professional import Professional, ProfessionalRequest
 from data.models.offer import ProfessionalOffer
 from data.database import update_query, insert_query, read_query, update_queries_transaction, insert_queries_trasnaction
 
 
 
 def edit(new_data: Professional, old_data: Professional):
-    merged = Professional(
-        id=old_data.id,
-        user_id=old_data.user_id,
-        default_offer_id=new_data.default_offer_id or old_data.default_offer_id,
-        first_name=new_data.first_name or old_data.first_name,
-        last_name=new_data.last_name or old_data.last_name,
-        summary=new_data.summary or old_data.summary,
-        address=new_data.address or old_data.address,
-        picture=new_data.picture or old_data.picture)
+    try:
+        merged = Professional(
+            id=old_data.id,
+            user_id=old_data.user_id,
+            default_offer_id=new_data.default_offer_id or old_data.default_offer_id,
+            first_name=new_data.first_name or old_data.first_name,
+            last_name=new_data.last_name or old_data.last_name,
+            summary=new_data.summary or old_data.summary,
+            address=new_data.address or old_data.address,
+            picture=new_data.picture or old_data.picture)
 
-    update_query(
-        '''UPADTE professionals SET default_offer_id = ?, first_name = ?, last_name = ?,
-           summary = ?, address = ?, picture = ? WHERE id = ?''',
-           (merged.default_offer_id, merged.first_name, merged.last_name, 
-            merged.summary, merged.address, merged.picture, merged.id))
+        update_query(
+            '''UPADTE professionals SET default_offer_id = ?, first_name = ?, last_name = ?,
+            summary = ?, address = ?, picture = ? WHERE id = ?''',
+            (merged.default_offer_id, merged.first_name, merged.last_name, 
+                merged.summary, merged.address, merged.picture, merged.id))
+        
+        return merged
     
-    return merged
+    except IntegrityError as e:
+        return e.__str__()
 
 
 def create_offer(offer: ProfessionalOffer, prof: Professional):
@@ -46,3 +50,66 @@ def create_offer(offer: ProfessionalOffer, prof: Professional):
     
     except IntegrityError as e:
         return e.__str__()
+    
+
+def set_def_offer(offer_id: int, prof_id: int):
+    rowcount = update_query(
+        '''UPDATE professionals SET default_offer_id = ? WHERE id = ?''',
+        (offer_id, prof_id))
+
+    return rowcount
+
+
+def get_offer_by_id(offer_id: int):
+    data = read_query(
+        '''SELECT * FROM professional_offers WHERE id = ?''',
+        (offer_id,))
+    
+    return next((ProfessionalOffer.from_query_result(*row) for row in data), None)
+
+
+def get_offer_by_prof_id(prof_id: int):
+    data = read_query(
+        '''SELECT * FROM professional_offers WHERE professional_id = ?''',
+        (prof_id,))
+    
+    return next((ProfessionalOffer.from_query_result(*row) for row in data), None)
+
+
+def edit_offer(new_offer: ProfessionalOffer, old_offer: ProfessionalOffer):
+    try:
+        merged = ProfessionalOffer(
+            id=old_offer.id,
+            professional_id=old_offer.professional_id,
+            chosen_company_offer_id=new_offer.chosen_company_offer_id or old_offer.chosen_company_offer_id,
+            description=new_offer.description or old_offer.description,
+            status=new_offer.status or old_offer.status,
+            skills=new_offer.skills or old_offer.skills,
+            min_salary=new_offer.min_salary or old_offer.min_salary,
+            max_salary=new_offer.max_salary or old_offer.max_salary)
+
+        update_query(
+            '''UPADTE professional_offers SET professional_id = ?, chosen_company_offer_id = ?,
+               description = ?, status = ?, skills = ?, min_salary = ?, max_salary = ? WHERE id = ?''',
+            (merged.professional_id, merged.chosen_company_offer_id, merged.description, 
+            merged.status, merged.skills, merged.min_salary, merged.max_salary, merged.id))
+        
+        return merged
+    
+    except IntegrityError as e:
+        return e.__str__()
+    
+
+def match():
+    pass
+
+
+def get_requests(offer_id: int):
+    data = read_query(
+        '''SELECT * FROM professional_requests WHERE professional_offer_id = ?''',
+        (offer_id,))
+
+    if len(data) > 0:
+        return (ProfessionalRequest.from_query_result(*row) for row in data)
+    
+    return None
