@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Header
 from common.auth import professional_or_401
-from data.responses import BadRequest, Unauthorized
+from data.responses import BadRequest, Unauthorized, NotFound
 from data.models.professional import Professional
 from data.models.offer import ProfessionalOffer
 from services import professionals_service
@@ -17,9 +17,15 @@ def edit_info(new_info: Professional, x_token: str = Header(default=None)):
     return professionals_service.edit(new_info, prof)
         
 
-@professionals_router.put('/default_offer')
-def set_default_prof_offer(x_token: str = Header(default=None)):
-    pass
+@professionals_router.put('/{offer_id}/default_offer')
+def set_default_prof_offer(offer_id: int, x_token: str = Header(default=None)):
+    prof = professional_or_401(x_token) if x_token else None
+    offer = professionals_service.get_offer_by_id(offer_id)
+    if not prof:
+        return Unauthorized(content='Invalid token')
+    if not offer:
+        return NotFound(content=f'No offer with id: {offer_id}')
+    return professionals_service.set_def_offer(offer_id, prof.id)
 
 
 @professionals_router.post('/offer')
@@ -30,21 +36,42 @@ def create_offer(new_offer: ProfessionalOffer, x_token: str = Header(default=Non
     return professionals_service.create_offer(new_offer, prof)
 
 
-@professionals_router.put('/edit/offer')
-def edit_prof_offer(x_token: str = Header(default=None)):
-    pass
+@professionals_router.put('/{offer_id}/edit_offer')
+def edit_prof_offer(new_offer: ProfessionalOffer, 
+                    offer_id: int, 
+                    x_token: str = Header(default=None)):
+    prof = professional_or_401(x_token) if x_token else None
+    offer = professionals_service.get_offer_by_id(offer_id)
+    if not prof:
+        return Unauthorized(content='Invalid token')
+    if not offer:
+        return NotFound(content=f'No offer with id: {offer_id}')
+    return professionals_service.edit_offer(new_offer, offer)
 
 
 @professionals_router.post('/match')
 def create_match_request(x_token: str = Header(default=None)):
-    pass
+    prof = professional_or_401(x_token) if x_token else None
+    if not prof:
+        return Unauthorized(content='Invalid token')
+    return professionals_service.match()
 
 
 @professionals_router.get('/requests')
 def view_match_requests(x_token: str = Header(default=None)):
-    pass
+    prof = professional_or_401(x_token) if x_token else None
+    offer = professionals_service.get_offer_by_prof_id(prof.id)
+    if not prof:
+        return Unauthorized(content='Invalid token')
+    if not offer:
+        return NotFound(content=f'No such offer for professional: {prof.id}')
+    return professionals_service.get_requests(offer.id)
 
 
 @professionals_router.put('/archive')
 def archive_prof_offer(x_token: str = Header(default=None)):
-    pass
+    prof = professional_or_401(x_token) if x_token else None
+    if not prof:
+        return Unauthorized(content='Invalid token')
+        
+    return professionals_service.archive_offer()
