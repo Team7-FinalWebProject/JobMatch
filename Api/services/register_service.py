@@ -34,9 +34,9 @@ def create_professional(user: RegisterProfessionalData):
             approved=user.approved, admin=user.admin)
         
         prof = Professional(
-            id=generated_id, first_name=user.first_name, 
-            last_name=user.last_name, address=user.address,
-            user_id=user.user_id, summary=user.summary, 
+            id=generated_id, user_id=curr_user.id, 
+            first_name=user.first_name, last_name=user.last_name, 
+            address=user.address, summary=user.summary, 
             default_offer_id=user.default_offer_id, picture=user.picture, 
             approved=user.approved)
         
@@ -69,10 +69,9 @@ def create_company(company_data: RegisterCompanyData):
             approved=company_data.approved, admin=company_data.admin)
         
         company = Company(
-            id=generated_id, name=company_data.company_name,
+            id=generated_id, user_id=curr_user.id, name=company_data.company_name,
             description=company_data.description, address=company_data.address,
-            picture=company_data.picture,approved=company_data.approved,
-            user_id=company_data.user_id)
+            picture=company_data.picture)
         
         return curr_user, company
     except IntegrityError:

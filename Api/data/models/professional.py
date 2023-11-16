@@ -71,3 +71,15 @@ class Professional_W_Offers(BaseModel):
             address=address,
             picture=picture,
             offers=offers)
+    
+class ProfessionalRequest(BaseModel):
+    id: int
+    prof_offer_id: int
+    comp_offer_id: int
+
+    @classmethod
+    def from_query_result(cls, id, prof_offer_id, comp_offer_id):
+        return cls(
+            id=id,
+            prof_offer_id=prof_offer_id,
+            comp_offer_id=comp_offer_id)
