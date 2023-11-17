@@ -5,7 +5,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from routers.login import login_router
 from routers.register import register_router
-from routers.search import search_router, admin_router
+from routers.search import search_router
+from routers.admin import  admin_router
 
 
 
