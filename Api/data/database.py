@@ -62,7 +62,8 @@ def insert_queries_trasnaction(sql_queries: tuple[str], sql_params: tuple[tuple]
                 cursor.execute(sql_queries[i], sql_params[i])
 
             conn.commit()
-            return cursor.lastrowid
+            last_row_id = cursor.fetchone()
+            return last_row_id[0] if last_row_id else None
         except psycopg2.Error as error:
             print(f"Database update failed: {error}")
             conn.rollback()
