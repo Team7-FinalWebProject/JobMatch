@@ -172,10 +172,10 @@ CREATE TABLE jobmatch.company_offers (
 ALTER TABLE jobmatch.company_offers OWNER TO postgres;
 
 --
--- Name: company_avatar_id_seq; Type: SEQUENCE; Schema: jobmatch; Owner: postgres
+-- Name: company_offers_id_seq; Type: SEQUENCE; Schema: jobmatch; Owner: postgres
 --
 
-CREATE SEQUENCE jobmatch.company_avatar_id_seq
+CREATE SEQUENCE jobmatch.company_offers_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -184,20 +184,20 @@ CREATE SEQUENCE jobmatch.company_avatar_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE jobmatch.company_avatar_id_seq OWNER TO postgres;
+ALTER SEQUENCE jobmatch.company_offers_id_seq OWNER TO postgres;
 
 --
--- Name: company_avatar_id_seq; Type: SEQUENCE OWNED BY; Schema: jobmatch; Owner: postgres
+-- Name: company_offers_id_seq; Type: SEQUENCE OWNED BY; Schema: jobmatch; Owner: postgres
 --
 
-ALTER SEQUENCE jobmatch.company_avatar_id_seq OWNED BY jobmatch.company_offers.id;
+ALTER SEQUENCE jobmatch.company_offers_id_seq OWNED BY jobmatch.company_offers.id;
 
 
 --
--- Name: company_id_seq; Type: SEQUENCE; Schema: jobmatch; Owner: postgres
+-- Name: companies_id_seq; Type: SEQUENCE; Schema: jobmatch; Owner: postgres
 --
 
-CREATE SEQUENCE jobmatch.company_id_seq
+CREATE SEQUENCE jobmatch.companies_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -206,13 +206,13 @@ CREATE SEQUENCE jobmatch.company_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE jobmatch.company_id_seq OWNER TO postgres;
+ALTER SEQUENCE jobmatch.companies_id_seq OWNER TO postgres;
 
 --
--- Name: company_id_seq; Type: SEQUENCE OWNED BY; Schema: jobmatch; Owner: postgres
+-- Name: companies_id_seq; Type: SEQUENCE OWNED BY; Schema: jobmatch; Owner: postgres
 --
 
-ALTER SEQUENCE jobmatch.company_id_seq OWNED BY jobmatch.companies.id;
+ALTER SEQUENCE jobmatch.companies_id_seq OWNED BY jobmatch.companies.id;
 
 
 --
@@ -230,10 +230,10 @@ CREATE TABLE jobmatch.company_requests (
 ALTER TABLE jobmatch.company_requests OWNER TO postgres;
 
 --
--- Name: company_interactions_id_seq; Type: SEQUENCE; Schema: jobmatch; Owner: postgres
+-- Name: comcompany_requests_id_seq; Type: SEQUENCE; Schema: jobmatch; Owner: postgres
 --
 
-CREATE SEQUENCE jobmatch.company_interactions_id_seq
+CREATE SEQUENCE jobmatch.comcompany_requests_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -242,13 +242,13 @@ CREATE SEQUENCE jobmatch.company_interactions_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE jobmatch.company_interactions_id_seq OWNER TO postgres;
+ALTER SEQUENCE jobmatch.comcompany_requests_id_seq OWNER TO postgres;
 
 --
--- Name: company_interactions_id_seq; Type: SEQUENCE OWNED BY; Schema: jobmatch; Owner: postgres
+-- Name: comcompany_requests_id_seq; Type: SEQUENCE OWNED BY; Schema: jobmatch; Owner: postgres
 --
 
-ALTER SEQUENCE jobmatch.company_interactions_id_seq OWNED BY jobmatch.company_requests.id;
+ALTER SEQUENCE jobmatch.comcompany_requests_id_seq OWNED BY jobmatch.company_requests.id;
 
 
 --
@@ -307,10 +307,10 @@ CREATE TABLE jobmatch.professional_offers (
 ALTER TABLE jobmatch.professional_offers OWNER TO postgres;
 
 --
--- Name: professional_avatars_id_seq; Type: SEQUENCE; Schema: jobmatch; Owner: postgres
+-- Name: professional_offers_id_seq; Type: SEQUENCE; Schema: jobmatch; Owner: postgres
 --
 
-CREATE SEQUENCE jobmatch.professional_avatars_id_seq
+CREATE SEQUENCE jobmatch.professional_offers_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -319,13 +319,13 @@ CREATE SEQUENCE jobmatch.professional_avatars_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE jobmatch.professional_avatars_id_seq OWNER TO postgres;
+ALTER SEQUENCE jobmatch.professional_offers_id_seq OWNER TO postgres;
 
 --
--- Name: professional_avatars_id_seq; Type: SEQUENCE OWNED BY; Schema: jobmatch; Owner: postgres
+-- Name: professional_offers_id_seq; Type: SEQUENCE OWNED BY; Schema: jobmatch; Owner: postgres
 --
 
-ALTER SEQUENCE jobmatch.professional_avatars_id_seq OWNED BY jobmatch.professional_offers.id;
+ALTER SEQUENCE jobmatch.professional_offers_id_seq OWNED BY jobmatch.professional_offers.id;
 
 
 --
@@ -342,10 +342,10 @@ CREATE TABLE jobmatch.professional_requests (
 ALTER TABLE jobmatch.professional_requests OWNER TO postgres;
 
 --
--- Name: professional_interactions_id_seq; Type: SEQUENCE; Schema: jobmatch; Owner: postgres
+-- Name: professional_requests_id_seq; Type: SEQUENCE; Schema: jobmatch; Owner: postgres
 --
 
-CREATE SEQUENCE jobmatch.professional_interactions_id_seq
+CREATE SEQUENCE jobmatch.professional_requests_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -354,13 +354,13 @@ CREATE SEQUENCE jobmatch.professional_interactions_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE jobmatch.professional_interactions_id_seq OWNER TO postgres;
+ALTER SEQUENCE jobmatch.professional_requests_id_seq OWNER TO postgres;
 
 --
--- Name: professional_interactions_id_seq; Type: SEQUENCE OWNED BY; Schema: jobmatch; Owner: postgres
+-- Name: professional_requests_id_seq; Type: SEQUENCE OWNED BY; Schema: jobmatch; Owner: postgres
 --
 
-ALTER SEQUENCE jobmatch.professional_interactions_id_seq OWNED BY jobmatch.professional_requests.id;
+ALTER SEQUENCE jobmatch.professional_requests_id_seq OWNED BY jobmatch.professional_requests.id;
 
 
 --
@@ -430,21 +430,21 @@ ALTER SEQUENCE jobmatch.users_id_seq OWNED BY jobmatch.users.id;
 -- Name: companies id; Type: DEFAULT; Schema: jobmatch; Owner: postgres
 --
 
-ALTER TABLE ONLY jobmatch.companies ALTER COLUMN id SET DEFAULT nextval('jobmatch.company_id_seq'::regclass);
+ALTER TABLE ONLY jobmatch.companies ALTER COLUMN id SET DEFAULT nextval('jobmatch.companies_id_seq'::regclass);
 
 
 --
 -- Name: company_offers id; Type: DEFAULT; Schema: jobmatch; Owner: postgres
 --
 
-ALTER TABLE ONLY jobmatch.company_offers ALTER COLUMN id SET DEFAULT nextval('jobmatch.company_avatar_id_seq'::regclass);
+ALTER TABLE ONLY jobmatch.company_offers ALTER COLUMN id SET DEFAULT nextval('jobmatch.company_offers_id_seq'::regclass);
 
 
 --
 -- Name: company_requests id; Type: DEFAULT; Schema: jobmatch; Owner: postgres
 --
 
-ALTER TABLE ONLY jobmatch.company_requests ALTER COLUMN id SET DEFAULT nextval('jobmatch.company_interactions_id_seq'::regclass);
+ALTER TABLE ONLY jobmatch.company_requests ALTER COLUMN id SET DEFAULT nextval('jobmatch.comcompany_requests_id_seq'::regclass);
 
 
 --
@@ -458,14 +458,14 @@ ALTER TABLE ONLY jobmatch.messages ALTER COLUMN id SET DEFAULT nextval('jobmatch
 -- Name: professional_offers id; Type: DEFAULT; Schema: jobmatch; Owner: postgres
 --
 
-ALTER TABLE ONLY jobmatch.professional_offers ALTER COLUMN id SET DEFAULT nextval('jobmatch.professional_avatars_id_seq'::regclass);
+ALTER TABLE ONLY jobmatch.professional_offers ALTER COLUMN id SET DEFAULT nextval('jobmatch.professional_offers_id_seq'::regclass);
 
 
 --
 -- Name: professional_requests id; Type: DEFAULT; Schema: jobmatch; Owner: postgres
 --
 
-ALTER TABLE ONLY jobmatch.professional_requests ALTER COLUMN id SET DEFAULT nextval('jobmatch.professional_interactions_id_seq'::regclass);
+ALTER TABLE ONLY jobmatch.professional_requests ALTER COLUMN id SET DEFAULT nextval('jobmatch.professional_requests_id_seq'::regclass);
 
 
 --
@@ -487,8 +487,8 @@ ALTER TABLE ONLY jobmatch.users ALTER COLUMN id SET DEFAULT nextval('jobmatch.us
 --
 
 COPY jobmatch.companies (id, name, description, address, picture, approved, user_id) FROM stdin;
-1	Pepsi	We make the fizzy drink	Los Angeles, California	\N	t	4
-2	Steam	We provide video games	Los Angeles, California	\N	t	5
+1	Pepsi	We make the fizzy drink	Los Angeles, California	\N	t	5
+2	Steam	We provide video games	Los Angeles, California	\N	t	6
 3	Avid	We provide high tech gear	New York, USA	\N	t	7
 \.
 
@@ -525,8 +525,8 @@ COPY jobmatch.messages (id, sender_username, receiver_username, content) FROM st
 --
 
 COPY jobmatch.professional_offers (id, professional_id, description, chosen_company_offer_id, status, skills, min_salary, max_salary) FROM stdin;
-2	2	You need a data scientist? I am the man for the job.	2	active	{"English": [10, "Native"], "Computers": [3, "Entry"]}	2000	4000
 1	1	I can create a AAA title video game	1	active	{"English": [7, "Native"], "Computers": [10, "Master"]}	3000	10000
+2	2	You need a data scientist? I am the man for the job.	2	active	{"English": [10, "Native"], "Computers": [3, "Entry"]}	2000	4000
 3	3	I can build simple servers	3	active	{"English": [10, "Native"], "Computers": [3, "Entry"]}	1300	2300
 \.
 
@@ -547,9 +547,9 @@ COPY jobmatch.professional_requests (id, professional_offer_id, company_offer_id
 --
 
 COPY jobmatch.professionals (id, first_name, last_name, address, user_id, summary, default_offer_id, picture, approved) FROM stdin;
-1	John	Ivanov	bul.Skobelev, 24, Sofia, BG	1	10 years of experience in C# ASP.NET development	1	\N	t
-2	Michael	Livingston	Ubbo-Emmunslaan str., Amsterdam, NE	2	Experienced Python developer	2	\N	t
-3	William	Pique	Buterpark str., London, GBT	3	Junior Java developer	3	\N	f
+1	John	Ivanov	bul.Skobelev, 24, Sofia, BG	2	10 years of experience in C# ASP.NET development	1	\N	t
+2	Michael	Livingston	Ubbo-Emmunslaan str., Amsterdam, NE	3	Experienced Python developer	2	\N	t
+3	William	Pique	Buterpark str., London, GBT	4	Junior Java developer	3	\N	f
 \.
 
 
@@ -558,35 +558,35 @@ COPY jobmatch.professionals (id, first_name, last_name, address, user_id, summar
 --
 
 COPY jobmatch.users (id, username, admin, password) FROM stdin;
-1	testuser1	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
-2	testuser2	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
-3	testuser3	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
-4	testuser4	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
-5	testuser5	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
-6	adminuser	t	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+1	adminuser	t	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+2	testuser1	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+3	testuser2	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+4	testuser3	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+5	testuser4	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+6	testuser5	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
 7	testuser6	f	\\x74657374
 \.
 
 
 --
--- Name: company_avatar_id_seq; Type: SEQUENCE SET; Schema: jobmatch; Owner: postgres
+-- Name: company_offers_id_seq; Type: SEQUENCE SET; Schema: jobmatch; Owner: postgres
 --
 
-SELECT pg_catalog.setval('jobmatch.company_avatar_id_seq', 1, false);
-
-
---
--- Name: company_id_seq; Type: SEQUENCE SET; Schema: jobmatch; Owner: postgres
---
-
-SELECT pg_catalog.setval('jobmatch.company_id_seq', 1, false);
+SELECT pg_catalog.setval('jobmatch.company_offers_id_seq', 4, false);
 
 
 --
--- Name: company_interactions_id_seq; Type: SEQUENCE SET; Schema: jobmatch; Owner: postgres
+-- Name: companies_id_seq; Type: SEQUENCE SET; Schema: jobmatch; Owner: postgres
 --
 
-SELECT pg_catalog.setval('jobmatch.company_interactions_id_seq', 1, false);
+SELECT pg_catalog.setval('jobmatch.companies_id_seq', 4, false);
+
+
+--
+-- Name: comcompany_requests_id_seq; Type: SEQUENCE SET; Schema: jobmatch; Owner: postgres
+--
+
+SELECT pg_catalog.setval('jobmatch.comcompany_requests_id_seq', 1, false);
 
 
 --
@@ -597,31 +597,31 @@ SELECT pg_catalog.setval('jobmatch.messages_id_seq', 1, false);
 
 
 --
--- Name: professional_avatars_id_seq; Type: SEQUENCE SET; Schema: jobmatch; Owner: postgres
+-- Name: professional_offers_id_seq; Type: SEQUENCE SET; Schema: jobmatch; Owner: postgres
 --
 
-SELECT pg_catalog.setval('jobmatch.professional_avatars_id_seq', 1, false);
+SELECT pg_catalog.setval('jobmatch.professional_offers_id_seq', 4, false);
 
 
 --
--- Name: professional_interactions_id_seq; Type: SEQUENCE SET; Schema: jobmatch; Owner: postgres
+-- Name: professional_requests_id_seq; Type: SEQUENCE SET; Schema: jobmatch; Owner: postgres
 --
 
-SELECT pg_catalog.setval('jobmatch.professional_interactions_id_seq', 1, false);
+SELECT pg_catalog.setval('jobmatch.professional_requests_id_seq', 1, false);
 
 
 --
 -- Name: professionals_id_seq; Type: SEQUENCE SET; Schema: jobmatch; Owner: postgres
 --
 
-SELECT pg_catalog.setval('jobmatch.professionals_id_seq', 1, false);
+SELECT pg_catalog.setval('jobmatch.professionals_id_seq', 4, false);
 
 
 --
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: jobmatch; Owner: postgres
 --
 
-SELECT pg_catalog.setval('jobmatch.users_id_seq', 7, true);
+SELECT pg_catalog.setval('jobmatch.users_id_seq', 8, false);
 
 
 --
