@@ -7,13 +7,14 @@ from services import professionals_service
 
 
 professionals_router = APIRouter(prefix='/professionals')
+_ERROR_MESSAGE = 'You are not authorized [NOT LOGGED IN]'
 
 
 @professionals_router.put('/info')
 def edit_info(new_info: Professional, x_token: str = Header(default=None)):
     prof = professional_or_401(x_token) if x_token else None
     if not prof:
-        return Unauthorized(content='Invalid token')
+        return Unauthorized(content=_ERROR_MESSAGE)
     return professionals_service.edit(new_info, prof)
         
 
@@ -22,7 +23,7 @@ def set_default_prof_offer(offer_id: int, x_token: str = Header(default=None)):
     prof = professional_or_401(x_token) if x_token else None
     offer = professionals_service.get_offer_by_id(offer_id)
     if not prof:
-        return Unauthorized(content='Invalid token')
+        return Unauthorized(content=_ERROR_MESSAGE)
     if not offer:
         return NotFound(content=f'No offer with id: {offer_id}')
     return professionals_service.set_def_offer(offer_id, prof.id)
@@ -32,7 +33,7 @@ def set_default_prof_offer(offer_id: int, x_token: str = Header(default=None)):
 def create_offer(new_offer: ProfessionalOffer, x_token: str = Header(default=None)):
     prof = professional_or_401(x_token) if x_token else None
     if not prof:
-        return Unauthorized(content='Invalid token')
+        return Unauthorized(content=_ERROR_MESSAGE)
     return professionals_service.create_offer(new_offer, prof)
 
 
@@ -43,7 +44,7 @@ def edit_prof_offer(new_offer: ProfessionalOffer,
     prof = professional_or_401(x_token) if x_token else None
     offer = professionals_service.get_offer_by_id(offer_id)
     if not prof:
-        return Unauthorized(content='Invalid token')
+        return Unauthorized(content=_ERROR_MESSAGE)
     if not offer:
         return NotFound(content=f'No offer with id: {offer_id}')
     return professionals_service.edit_offer(new_offer, offer)
@@ -53,7 +54,7 @@ def edit_prof_offer(new_offer: ProfessionalOffer,
 def create_match_request(x_token: str = Header(default=None)):
     prof = professional_or_401(x_token) if x_token else None
     if not prof:
-        return Unauthorized(content='Invalid token')
+        return Unauthorized(content=_ERROR_MESSAGE)
     return professionals_service.match()
 
 
@@ -72,6 +73,6 @@ def view_match_requests(x_token: str = Header(default=None)):
 def archive_prof_offer(x_token: str = Header(default=None)):
     prof = professional_or_401(x_token) if x_token else None
     if not prof:
-        return Unauthorized(content='Invalid token')
+        return Unauthorized(content=_ERROR_MESSAGE)
         
     return professionals_service.archive_offer()

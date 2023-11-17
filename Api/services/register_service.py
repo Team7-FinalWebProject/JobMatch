@@ -124,28 +124,3 @@ def generate_random_password(registation_data: RegisterCompanyData | RegisterPro
     password_list = list(password_set)
     random.shuffle(password_list)
     return ''.join(password_list)
-
-
-
-
-
-
-# discontinued for now.
-
-# def create_professional(professional: Professional):
-#     try:
-#         generated_id = insert_query(
-#             '''INSERT INTO professionals(
-#             first_name, last_name, address, user_id, summary, default_offer_id, picture, approved)
-#             VALUES (?, ?, ?, ?, ?, ?, ?, ?)''',
-#             (professional.first_name, professional.last_name, professional.address, 
-#                 professional.user_id, professional.summary, professional.default_offer_id, 
-#                 professional.picture, professional.approved))
-        
-#         return Professional(id=generated_id, first_name=professional.first_name,
-#                             last_name=professional.last_name, address=professional.address,
-#                             user_id=professional.user_id, summary=professional.summary,
-#                             default_offer_id=professional.default_offer_id, 
-#                             picture=professional.picture, approved=professional.approved)
-#     except IntegrityError:
-#         return None
