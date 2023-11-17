@@ -60,3 +60,19 @@ class Company_W_Offers(BaseModel):
 
 
 
+
+class Company_Data_For_Return(BaseModel):
+    address: str
+    id: int
+    issued: str
+    name: str
+    user_id: int
+
+    @classmethod
+    def from_query_result(cls, address, id, issued, name, user_id):
+        return cls(
+            address=address,
+            id=id,
+            issued=issued,
+            name=name,
+            user_id=user_id)

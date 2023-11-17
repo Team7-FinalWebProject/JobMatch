@@ -1,7 +1,7 @@
 import jwt
 from common.secret import _JWT_SECRET
 from data.responses import Unauthorized, ExpiredException, BadRequest
-from data.models.company import Company
+from data.models.company import Company, Company_Data_For_Return
 from data.models.professional import Professional
 from data.models.user import User
 from datetime import datetime, timedelta
@@ -26,7 +26,7 @@ def company_or_401(token: str) -> Company:
        Returns a Company object.'''
     try:
         payload = _base_auth(token)
-        return Company.from_query_result(**payload)
+        return Company_Data_For_Return.from_query_result(**payload)
     except ExpiredException:
         raise Unauthorized(status_code=401,
                             detail='Expired token.')
