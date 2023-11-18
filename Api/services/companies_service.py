@@ -3,6 +3,7 @@ from fastapi import Header
 from data.models.company import Company
 from data.models.offer import CompanyOffer
 from psycopg2 import IntegrityError
+from psycopg2.extras import Json
 
 
 
@@ -29,19 +30,22 @@ def edit_company_info(new_data: Company, old_data: Company):
     except IntegrityError as e:
         return e.__str__()
     
-def create_company_offer(offer: CompanyOffer):
+def create_company_offer(offer, company: Company):
+
+
     try:
+        requirements = Json(offer.requirements)
         generated_id = insert_query(
-            '''INSERT INTO company_offers (company_id, status, chosen_professional_id, 
+            '''INSERT INTO company_offers (company_id, chosen_professional_id, 
                requirements, min_salary, max_salary)
-               VALUES (%s, %s, %s, %s, %s, %s)''',
-               (offer.company_id, offer.status, offer.chosen_professional_id,
-                offer.requirements, offer.min_salary, offer.max_salary))
+               VALUES (%s, %s, %s, %s, %s)''',
+               (company.id, offer.chosen_professional_id,
+                requirements, offer.min_salary, offer.max_salary))
         
         return CompanyOffer(
             id=generated_id,
-            company_id=offer.company_id,
-            status=offer.status,
+            company_id=company.id,
+            status='active',
             chosen_professional_id=offer.chosen_professional_id,
             requirements=offer.requirements,
             min_salary=offer.min_salary,
