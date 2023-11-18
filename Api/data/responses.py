@@ -11,9 +11,15 @@ class NotFound(Response):
         super().__init__(status_code=404, content=content)
 
 
-class Unauthorized(Response):
-    def __init__(self, content=''):
-        super().__init__(status_code=401, content=content)
+# class Unauthorized(Response):
+#     def __init__(self, status_code=401, content=''):
+#         super().__init__(status_code=status_code, content=content)
+
+class Unauthorized(BaseException):
+    def __init__(self, status_code=401, content=''):
+        self.status_code = status_code
+        self.content = content
+        super().__init__(content)
 
 
 class Forbidden(Response):

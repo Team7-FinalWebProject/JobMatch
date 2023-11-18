@@ -113,3 +113,7 @@ def get_requests(offer_id: int):
         return (ProfessionalRequest.from_query_result(*row) for row in data)
     
     return None
+
+
+def archive_offer():
+    pass
