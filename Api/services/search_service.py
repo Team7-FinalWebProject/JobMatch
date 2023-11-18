@@ -3,29 +3,42 @@ from data.models.company import Company, Company_Username
 from data.models.professional import Professional, Professional_Username
 from data.models.offer import CompanyOffer, ProfessionalOffer
 from data.readers import reader_one, reader_many
-from math import exp
+from psycopg2.extras import Json
+
 
 def apply_salary_threshold(min_salary, max_salary, threshold):
-    def exp_decay(min_salary, pct_factor):
-        var_cap = 0
-        if min_salary <= var_cap:
-            return var_cap
-        fraction = pct_factor / 100
-        decayed_salary = min_salary * exp(-fraction)
-        return int(round(decayed_salary))
+    try:
+        min_salary,max_salary, threshold = float(min_salary),float(max_salary), float(threshold)
+    except:
+        try:
+            min_salary,max_salary, threshold = sum(map(ord, min_salary)),sum(map(ord, max_salary)), sum(map(ord, threshold))
+        except:
+            return 0, 0
 
-    def exp_growth(max_salary, pct_factor):
-        var_cap = 2147483647
-        if max_salary >= var_cap:
-            return var_cap
-        fraction = pct_factor / 100
-        growed_salary = max_salary + (var_cap - max_salary) * (1 - exp(-fraction))
-        return int(round(growed_salary))
-    
-    modified_min_salary = exp_decay(min_salary, threshold)
-    modified_max_salary = exp_growth(max_salary, threshold)
-    
-    return (modified_min_salary, modified_max_salary)
+    fraction = threshold / 100
+    multiplyer = fraction + 1
+
+    swap = lambda mi,ma : (ma,mi) if mi > ma else (mi,ma)
+    min_salary, max_salary = swap(min_salary, max_salary)
+
+    def decay(min_salary, multi):
+        decayed_salary = (min_salary / multi) if multi > 0 else 0
+        return max(0,min(2147483647,int(round(decayed_salary))))
+
+    def growth(max_salary, multi):
+        growed_salary = (max_salary * multi) if multi < 2147483647 else 2147483647
+        return max(0,min(2147483647,int(round(growed_salary))))
+
+    modified_min_salary = decay(min_salary, multiplyer) 
+    modified_max_salary = growth(max_salary, multiplyer)
+
+    modified_min_salary, modified_max_salary = swap(modified_min_salary, modified_max_salary)
+
+    return modified_min_salary, modified_max_salary
+
+##TODO: Abstract?
+_APPROVED_COMPANY_Q = 'WHERE c.approved = True'
+_APPROVED_PROFESSIONAL_Q = 'WHERE p.approved = True'
 
 # --view company
 def get_approved_company_by_id(id: int):
@@ -145,20 +158,32 @@ def get_approved_active_company_offers(
         max_salary: int = 2147483647,
         requirements: dict = {},
         salary_threshold_pct: int = 0,
-        require_missing_skills: int = 0):
-    
-    requirements[0]
+        allowed_missing_skills: int = 0):
     
     min_filter, max_filter = apply_salary_threshold(min_salary, max_salary, salary_threshold_pct)
-
+    
     data = read_query(
-        '''SELECT co.id, co.company_id, co.chosen_professional_id, co.status, co.requirements, co.min_salary, co.max_salary 
+         '''WITH filter_skills AS (
+                SELECT %s::jsonb AS skills)
+            SELECT co.id, co.company_id, co.chosen_professional_id, co.status, co.requirements, co.min_salary, co.max_salary
             FROM company_offers co
+            CROSS JOIN filter_skills fs
             LEFT JOIN companies c
             ON co.company_id=c.id
             WHERE c.approved = %s
-            AND co.status = %s''',
-        (True,'active'))
+            AND co.status = %s
+            AND co.min_salary <= %s
+            AND co.max_salary >= %s
+            AND GREATEST(
+		        (SELECT COUNT(*) - %s FROM jsonb_object_keys(fs.skills)),
+		        0) <=
+            COALESCE(
+                (SELECT COUNT(*) FROM jsonb_object_keys(fs.skills) key
+                WHERE (co.requirements->key->>0)::int >= (fs.skills->key)::int),
+                0)
+         ;''',
+         (Json(requirements), True, 'active', max_filter, min_filter, allowed_missing_skills))
+    
     return reader_many(CompanyOffer, data)
 
 def get_approved_archived_company_offers():
@@ -197,15 +222,38 @@ def get_approved_hidden_professional_offer_by_id(id: int):
 
 # --view all professional offers (self, self=professional, filters: active/inactive)
 # --view all professional offers (hide inactive, private and hidden) (+filters salary, requirements, ++)
-def get_approved_active_professional_offers():
+def get_approved_active_professional_offers(
+        min_salary: int = 0,
+        max_salary: int = 2147483647,
+        requirements: dict = {},
+        salary_threshold_pct: int = 0,
+        allowed_missing_skills: int = 0):
+    
+    min_filter, max_filter = apply_salary_threshold(min_salary, max_salary, salary_threshold_pct)
+    print(min_filter,max_filter)
+    
     data = read_query(
-        '''SELECT po.id, po.professional_id, po.chosen_company_offer_id, po.description, po.status, po.skills, po.min_salary, po.max_salary 
+         '''WITH filter_skills AS (
+                SELECT %s::jsonb AS skills)
+            SELECT po.id, po.professional_id, po.chosen_company_offer_id, po.description, po.status, po.skills, po.min_salary, po.max_salary 
             FROM professional_offers po
+            CROSS JOIN filter_skills fs
             LEFT JOIN professionals p
             ON po.professional_id=p.id
             WHERE p.approved = %s
-            AND po.status = %s''',
-        (True,'active'))
+            AND po.status = %s
+            AND po.min_salary <= %s
+            AND po.max_salary >= %s
+            AND GREATEST(
+		        (SELECT COUNT(*) - %s FROM jsonb_object_keys(fs.skills)),
+		        0) <=
+            COALESCE(
+                (SELECT COUNT(*) FROM jsonb_object_keys(fs.skills) key
+                WHERE (po.skills->key->>0)::int >= (fs.skills->key)::int),
+                0)
+         ;''',
+         (Json(requirements), True, 'active', max_filter, min_filter, allowed_missing_skills))
+    
     return reader_many(ProfessionalOffer, data)
 
 def get_approved_hidden_professional_offers():
