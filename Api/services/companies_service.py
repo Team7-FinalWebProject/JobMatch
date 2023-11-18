@@ -31,15 +31,15 @@ def edit_company_info(new_data: Company, old_data: Company):
     
 def create_company_offer(offer: CompanyOffer):
     try:
-        insert_query(
-            '''INSERT INTO company_offers (id, company_id, status, chosen_professional_id, 
+        generated_id = insert_query(
+            '''INSERT INTO company_offers (company_id, status, chosen_professional_id, 
                requirements, min_salary, max_salary)
-               VALUES (%s, %s, %s, %s, %s, %s, %s)''',
-               (offer.id, offer.company_id, offer.status, offer.chosen_professional_id,
+               VALUES (%s, %s, %s, %s, %s, %s)''',
+               (offer.company_id, offer.status, offer.chosen_professional_id,
                 offer.requirements, offer.min_salary, offer.max_salary))
         
         return CompanyOffer(
-            id=offer.id,
+            id=generated_id,
             company_id=offer.company_id,
             status=offer.status,
             chosen_professional_id=offer.chosen_professional_id,
