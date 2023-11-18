@@ -39,7 +39,7 @@ def create_company_offer(offer, company: Company):
             '''INSERT INTO company_offers (company_id, chosen_professional_id, 
                requirements, min_salary, max_salary)
                VALUES (%s, %s, %s, %s, %s)''',
-               (offer.company_id, offer.chosen_professional_id,
+               (company.id, offer.chosen_professional_id,
                 requirements, offer.min_salary, offer.max_salary))
         
         return CompanyOffer(

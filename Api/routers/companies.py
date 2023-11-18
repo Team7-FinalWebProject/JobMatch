@@ -24,3 +24,11 @@ def create_offer(new_offer: CompanyOfferCreate, x_token: str = Header(default=No
     if not company:
         return Unauthorized(content='Invalid token')
     return companies_service.create_company_offer(new_offer, company)
+
+
+
+
+# {
+#   "username": "KOKOOO",
+#   "password": "BatDoko123@"
+# }
