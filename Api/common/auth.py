@@ -3,6 +3,7 @@ from common.secret import _JWT_SECRET
 from data.responses import Unauthorized, ExpiredException
 from data.models.company import Company
 from data.models.professional import Professional
+from data.models.admin import Admin
 from datetime import datetime, timedelta
 
 
@@ -79,6 +80,34 @@ def create_company_token(comp: Company) -> str:
 def _is_authenticated(token: str):
     return jwt.decode(token, _JWT_SECRET, algorithms=["HS256"])
 
+
+def user_or_401(token: str) -> Company | Professional:
+    '''Authenticate a profile
+       Returns a Company/Professional object.'''
+    try:
+        payload = _base_auth(token)
+    except ExpiredException:
+        return None
+    try:
+        try:
+            return Professional.from_query_result(**payload)
+        except:
+            try:
+                return Company.from_query_result(**payload)
+            except:
+                return Admin.from_query_result(**payload)
+    except Exception as e:
+        raise e
+    
+
+def create_admin_token(admin: Admin) -> str:
+    payload = {
+        "id": admin.id,
+        "username": admin.username,
+        "issued": str(datetime.now())
+    }
+
+    return jwt.encode(payload, _JWT_SECRET, algorithm="HS256")
 
 
 

@@ -10,56 +10,77 @@ from common.utils.calc import apply_salary_threshold
 
 #########Interface:
 # ####Professional:
-def professional_get_self_info():
-    return _get_professional_by_id(id, approved=True)#id from token)
-def professional_get_self_offer_by_id():
-    return _get_professional_offer_by_id(id, approved=True, active=False)#id from token)
-def professional_get_self_offers():
-    return _get_professional_offers(id, approved=True, active=False)#id from token
+def professional_get_self_info(professional_id):
+    return _get_professional_by_id(professional_id)
+
+def professional_get_self_offer_by_id(id, professional_id):
+    return _get_professional_offer_by_id(id=id, professional_id=professional_id, active=False)#id from token)
+
+def professional_get_self_offers(professional_id):
+    return _get_professional_offers(professional_id=professional_id, active=False)#id from token
+
 def professional_get_company_offer_by_id(id: int):
-    return _get_company_offer_by_id(id=id, approved=True, active=True)
+    return _get_company_offer_by_id(id=id)
+
 def professional_get_company_offers(*filters):
-    return _get_company_offers(*filters, approved=True, active=True)
+    return _get_company_offers(*filters)
+
 
 # ####Company:
-def company_get_self_info():
-    return _get_company_by_id(id, approved=True) #id from token
-def company_get_self_offer_by_id():
-    return _get_company_offer_by_id(id, approved=True, active=False) #id from token
-def company_get_self_offers():
-    return _get_company_offers(id, approved=True, active=False) #id from token
+def company_get_self_info(company_id):
+    return _get_company_by_id(company_id)
+
+def company_get_self_offer_by_id(id, company_id):
+    return _get_company_offer_by_id(id=id, company_id=company_id, active=False) #id from token
+
+def company_get_self_offers(company_id):
+    return _get_company_offers(company_id=company_id, active=False) #id from token
+
 def company_get_professional_offer_by_id(id: int):
-    return _get_professional_offer_by_id(id=id, approved=True, active=True)
+    return _get_professional_offer_by_id(id=id)
+
 def company_get_professional_offers(*filters):
-    return _get_professional_offers(*filters, approved=True, active=True)
+    return _get_professional_offers(*filters)
+
 
 # ####ADMIN:
 def admin_get_unapproved_company_by_id(id: int):
-    return _get_company_by_id(id, approved=False)
+    return _get_company_by_id(id=id, approved=False)
+
 def admin_get_unapproved_companies():
     return _get_companies(approved=False)
+
 def admin_get_unapproved_professional_by_id(id: int):
-    return _get_professional_by_id(id, approved=False)
+    return _get_professional_by_id(id=id, approved=False)
+
 def admin_get_unapproved_professionals():
     return _get_professionals(approved=False)
 
 # ####SEARCH:
 def search_get_company_by_id(id: int):
-    return _get_company_by_id(id, approved=True)
+    return _get_company_by_id(id=id)
+
 def search_get_companies():
     return _get_companies(approved=True)
+
 def search_get_professional_by_id(id: int):
-    return _get_professional_by_id(id, approved=True)
+    return _get_professional_by_id(id=id)
+
 def search_get_professionals():
-    return _get_professionals(approved=True)
+    return _get_professionals()
+
 def search_get_company_offer_by_id(id: int):
-    return _get_company_offer_by_id(id, approved=True, active=True)
+    return _get_company_offer_by_id(id=id)
+
 def search_get_company_offers(*filters):
-    return _get_company_offers(*filters, approved=True, active=True)
+    return _get_company_offers(*filters)
+
 def search_get_professional_offer_by_id(id: int):
-    return _get_professional_offer_by_id(id, approved=True, active=True)
+    return _get_professional_offer_by_id(id=id)
+
 def search_get_professional_offers(*filters):
-    return _get_professional_offers(*filters, approved=True, active=True)
+    return _get_professional_offers(*filters)
+
 
 # --view company
 def _get_company_by_id(id: int, approved=True):
@@ -107,8 +128,9 @@ def _get_professionals(approved=True):
         (approved,))
     return reader_many(Professional_Username, data)
 
+
 # --view company offer
-def _get_company_offer_by_id(id: int, approved=True, active=True):
+def _get_company_offer_by_id(id: int, company_id: int | None = None, approved=True, active=True):
     status = 'active' if active else None
     data = read_query(
         '''SELECT co.id, co.company_id, co.chosen_professional_id, co.status, co.requirements, co.min_salary, co.max_salary 
@@ -117,8 +139,9 @@ def _get_company_offer_by_id(id: int, approved=True, active=True):
             ON co.company_id=c.id
             WHERE co.id = %s
             AND c.approved = %s
-            AND co.status = COALESCE(%s, co.status)''',
-        (id, approved, status))
+            AND co.status = COALESCE(%s, co.status)
+            AND c.id = COALESCE(%s, c.id)''',
+        (id, approved, status, company_id))
     return reader_one(CompanyOffer, data)
 
 # --view all company offers (+filters, filters: active/inactive, salary, requirements, ++)
@@ -128,6 +151,7 @@ def _get_company_offers(
         filter_skills: dict = {},
         salary_threshold_pct: int = 0,
         allowed_missing_skills: int = 0,
+        company_id: int | None = None,
         approved = True,
         active = True):
     status = 'active' if active else None
@@ -151,13 +175,14 @@ def _get_company_offers(
                 (SELECT COUNT(*) FROM jsonb_object_keys(fs.skills) key
                 WHERE (co.requirements->key->>0)::int >= (fs.skills->key)::int),
                 0)
+            AND c.id = COALESCE(%s, c.id)
          ;''',
-         (Json(filter_skills), approved, status, max_filter, min_filter, allowed_missing_skills))
+         (Json(filter_skills), approved, status, max_filter, min_filter, allowed_missing_skills, company_id))
     
     return reader_many(CompanyOffer, data)
 
 # --view professional offer (hide hidden)
-def _get_professional_offer_by_id(id: int, approved=True, active=True):
+def _get_professional_offer_by_id(id: int, professional_id: int | None = None, approved=True, active=True):
     status1 = 'active' if active else None
     status2 = 'private' if active else None
     data = read_query(
@@ -167,8 +192,9 @@ def _get_professional_offer_by_id(id: int, approved=True, active=True):
             ON po.professional_id=p.id
             WHERE po.id = %s
             AND p.approved = %s
-            AND (po.status = COALESCE(%s, po.status) OR po.status = COALESCE(%s, po.status))''',
-        (id, approved, status1, status2))
+            AND (po.status = COALESCE(%s, po.status) OR po.status = COALESCE(%s, po.status))
+            AND p.id = COALESCE(%s, p.id)''',
+        (id, approved, status1, status2, professional_id))
     return reader_one(ProfessionalOffer, data)
 
 # --view all professional offers (self, self=professional, filters: active/inactive)
@@ -179,6 +205,7 @@ def _get_professional_offers(
         filter_skills: dict = {},
         salary_threshold_pct: int = 0,
         allowed_missing_skills: int = 0,
+        professional_id: int | None = None,
         approved = True,
         active = True):
     status = 'active' if active else None
@@ -192,7 +219,7 @@ def _get_professional_offers(
             LEFT JOIN professionals p
             ON po.professional_id=p.id
             WHERE p.approved = %s
-            AND po.status = %s
+            AND po.status = COALESCE(%s, po.status)
             AND po.min_salary <= %s
             AND po.max_salary >= %s
             AND GREATEST(
@@ -202,7 +229,7 @@ def _get_professional_offers(
                 (SELECT COUNT(*) FROM jsonb_object_keys(fs.skills) key
                 WHERE (po.skills->key->>0)::int >= (fs.skills->key)::int),
                 0)
+            AND p.id = COALESCE(%s, p.id)
          ;''',
-         (Json(filter_skills), approved, status, max_filter, min_filter, allowed_missing_skills))
-    
+         (Json(filter_skills), approved, status, max_filter, min_filter, allowed_missing_skills, professional_id))
     return reader_many(ProfessionalOffer, data)
