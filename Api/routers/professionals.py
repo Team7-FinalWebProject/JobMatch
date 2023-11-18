@@ -7,7 +7,7 @@ from services import professionals_service
 
 
 professionals_router = APIRouter(prefix='/professionals')
-_ERROR_MESSAGE = 'You are not authorized [NOT LOGGED IN]'
+_ERROR_MESSAGE = 'You are not authorized [NOT LOGGED IN | TOKEN EXPIRED]'
 
 
 @professionals_router.put('/info')

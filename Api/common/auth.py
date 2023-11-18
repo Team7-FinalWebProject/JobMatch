@@ -17,7 +17,7 @@ def _base_auth(token: str):
     if iat > datetime.now() - timedelta(minutes=30): #TODO: time is set to 30min maybe change later?
         return payload
     else:
-        return ExpiredException
+        raise ExpiredException
 
 
 def company_or_401(token: str) -> Company:
@@ -25,10 +25,10 @@ def company_or_401(token: str) -> Company:
        Returns a Company object.'''
     try:
         payload = _base_auth(token)
-        return Company.from_query_result(**payload)
     except ExpiredException:
-        raise Unauthorized(status_code=401,
-                            detail='Expired token.')
+        return None
+    try:
+        return Company.from_query_result(**payload)
     except Exception as e:
         raise e
     
@@ -38,10 +38,10 @@ def professional_or_401(token: str) -> Professional:
        Returns a Professional object.'''
     try:
         payload = _base_auth(token)
-        return Professional.from_query_result(**payload)
     except ExpiredException:
-        raise Unauthorized(status_code=401,
-                            detail='Expired token.')
+        return None
+    try:
+        return Professional.from_query_result(**payload)
     except Exception as e:
         raise e
     
