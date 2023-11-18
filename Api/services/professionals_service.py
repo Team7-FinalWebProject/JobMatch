@@ -59,12 +59,14 @@ def set_def_offer(offer_id: int, prof_id: int):
         '''UPDATE professionals SET default_offer_id = %s WHERE id = %s''',
         (offer_id, prof_id))
 
-    return rowcount
+    return f'Updated number of rows: {rowcount}'
 
 
 def get_offer(offer_id: int, professional_id: int):
     data = read_query(
-        '''SELECT * FROM professional_offers WHERE id = %s AND professional_id = %s''',
+        '''SELECT id, professional_id, chosen_company_offer_id, 
+           description, status, skills, min_salary, max_salary 
+           FROM professional_offers WHERE id = %s AND professional_id = %s''',
         (offer_id, professional_id))
     
     return next((ProfessionalOffer.from_query_result(*row) for row in data), None)
@@ -72,7 +74,9 @@ def get_offer(offer_id: int, professional_id: int):
 
 def get_offers_by_prof_id(prof_id: int):
     data = read_query(
-        '''SELECT * FROM professional_offers WHERE professional_id = %s''',
+        '''SELECT id, professional_id, chosen_company_offer_id
+           description, status, skills, min_salary, max_salary 
+           FROM professional_offers WHERE professional_id = %s''',
         (prof_id,))
     
     return (ProfessionalOffer.from_query_result(*row) for row in data)
