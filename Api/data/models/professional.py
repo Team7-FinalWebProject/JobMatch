@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from data.models.offer import ProfessionalOffer_NoProfessionalId
+from datetime import datetime
 
 
 class Professional(BaseModel):
@@ -11,9 +12,10 @@ class Professional(BaseModel):
     summary: str | None = None
     address: str
     picture: bytes | None = None
+    issued: datetime | None = None
 
     @classmethod
-    def from_query_result(cls, id, user_id, default_offer_id, first_name, last_name, summary, address, picture):
+    def from_query_result(cls, id, user_id, default_offer_id, first_name, last_name, summary, address, picture, issued=None):
         return cls(
             id=id,
             user_id=user_id,
@@ -83,3 +85,19 @@ class ProfessionalRequest(BaseModel):
             id=id,
             prof_offer_id=prof_offer_id,
             comp_offer_id=comp_offer_id)
+    
+class ProfessionalInfoEdit(BaseModel):
+    first_name: str | None = None
+    last_name: str | None = None
+    summary: str | None = None
+    address: str | None = None
+    picture: bytes | None = None
+
+    @classmethod
+    def from_query_result(cls, first_name, last_name, summary, address, picture):
+        return cls(
+            first_name=first_name,
+            last_name=last_name,
+            summary=summary,
+            address=address,
+            picture=picture)

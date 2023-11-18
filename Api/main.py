@@ -8,6 +8,7 @@ from routers.register import register_router
 from routers.search import search_router
 from routers.admin import  admin_router
 from routers.companies import companies_router
+from routers.professionals import professionals_router
 
 
 app = FastAPI()
@@ -34,6 +35,7 @@ app.include_router(register_router)
 app.include_router(search_router)
 app.include_router(admin_router)
 app.include_router(companies_router)
+app.include_router(professionals_router)
 
 
 @app.get('/')

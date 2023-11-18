@@ -1,16 +1,17 @@
+from psycopg2.extras import Json
 from psycopg2 import IntegrityError
-from data.models.professional import Professional, ProfessionalRequest
+from data.models.professional import Professional, ProfessionalRequest, ProfessionalInfoEdit
 from data.models.offer import ProfessionalOffer
 from data.database import update_query, insert_query, read_query
 
 
 
-def edit(new_data: Professional, old_data: Professional):
+def edit(new_data: ProfessionalInfoEdit, old_data: Professional):
     try:
         merged = Professional(
             id=old_data.id,
             user_id=old_data.user_id,
-            default_offer_id=new_data.default_offer_id or old_data.default_offer_id,
+            default_offer_id=old_data.default_offer_id,
             first_name=new_data.first_name or old_data.first_name,
             last_name=new_data.last_name or old_data.last_name,
             summary=new_data.summary or old_data.summary,
@@ -18,10 +19,10 @@ def edit(new_data: Professional, old_data: Professional):
             picture=new_data.picture or old_data.picture)
 
         update_query(
-            '''UPDATE professionals SET default_offer_id = %s, first_name = %s, last_name = %s,
+            '''UPDATE professionals SET first_name = %s, last_name = %s,
                summary = %s, address = %s, picture = %s WHERE id = %s''',
-               (merged.default_offer_id, merged.first_name, merged.last_name, 
-                merged.summary, merged.address, merged.picture, merged.id))
+               (merged.first_name, merged.last_name, merged.summary, 
+                merged.address, merged.picture, merged.id))
         
         return merged
     
@@ -29,21 +30,22 @@ def edit(new_data: Professional, old_data: Professional):
         return e.__str__()
 
 
-def create_offer(offer: ProfessionalOffer, prof: Professional):
+def create_offer(offer, prof: Professional):
     try:
+        skills = Json(offer.skills)
         generated_id = insert_query(
             '''INSERT INTO professional_offers (professional_id, description, 
-               chosen_company_offer_id, status, skills, min_salary, max_salary)
-               VALUES (%s, %s, %s, %s, %s, %s, %s)''', 
-               (prof.id, offer.description, offer.chosen_company_offer_id,
-                offer.status, offer.skills, offer.min_salary, offer.max_salary))
+               chosen_company_offer_id, skills, min_salary, max_salary)
+               VALUES (%s, %s, %s, %s, %s, %s) RETURNING id''', 
+               (prof.id, offer.description, offer.chosen_company_offer_id, 
+                skills, offer.min_salary, offer.max_salary))
         
         return ProfessionalOffer(
             id=generated_id,
             professional_id=prof.id,
             chosen_company_offer_id=offer.chosen_company_offer_id,
             description=offer.description,
-            status=offer.status,
+            status='active',
             skills=offer.skills,
             min_salary=offer.min_salary,
             max_salary=offer.max_salary)
@@ -57,23 +59,27 @@ def set_def_offer(offer_id: int, prof_id: int):
         '''UPDATE professionals SET default_offer_id = %s WHERE id = %s''',
         (offer_id, prof_id))
 
-    return rowcount
+    return f'Updated number of rows: {rowcount}'
 
 
-def get_offer_by_id(offer_id: int):
+def get_offer(offer_id: int, professional_id: int):
     data = read_query(
-        '''SELECT * FROM professional_offers WHERE id = %s''',
-        (offer_id,))
+        '''SELECT id, professional_id, chosen_company_offer_id, 
+           description, status, skills, min_salary, max_salary 
+           FROM professional_offers WHERE id = %s AND professional_id = %s''',
+        (offer_id, professional_id))
     
     return next((ProfessionalOffer.from_query_result(*row) for row in data), None)
 
 
-def get_offer_by_prof_id(prof_id: int):
+def get_offers_by_prof_id(prof_id: int):
     data = read_query(
-        '''SELECT * FROM professional_offers WHERE professional_id = %s''',
+        '''SELECT id, professional_id, chosen_company_offer_id
+           description, status, skills, min_salary, max_salary 
+           FROM professional_offers WHERE professional_id = %s''',
         (prof_id,))
     
-    return next((ProfessionalOffer.from_query_result(*row) for row in data), None)
+    return (ProfessionalOffer.from_query_result(*row) for row in data)
 
 
 def edit_offer(new_offer: ProfessionalOffer, old_offer: ProfessionalOffer):
@@ -89,10 +95,10 @@ def edit_offer(new_offer: ProfessionalOffer, old_offer: ProfessionalOffer):
             max_salary=new_offer.max_salary or old_offer.max_salary)
 
         update_query(
-            '''UPADTE professional_offers SET professional_id = %s, chosen_company_offer_id = %s,
+            '''UPDATE professional_offers SET professional_id = %s, chosen_company_offer_id = %s,
                description = %s, status = %s, skills = %s, min_salary = %s, max_salary = %s WHERE id = %s''',
             (merged.professional_id, merged.chosen_company_offer_id, merged.description, 
-            merged.status, merged.skills, merged.min_salary, merged.max_salary, merged.id))
+            merged.status, Json(merged.skills), merged.min_salary, merged.max_salary, merged.id))
         
         return merged
     

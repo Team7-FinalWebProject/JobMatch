@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from data.models.offer import CompanyOffer_NoCompanyId
+from datetime import datetime
 
 class Company(BaseModel):
     id: int | None = None
@@ -8,9 +9,10 @@ class Company(BaseModel):
     description: str | None = None
     address: str
     picture: bytes | None = None
+    issued: datetime | None = None
 
     @classmethod
-    def from_query_result(cls, id, user_id, name, description, address, picture):
+    def from_query_result(cls, id, user_id, name, description, address, picture, issued=None):
         return cls(
             id=id,
             user_id=user_id,
