@@ -1,13 +1,12 @@
 import jwt
 from common.secret import _JWT_SECRET
-from data.responses import Unauthorized, ExpiredException, BadRequest
-from data.models.company import Company, Company_Data_For_Return
+from data.responses import Unauthorized, ExpiredException
+from data.models.company import Company
 from data.models.professional import Professional
-from data.models.user import User
 from datetime import datetime, timedelta
 
 
-def _base_auth(token: str) -> bool:
+def _base_auth(token: str):
     '''
     Base function for authenticating.
     Verifies whether a token has expired
@@ -26,12 +25,12 @@ def company_or_401(token: str) -> Company:
        Returns a Company object.'''
     try:
         payload = _base_auth(token)
-        return Company_Data_For_Return.from_query_result(**payload)
+        return Company.from_query_result(**payload)
     except ExpiredException:
         raise Unauthorized(status_code=401,
                             detail='Expired token.')
-    except Exception:
-        raise Unauthorized(status_code=401)
+    except Exception as e:
+        raise e
     
 
 def professional_or_401(token: str) -> Professional:
@@ -43,17 +42,20 @@ def professional_or_401(token: str) -> Professional:
     except ExpiredException:
         raise Unauthorized(status_code=401,
                             detail='Expired token.')
-    except Exception:
-        raise Unauthorized(status_code=401)
+    except Exception as e:
+        raise e
     
 
 def create_prof_token(prof: Professional) -> str:
     payload = {
         "id": prof.id,
         "user_id": prof.user_id,
+        "default_offer_id": prof.default_offer_id,
         "first_name": prof.first_name,
         "last_name": prof.last_name,
+        "summary": prof.summary,
         "address": prof.address,
+        "picture": prof.picture,
         "issued": str(datetime.now())
     }
 
@@ -65,14 +67,16 @@ def create_company_token(comp: Company) -> str:
         "id": comp.id,
         "user_id": comp.user_id,
         "name": comp.name,
+        "description": comp.description,
         "address": comp.address,
+        "picture": comp.picture,
         "issued": str(datetime.now())
     }
 
     return jwt.encode(payload, _JWT_SECRET, algorithm="HS256")
 
 
-def _is_authenticated(token: str) -> bool:
+def _is_authenticated(token: str):
     return jwt.decode(token, _JWT_SECRET, algorithms=["HS256"])
 
 
