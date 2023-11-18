@@ -95,10 +95,10 @@ def edit_offer(new_offer: ProfessionalOffer, old_offer: ProfessionalOffer):
             max_salary=new_offer.max_salary or old_offer.max_salary)
 
         update_query(
-            '''UPADTE professional_offers SET professional_id = %s, chosen_company_offer_id = %s,
+            '''UPDATE professional_offers SET professional_id = %s, chosen_company_offer_id = %s,
                description = %s, status = %s, skills = %s, min_salary = %s, max_salary = %s WHERE id = %s''',
             (merged.professional_id, merged.chosen_company_offer_id, merged.description, 
-            merged.status, merged.skills, merged.min_salary, merged.max_salary, merged.id))
+            merged.status, Json(merged.skills), merged.min_salary, merged.max_salary, merged.id))
         
         return merged
     

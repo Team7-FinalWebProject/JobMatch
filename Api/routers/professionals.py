@@ -38,13 +38,13 @@ def create_offer(new_offer: ProfessionalOfferCreate, x_token: str = Header(defau
 
 
 @professionals_router.put('/{offer_id}/edit_offer')
-def edit_prof_offer(new_offer: ProfessionalOffer, 
+def edit_prof_offer(new_offer: ProfessionalOfferCreate, 
                     offer_id: int, 
                     x_token: str = Header(default=None)):
     prof = professional_or_401(x_token) if x_token else None
-    offer = professionals_service.get_offer(offer_id, prof.id)
     if not prof:
         return Unauthorized(content=_ERROR_MESSAGE)
+    offer = professionals_service.get_offer(offer_id, prof.id)
     if not offer:
         return NotFound(content=f'No offer with id: {offer_id}')
     return professionals_service.edit_offer(new_offer, offer)
@@ -61,9 +61,9 @@ def create_match_request(x_token: str = Header(default=None)):
 @professionals_router.get('/requests')
 def view_match_requests(x_token: str = Header(default=None)):
     prof = professional_or_401(x_token) if x_token else None
-    offer = professionals_service.get_offers_by_prof_id(prof.id)
     if not prof:
         return Unauthorized(content='Invalid token')
+    offer = professionals_service.get_offers_by_prof_id(prof.id)
     if not offer:
         return NotFound(content=f'No such offer for professional: {prof.id}')
     return professionals_service.get_requests(offer.id)
