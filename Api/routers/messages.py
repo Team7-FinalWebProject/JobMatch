@@ -7,7 +7,7 @@ from common.auth import user_or_401
 
 
 messages_router = APIRouter(prefix='/messages')
-_ERROR_MESSAGE = 'You are not logged in!'
+_ERROR_MESSAGE = 'You are not authorized [NOT LOGGED IN | TOKEN EXPIRED]'
 
 
 #TODO Figure out a way to add audio recording ass message
@@ -20,9 +20,11 @@ def view_user_messages(receiver_username: str, x_token: str = Header(default=Non
     receiver = check_user_exist(receiver_username)
     if user:
         if receiver:
-            messages = messages_service.get_messages(user, receiver.username)
+            sender_username = messages_service.extract_username(user)
+            messages = messages_service.get_messages(sender_username, receiver_username)
             if not messages:
                 return NotFound(content=f'No messages with user: {receiver_username}')
+            return messages
         else:
             return NotFound(content=f'No user with username: {receiver_username}')    
     else:
@@ -35,7 +37,8 @@ def send_message(receiver_username: str, message: Message, x_token: str = Header
     receiver = check_user_exist(receiver_username)
     if user:
         if receiver:
-            return messages_service.create(user, receiver.username, message)
+            sender_username = messages_service.extract_username(user)
+            return messages_service.create(sender_username, receiver_username, message)
         else:
             return NotFound(content=F'No user with username: {receiver_username}')
     else:

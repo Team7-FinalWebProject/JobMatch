@@ -2,8 +2,8 @@ from pydantic import BaseModel
 
 class Message(BaseModel):
     id: int | None = None
-    sender_username: str
-    receiver_username: str
+    sender_username: str | None = None
+    receiver_username: str | None = None
     content: str
 
     @classmethod
