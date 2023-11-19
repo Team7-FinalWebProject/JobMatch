@@ -1,9 +1,8 @@
-from fastapi import APIRouter, Response, Header
+from fastapi import APIRouter, Response, Header, Body
 from services import search_service
 from common.auth import user_or_401, professional_or_401, company_or_401
 
 ##TODO: Temporary router, merge search router into professionals/companies when done
-##TODO: Public -> Private
 search_router = APIRouter(prefix='/search', tags=["Search"])
 search_professional_router = APIRouter(prefix='/search', tags=["Search Professional"])
 search_company_router = APIRouter(prefix='/search', tags=["Search Company"])
@@ -56,6 +55,23 @@ def view_approved_professional_offer(id: int, x_token: str = Header()):
 def view_approved_professional_offers(x_token: str = Header()):
     user = user_or_401(x_token)
     return search_service.search_get_professional_offers()
+
+@search_router.put('/propose_skills', tags=["Search Extra"])
+def propose_skills(skills: list = Body(default=["Skill1", "Skill2"]), x_token: str = Header()):
+    user = user_or_401(x_token)
+    return search_service.propose_new_skills({s.capitalize():user.username for s in skills})
+
+
+
+
+
+
+
+
+
+
+
+
 
 ##TODO: Throw error instead of if user.__class__.__name__ else None etc ?
 # ####Professional:
@@ -110,4 +126,3 @@ def view_approved_active_company_professional_offer(id:int,x_token: str = Header
 def view_approved_active_company_professional_offers(x_token: str = Header()):
     user = user_or_401(x_token)
     return search_service.company_get_professional_offers() if user.__class__.__name__ == 'Company' else None
-

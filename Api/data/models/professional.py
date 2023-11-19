@@ -3,6 +3,7 @@ from data.models.offer import ProfessionalOffer_NoProfessionalId
 from datetime import datetime
 
 
+
 class Professional(BaseModel):
     id: int | None = None
     user_id: int
@@ -12,10 +13,11 @@ class Professional(BaseModel):
     summary: str | None = None
     address: str
     picture: bytes | None = None
+    username: str
     issued: datetime | None = None
 
     @classmethod
-    def from_query_result(cls, id, user_id, default_offer_id, first_name, last_name, summary, address, picture, issued=None):
+    def from_query_result(cls, id, user_id, default_offer_id, first_name, last_name, summary, address, picture, username, issued=None):
         return cls(
             id=id,
             user_id=user_id,
@@ -24,10 +26,11 @@ class Professional(BaseModel):
             last_name=last_name,
             summary=summary,
             address=address,
-            picture=picture)
+            picture=picture,
+            username=username)
     
 
-class Professional_Username(BaseModel):
+class Professional_Slim(BaseModel):
     id: int | None = None
     username: str
     default_offer_id: int | None = None

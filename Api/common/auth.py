@@ -15,7 +15,7 @@ def _base_auth(token: str):
     '''
     payload = _is_authenticated(token)
     iat = datetime.strptime(payload["issued"], '%Y-%m-%d %H:%M:%S.%f')
-    if iat > datetime.now() - timedelta(minutes=30): #TODO: time is set to 30min maybe change later?
+    if iat > datetime.now() - timedelta(weeks=2000): #TODO: time is set to 30min maybe change later?
         return payload
     else:
         raise ExpiredException
@@ -57,6 +57,7 @@ def create_prof_token(prof: Professional) -> str:
         "summary": prof.summary,
         "address": prof.address,
         "picture": prof.picture,
+        "username": prof.username,
         "issued": str(datetime.now())
     }
 
@@ -71,6 +72,7 @@ def create_company_token(comp: Company) -> str:
         "description": comp.description,
         "address": comp.address,
         "picture": comp.picture,
+        "username": comp.username,
         "issued": str(datetime.now())
     }
 

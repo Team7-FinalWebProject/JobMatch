@@ -1,6 +1,6 @@
-from data.database import read_query
-from data.models.company import Company, Company_Username
-from data.models.professional import Professional, Professional_Username
+from data.database import read_query, update_query
+from data.models.company import Company, Company_Slim
+from data.models.professional import Professional, Professional_Slim
 from data.models.offer import CompanyOffer, ProfessionalOffer
 from data.readers import reader_one, reader_many
 from psycopg2.extras import Json
@@ -92,7 +92,7 @@ def _get_company_by_id(id: int, approved=True):
             WHERE c.id = %s
             AND c.approved = %s''',
         (id,approved,))
-    return reader_one(Company_Username, data)
+    return reader_one(Company_Slim, data)
 
 # --view all companies (+filters)
 def _get_companies(approved=True):
@@ -103,7 +103,7 @@ def _get_companies(approved=True):
             ON c.user_id=u.id
             WHERE c.approved = %s''',
         (approved,))
-    return reader_many(Company_Username, data)
+    return reader_many(Company_Slim, data)
 
 # --view professional
 def _get_professional_by_id(id: int, approved=True):
@@ -115,7 +115,7 @@ def _get_professional_by_id(id: int, approved=True):
             WHERE p.id = %s
             AND p.approved = %s''',
         (id,approved,))
-    return reader_one(Professional_Username, data)
+    return reader_one(Professional_Slim, data)
 
 # --view all professionals (+filters)
 def _get_professionals(approved=True):
@@ -126,7 +126,7 @@ def _get_professionals(approved=True):
             ON p.user_id=u.id
             WHERE p.approved = %s''',
         (approved,))
-    return reader_many(Professional_Username, data)
+    return reader_many(Professional_Slim, data)
 
 
 # --view company offer
@@ -233,3 +233,12 @@ def _get_professional_offers(
          ;''',
          (Json(filter_skills), approved, status, max_filter, min_filter, allowed_missing_skills, professional_id))
     return reader_many(ProfessionalOffer, data)
+
+
+def propose_new_skills(skills):
+    result = update_query(
+        '''UPDATE config
+        SET pending_approval_skills = pending_approval_skills || %s
+        WHERE lock = %s''', (Json(skills),'X',))
+    ##TODO: check result and remodel
+    return result

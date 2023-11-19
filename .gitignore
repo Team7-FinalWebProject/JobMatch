@@ -5,6 +5,8 @@ Api/db_data/config.py
 *.1.bkp
 *.2.bkp
 *.3.bkp
+main.svg
+profile.pstats
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

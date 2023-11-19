@@ -1,7 +1,7 @@
+import sys
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
 
 from routers.login import login_router
 from routers.register import register_router
@@ -9,6 +9,18 @@ from routers.search import search_router, search_company_router, search_professi
 from routers.admin import  admin_router
 from routers.companies import companies_router
 from routers.professionals import professionals_router
+
+def trace(frame, event, arg):
+    if event == "call":
+        filename = frame.f_code.co_filename
+        funcname = frame.f_code.co_name 
+        if 'search' in filename:
+            lineno = frame.f_lineno
+            # Here I'm printing the file and line number, 
+            # but you can examine the frame, locals, etc too.
+            print("%s @ %s @ %s" % (filename, funcname, lineno))
+    return trace
+
 
 
 app = FastAPI()

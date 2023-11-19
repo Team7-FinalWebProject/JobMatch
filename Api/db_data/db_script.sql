@@ -284,9 +284,9 @@ CREATE TABLE jobmatch.config (
     static_skills boolean DEFAULT false NOT NULL,
     min_level integer DEFAULT 0 NOT NULL,
     max_level integer DEFAULT 10 NOT NULL,
-    baseline_skills text[] DEFAULT ARRAY['English'::text, 'French'::text, 'Computers'::text] NOT NULL,
-    pending_approval_skills text[] DEFAULT ARRAY[]::text[] NOT NULL,
-    approved_skills text[] DEFAULT ARRAY[]::text[],
+    baseline_skills jsonb DEFAULT '{"French": null, "English": null, "Computers": null}'::jsonb NOT NULL,
+    approved_skills jsonb DEFAULT '{}'::jsonb NOT NULL,
+    pending_approval_skills jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT cns_config CHECK ((lock = 'X'::bpchar))
 );
 
@@ -600,8 +600,8 @@ COPY jobmatch.company_requests (id, company_offer_id, professional_id, professio
 -- Data for Name: config; Type: TABLE DATA; Schema: jobmatch; Owner: postgres
 --
 
-COPY jobmatch.config (lock, static_skills, min_level, max_level, baseline_skills, pending_approval_skills, approved_skills) FROM stdin;
-X	f	0	10	{English,Computers,French}	{}	{}
+COPY jobmatch.config (lock, static_skills, min_level, max_level, baseline_skills, approved_skills, pending_approval_skills) FROM stdin;
+X	f	0	10	{"French": null, "English": null, "Computers": null}	{}	{}
 \.
 
 
