@@ -9,6 +9,7 @@ from routers.search import search_router, search_company_router, search_professi
 from routers.admin import  admin_router
 from routers.companies import companies_router
 from routers.professionals import professionals_router
+from routers.messages import messages_router
 
 
 app = FastAPI()
@@ -38,6 +39,7 @@ app.include_router(companies_router)
 app.include_router(professionals_router)
 app.include_router(search_professional_router)
 app.include_router(search_company_router)
+app.include_router(messages_router)
 
 
 @app.get('/')
