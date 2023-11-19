@@ -113,15 +113,10 @@ ALTER FUNCTION jobmatch.check_user_id_professionals_not_in_companies() OWNER TO 
 CREATE PROCEDURE jobmatch.insert_into_companies_and_users(IN new_username text, IN new_password bytea, IN new_name text, IN new_description text, IN new_address text)
     LANGUAGE plpgsql
     AS $_$
-
 BEGIN
-
   WITH new_user_id AS (INSERT INTO jobmatch.users (username,password) VALUES ($1,$2) RETURNING id)
-
   INSERT INTO jobmatch.companies (user_id,name,description,address) VALUES (new_user_id,$3,$4,$5) RETURNING id;
-
 END;
-
 $_$;
 
 
@@ -289,8 +284,9 @@ CREATE TABLE jobmatch.config (
     static_skills boolean DEFAULT false NOT NULL,
     min_level integer DEFAULT 0 NOT NULL,
     max_level integer DEFAULT 10 NOT NULL,
-    baseline_skills text[] DEFAULT ARRAY['English'::character varying, 'French'::character varying, 'Computers'::character varying] NOT NULL,
-    pending_approval_skills text[] DEFAULT ARRAY[]::character varying[] NOT NULL,
+    baseline_skills text[] DEFAULT ARRAY['English'::text, 'French'::text, 'Computers'::text] NOT NULL,
+    pending_approval_skills text[] DEFAULT ARRAY[]::text[] NOT NULL,
+    approved_skills text[] DEFAULT ARRAY[]::text[],
     CONSTRAINT cns_config CHECK ((lock = 'X'::bpchar))
 );
 
@@ -604,8 +600,8 @@ COPY jobmatch.company_requests (id, company_offer_id, professional_id, professio
 -- Data for Name: config; Type: TABLE DATA; Schema: jobmatch; Owner: postgres
 --
 
-COPY jobmatch.config (lock, static_skills, min_level, max_level, baseline_skills, pending_approval_skills) FROM stdin;
-X	f	0	10	{English,Computers,French}	{}
+COPY jobmatch.config (lock, static_skills, min_level, max_level, baseline_skills, pending_approval_skills, approved_skills) FROM stdin;
+X	f	0	10	{English,Computers,French}	{}	{}
 \.
 
 
