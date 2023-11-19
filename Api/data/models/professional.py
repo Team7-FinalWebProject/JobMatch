@@ -13,6 +13,7 @@ class Professional(BaseModel):
     summary: str | None = None
     address: str
     picture: bytes | None = None
+    status: str | None = None
     username: str | None = None
     issued: datetime | None = None
 
