@@ -16,7 +16,8 @@ def edit(new_data: ProfessionalInfoEdit, old_data: Professional):
             last_name=new_data.last_name or old_data.last_name,
             summary=new_data.summary or old_data.summary,
             address=new_data.address or old_data.address,
-            picture=new_data.picture or old_data.picture)
+            picture=new_data.picture or old_data.picture,
+            status=old_data.status)
 
         update_query(
             '''UPDATE professionals SET first_name = %s, last_name = %s,
