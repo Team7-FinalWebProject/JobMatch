@@ -418,7 +418,9 @@ CREATE TABLE jobmatch.professionals (
     summary text DEFAULT ''::text NOT NULL,
     default_offer_id integer,
     picture bytea,
-    approved boolean DEFAULT false NOT NULL
+    approved boolean DEFAULT false NOT NULL,
+    status character varying DEFAULT 'active'::character varying NOT NULL,
+    CONSTRAINT cns_professionals CHECK (((status)::text = ANY ((ARRAY['active'::character varying, 'busy'::character varying])::text[])))
 );
 
 
@@ -639,10 +641,10 @@ COPY jobmatch.professional_requests (id, professional_offer_id, company_offer_id
 -- Data for Name: professionals; Type: TABLE DATA; Schema: jobmatch; Owner: postgres
 --
 
-COPY jobmatch.professionals (id, first_name, last_name, address, user_id, summary, default_offer_id, picture, approved) FROM stdin;
-1	John	Ivanov	bul.Skobelev, 24, Sofia, BG	2	10 years of experience in C# ASP.NET development	1	\N	t
-2	Michael	Livingston	Ubbo-Emmunslaan str., Amsterdam, NE	3	Experienced Python developer	2	\N	t
-3	William	Pique	Buterpark str., London, GBT	4	Junior Java developer	3	\N	f
+COPY jobmatch.professionals (id, first_name, last_name, address, user_id, summary, default_offer_id, picture, approved, status) FROM stdin;
+1	John	Ivanov	bul.Skobelev, 24, Sofia, BG	2	10 years of experience in C# ASP.NET development	1	\N	t	active
+2	Michael	Livingston	Ubbo-Emmunslaan str., Amsterdam, NE	3	Experienced Python developer	2	\N	t	active
+3	William	Pique	Buterpark str., London, GBT	4	Junior Java developer	3	\N	f	active
 \.
 
 

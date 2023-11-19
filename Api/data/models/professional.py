@@ -17,7 +17,7 @@ class Professional(BaseModel):
     issued: datetime | None = None
 
     @classmethod
-    def from_query_result(cls, id, user_id, default_offer_id, first_name, last_name, summary, address, picture, username, issued=None):
+    def from_query_result(cls, id, user_id, default_offer_id, first_name, last_name, summary, address, picture, status, username, issued=None):
         return cls(
             id=id,
             user_id=user_id,
@@ -27,6 +27,7 @@ class Professional(BaseModel):
             summary=summary,
             address=address,
             picture=picture,
+            status=status,
             username=username)
     
 
@@ -39,9 +40,10 @@ class Professional_Slim(BaseModel):
     summary: str
     address: str
     picture: bytes | None = None
+    status: str = None
 
     @classmethod
-    def from_query_result(cls, id, username, default_offer_id, first_name, last_name, summary, address, picture):
+    def from_query_result(cls, id, username, default_offer_id, first_name, last_name, summary, address, picture, status):
         return cls(
             id=id,
             username=username,
@@ -50,7 +52,8 @@ class Professional_Slim(BaseModel):
             last_name=last_name,
             summary=summary,
             address=address,
-            picture=picture)
+            picture=picture,
+            status=status)
     
 class Professional_W_Offers(BaseModel):
     id: int | None = None
