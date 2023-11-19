@@ -13,7 +13,7 @@ class Professional(BaseModel):
     summary: str | None = None
     address: str
     picture: bytes | None = None
-    username: str
+    username: str | None = None
     issued: datetime | None = None
 
     @classmethod

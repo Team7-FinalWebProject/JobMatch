@@ -50,14 +50,6 @@ def edit_prof_offer(new_offer: ProfessionalOfferCreate,
     return professionals_service.edit_offer(new_offer, offer)
 
 
-@professionals_router.post('/match')
-def create_match_request(x_token: str = Header(default=None)):
-    prof = professional_or_401(x_token) if x_token else None
-    if not prof:
-        return Unauthorized(content=_ERROR_MESSAGE)
-    return professionals_service.match()
-
-
 @professionals_router.get('/requests')
 def view_match_requests(x_token: str = Header(default=None)):
     prof = professional_or_401(x_token) if x_token else None
@@ -76,3 +68,16 @@ def archive_prof_offer(x_token: str = Header(default=None)):
         return Unauthorized(content=_ERROR_MESSAGE)
         
     return professionals_service.archive_offer()
+
+
+@professionals_router.post('/match')
+def create_match_request(x_token: str = Header(default=None)):
+    prof = professional_or_401(x_token) if x_token else None
+    if not prof:
+        return Unauthorized(content=_ERROR_MESSAGE)
+    return professionals_service.match()
+
+
+@professionals_router.put('/status')
+def set_status(x_token: str = Header(default=None)):
+    pass
