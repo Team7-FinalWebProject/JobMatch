@@ -32,3 +32,13 @@ def create_offer(new_offer: CompanyOfferCreate, x_token: str = Header(default=No
 #   "username": "KOKOOO",
 #   "password": "BatDoko123@"
 # }
+
+
+
+
+# {
+#   "status": "string",
+#   "requirements": {"British": [7, "Native"], "Computers": [10, "Master"]},
+#   "min_salary": 1000,
+#   "max_salary": 2000
+# }
