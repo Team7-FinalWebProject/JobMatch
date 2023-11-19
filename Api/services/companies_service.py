@@ -37,7 +37,7 @@ def create_company_offer(offer, company: Company):
         requirements = Json(offer.requirements)
         generated_id = insert_query(
             '''INSERT INTO company_offers (company_id, requirements, min_salary, max_salary)
-               VALUES (%s, %s, %s, %s)''',
+               VALUES (%s, %s, %s, %s) RETURNING id''',
                (company.id,
                 requirements, offer.min_salary, offer.max_salary))
         

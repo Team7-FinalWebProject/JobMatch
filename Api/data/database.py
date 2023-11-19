@@ -26,10 +26,8 @@ def insert_query(sql: str, sql_params=()) -> int:
         cursor = conn.cursor()
         cursor.execute(sql, sql_params)
         conn.commit()
-        # last_row_id = cursor.fetchone()
-        # return last_row_id[0] if last_row_id else None
-        last_row_id = cursor.lastrowid
-        return last_row_id
+        last_row_id = cursor.fetchone()
+        return last_row_id[0] if last_row_id else None
 
 
 def update_query(sql: str, sql_params=()) -> bool:
