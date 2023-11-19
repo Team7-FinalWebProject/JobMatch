@@ -55,17 +55,3 @@ def discard_pending_skills():
         WHERE lock = %s''', ('X',))
     ##TODO: check result and remodel
     return result
-
-
-##TODO: Store in DB -> Baseline skills + extendible by admin + Extra skills for company + admin approval ?
-##Config table? Could also be a file
-####-------------------------------------------------------------------------------------------####
-_SKILL_NAMES = ['English', 'French', 'Computers']
-_SKILL_LEVELS = [0, 10]
-Allowed_Skill_Names = Annotated[str, lambda s: s in _SKILL_NAMES]
-Allowed_Skill_Levels = Annotated[int, lambda n: _SKILL_LEVELS[0] <= n <= _SKILL_LEVELS[1]]
-_USE_STATIC = False
-def switch_skills_mode():
-    _USE_STATIC = ~_USE_STATIC
-Skills = dict[str, tuple[int, str]] if not _USE_STATIC else dict[Allowed_Skill_Names, tuple[Allowed_Skill_Levels, str]]
-####-------------------------------------------------------------------------------------------####
