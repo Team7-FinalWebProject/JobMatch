@@ -16,14 +16,6 @@ class Unauthorized(Response):
         super().__init__(status_code=status_code, content=content)
 
 
-# this is not the proper way to define a response
-# class Unauthorized(BaseException):
-#     def __init__(self, status_code=401, content=''):
-#         self.status_code = status_code
-#         self.content = content
-#         super().__init__(status_code=status_code, content=content)
-
-
 class Forbidden(Response):
     def __init__(self, content=''):
         super().__init__(status_code=403, content=content)
