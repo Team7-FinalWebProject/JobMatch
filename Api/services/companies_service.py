@@ -32,7 +32,6 @@ def edit_company_info(new_data: Company, old_data: Company):
     
 def create_company_offer(offer, company: Company):
 
-
     try:
         requirements = Json(offer.requirements)
         generated_id = insert_query(
@@ -49,6 +48,39 @@ def create_company_offer(offer, company: Company):
             requirements=offer.requirements,
             min_salary=offer.min_salary,
             max_salary=offer.max_salary)
+    
+    except IntegrityError as e:
+        return e.__str__()
+    
+
+def get_company_offer(offer_id: int, company_id: int):
+    data = read_query(
+        '''SELECT id, company_id, status, chosen_professional_id, 
+           requirements, min_salary, max_salary 
+           FROM company_offers WHERE id = %s AND company_id = %s''',
+        (offer_id, company_id))
+    
+    return next((CompanyOffer.from_query_result(*row) for row in data), None)
+
+
+def edit_company_offer(new_offer: CompanyOffer, old_offer: CompanyOffer):
+    try:
+        merged = CompanyOffer(
+            id=old_offer.id,
+            company_id=old_offer.company_id,
+            chosen_professional_id=new_offer.chosen_professional_id or old_offer.chosen_professional_id,
+            status=new_offer.status or old_offer.status,
+            requirements=new_offer.requirements or old_offer.requirements,
+            min_salary=new_offer.min_salary or old_offer.min_salary,
+            max_salary=new_offer.max_salary or old_offer.max_salary)
+
+        update_query(
+            '''UPDATE company_offers SET company_id = %s, status = %s, chosen_professional_id = %s,
+               requirements = %s, min_salary = %s, max_salary = %s WHERE id = %s''',
+            (merged.company_id, merged.chosen_professional_id, 
+            merged.status, Json(merged.requirements), merged.min_salary, merged.max_salary, merged.id))
+        
+        return merged
     
     except IntegrityError as e:
         return e.__str__()
