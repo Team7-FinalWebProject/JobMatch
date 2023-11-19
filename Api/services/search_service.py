@@ -108,7 +108,7 @@ def _get_companies(approved=True):
 # --view professional
 def _get_professional_by_id(id: int, approved=True):
     data = read_query(
-        '''SELECT p.id, u.username, p.default_offer_id, p.first_name, p.last_name, p.summary, p.address, p.picture 
+        '''SELECT p.id, u.username, p.default_offer_id, p.first_name, p.last_name, p.summary, p.address, p.picture, p.status 
             FROM professionals p
             LEFT JOIN users u
             ON p.user_id=u.id
@@ -120,7 +120,7 @@ def _get_professional_by_id(id: int, approved=True):
 # --view all professionals (+filters)
 def _get_professionals(approved=True):
     data = read_query(
-        '''SELECT p.id, u.username, p.default_offer_id, p.first_name, p.last_name, p.summary, p.address, p.picture 
+        '''SELECT p.id, u.username, p.default_offer_id, p.first_name, p.last_name, p.summary, p.address, p.picture, p.status 
             FROM professionals p
             LEFT JOIN users u
             ON p.user_id=u.id

@@ -57,6 +57,7 @@ def create_prof_token(prof: Professional) -> str:
         "summary": prof.summary,
         "address": prof.address,
         "picture": prof.picture,
+        "status": prof.status,
         "username": prof.username,
         "issued": str(datetime.now())
     }

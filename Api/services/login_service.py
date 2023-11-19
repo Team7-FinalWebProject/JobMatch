@@ -25,7 +25,7 @@ def find_prof_by_username(username: str, fuser=False, fpassword=False):
         '''SELECT u.id, p.id,
            p.user_id, p.default_offer_id, p.first_name,
            p.last_name, p.summary, p.address,
-           p.picture, u.username, u.password 
+           p.picture, p.status, u.username, u.password 
            FROM users AS u
            JOIN professionals AS p ON u.id = p.user_id
            WHERE u.username = %s''', (username,))
@@ -33,7 +33,6 @@ def find_prof_by_username(username: str, fuser=False, fpassword=False):
     if data and ~(fuser ^ fpassword):
         password_bytes = bytes(data[0][-1])
         password_string = password_bytes.decode('utf-8')
-        print(data[2:-1])
         return password_string, next(
             (Professional.from_query_result(*row[1:-1]) for row in data), None)
     else:
