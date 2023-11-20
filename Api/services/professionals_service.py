@@ -113,26 +113,25 @@ def match_comp_offer(offer_id: int, prof_id: int, comp_offer_id: int):
         '''UPDATE professional_offers SET status = %s
            WHERE id = %s''',
         
-        '''UPADATE company_offers SET status = %s,
-           WHERE id = %s'''
+        '''UPDATE company_offers SET status = %s
+           WHERE id = %s''',
 
         '''UPDATE professionals SET status = %s
            WHERE id = %s'''
     ]
-    
+    #TODO this needs to be reviewed for better implementations
     params = (('matched', offer_id), ('archived', comp_offer_id), ('busy', prof_id))
     rowcount = update_queries_transaction(queries, params)
-    return rowcount
+    return f'Match with company offer {comp_offer_id} | {rowcount}'
 
 
-def create_match_request(prof_id: int, prof_offer_id: int, comp_offer_id: int):
-    prof_request_id = insert_query(
+def create_match_request(prof_offer_id: int, comp_offer_id: int):
+    insert_query(
         '''INSERT INTO professional_requests(professional_offer_id, company_offer_id)
-           VALUES (%s, %s)''', (prof_offer_id, comp_offer_id))
+           VALUES (%s, %s) RETURNING id''', 
+           (prof_offer_id, comp_offer_id))
     
-    return ProfessionalRequest(id=prof_request_id, 
-                               prof_offer_id=prof_offer_id, 
-                               comp_offer_id=comp_offer_id)
+    return f'Sent match request for company offer {comp_offer_id}'
 
 
 def get_requests(offers: list[ProfessionalOffer], prof_id: int):
@@ -149,5 +148,17 @@ def get_requests(offers: list[ProfessionalOffer], prof_id: int):
     return output
 
 
-def archive_offer():
-    pass
+def is_author(prof_id: int, offer_id: int):
+    return any(read_query(
+        '''SELECT 1 FROM professional_offers 
+           WHERE professional_id = %s AND id = %s''',
+        (prof_id, offer_id)))
+
+
+def set_status(prof_id: int, prof_offer_id: int, status: str):
+    rowcount = update_query(
+        '''UPDATE professional_offers SET status = %s
+           WHERE id = %s AND professional_id = %s''',
+           (status, prof_offer_id, prof_id))
+    
+    return f'Changed status | {rowcount}'

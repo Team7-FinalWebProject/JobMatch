@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Header
 from common.auth import professional_or_401
 from data.responses import BadRequest, Unauthorized, NotFound, Forbidden
-from data.models.professional import ProfessionalInfoEdit
+from data.models.professional import ProfessionalInfoEdit, ProfStatusSetter
 from data.models.offer import ProfessionalOfferCreate
 from services import professionals_service
 from services.companies_service import check_offer_exists
@@ -77,7 +77,7 @@ def send_match_request(company_offer_id: int, prof_offer_id: int, x_token: str =
     comp_offer = check_offer_exists(company_offer_id)
     if not comp_offer:
         return NotFound(content=f'No offer with id: {company_offer_id}')
-    return professionals_service.create_match_request(prof.id, prof_offer_id, company_offer_id)
+    return professionals_service.create_match_request(prof_offer_id, company_offer_id)
 
 
 @professionals_router.post('/match')
@@ -90,15 +90,20 @@ def match(offer_id: int, comp_offer_id: int, x_token: str = Header(default=None)
     comp_offer = check_offer_exists(comp_offer_id)
     if not comp_offer:
         return NotFound(content=f'No offer with id: {comp_offer_id}')
+    if not professionals_service.is_author(prof.id, offer_id):
+        return Forbidden(content=f'You are not the owner of offer {offer_id}')
     return professionals_service.match_comp_offer(offer_id, prof.id, comp_offer_id)
 
 
-
-# Maybe no need for these? archiving is handled by status and status is handled by matching
-
 @professionals_router.put('/status')
-def set_status(x_token: str = Header(default=None)):
-    pass
+def set_offer_status(offer_id: int, status: ProfStatusSetter, x_token: str = Header(default=None)):
+    prof = professional_or_401(x_token) if x_token else None
+    if not prof:
+        return Unauthorized(content=_ERROR_MESSAGE)
+    offer = professionals_service.get_offer(offer_id, prof.id)
+    if not offer:
+        return NotFound(content=f'No offer with id: {offer_id}')
+    return professionals_service.set_status(prof.id, offer.id, status)
 
 
 @professionals_router.put('/archive')
