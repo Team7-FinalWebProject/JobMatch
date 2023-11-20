@@ -46,14 +46,14 @@ def create_offer(new_offer: CompanyOfferCreate, x_token: str = Header(default=No
 # }
 
 
-@companies_router.put('/{offer_id}/edit_offer')
+@companies_router.put('/{company_offer_id}/edit_offer')
 def edit_comp_offer(new_offer: CompanyOfferCreate, 
-                    offer_id: int, 
+                    company_offer_id: int, 
                     x_token: str = Header(default=None)):
     company = company_or_401(x_token) if x_token else None
     if not company:
         return Unauthorized(content=_ERROR_MESSAGE)
-    offer = companies_service.get_company_offer(offer_id, company.id)
+    offer = companies_service.get_company_offer(company_offer_id, company.id)
     if not offer:
-        return NotFound(content=f'No offer with id: {offer_id}')
+        return NotFound(content=f'No offer with id: {company_offer_id}')
     return companies_service.edit_company_offer(new_offer, offer)
