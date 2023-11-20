@@ -9,6 +9,7 @@ class RegisterProfessionalData(BaseModel):
     last_name: str
     address: str
     summary: str
+    picture: bytes | None = None
 
     @field_validator('password', mode='before')
     @classmethod
@@ -34,6 +35,7 @@ class RegisterCompanyData(BaseModel):
     company_name: str
     description: str
     address: str
+    picture: bytes | None = None
 
     @field_validator('password', mode='before')
     @classmethod
