@@ -13,7 +13,7 @@ def try_login_as_admin(username: str, password: str):
 
 def find_admin_by_username(username: str):
     data = read_query(
-        '''SELECT id, username, password from users
+        '''SELECT id, id, username, password from users
            WHERE username = %s''', (username,))
     if data:
         password_bytes = bytes(data[0][-1])

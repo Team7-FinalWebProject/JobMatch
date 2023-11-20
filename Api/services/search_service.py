@@ -1,4 +1,4 @@
-from data.database import read_query, update_query
+from data.database import read_query, update_query, insert_query
 from data.models.company import Company, Company_Slim
 from data.models.professional import Professional, Professional_Slim
 from data.models.offer import CompanyOffer, ProfessionalOffer
@@ -16,8 +16,8 @@ def professional_get_self_info(professional_id):
 def professional_get_self_offer_by_id(id, professional_id):
     return _get_professional_offer_by_id(id=id, professional_id=professional_id, active=False)#id from token)
 
-def professional_get_self_offers(professional_id):
-    return _get_professional_offers(professional_id=professional_id, active=False)#id from token
+def professional_get_self_offers(professional_id, *filters):
+    return _get_professional_offers(*filters, professional_id=professional_id, active=False)#id from token
 
 def professional_get_company_offer_by_id(id: int):
     return _get_company_offer_by_id(id=id)
@@ -33,8 +33,8 @@ def company_get_self_info(company_id):
 def company_get_self_offer_by_id(id, company_id):
     return _get_company_offer_by_id(id=id, company_id=company_id, active=False) #id from token
 
-def company_get_self_offers(company_id):
-    return _get_company_offers(company_id=company_id, active=False) #id from token
+def company_get_self_offers(company_id, *filters):
+    return _get_company_offers(*filters, company_id=company_id, active=False) #id from token
 
 def company_get_professional_offer_by_id(id: int):
     return _get_professional_offer_by_id(id=id)
@@ -148,17 +148,22 @@ def _get_company_offer_by_id(id: int, company_id: int | None = None, approved=Tr
 def _get_company_offers(
         min_salary: int = 0,
         max_salary: int = 2147483647,
-        filter_skills: dict = {},
+        filter_distance_from_latest: int | None = None,
         salary_threshold_pct: int = 0,
         allowed_missing_skills: int = 0,
+        user_id: int | None = None,
         company_id: int | None = None,
         approved = True,
         active = True):
     status = 'active' if active else None
     min_filter, max_filter = apply_salary_threshold(min_salary, max_salary, salary_threshold_pct)
+    user_id = user_id if filter_distance_from_latest is not None else None
+    limit, offset = 1, 0 + (filter_distance_from_latest if filter_distance_from_latest else 0)
     data = read_query(
-         '''WITH filter_skills AS (
-                SELECT %s::jsonb AS skills)
+         '''WITH filter_skills AS
+                (SELECT COALESCE
+                    ((SELECT filter FROM web_filters WHERE user_id = %s ORDER BY id desc LIMIT %s OFFSET %s),
+                %s)::jsonb AS skills)
             SELECT co.id, co.company_id, co.chosen_professional_id, co.status, co.requirements, co.min_salary, co.max_salary
             FROM company_offers co
             CROSS JOIN filter_skills fs
@@ -177,7 +182,7 @@ def _get_company_offers(
                 0)
             AND c.id = COALESCE(%s, c.id)
          ;''',
-         (Json(filter_skills), approved, status, max_filter, min_filter, allowed_missing_skills, company_id))
+         (user_id, limit, offset, Json({}), approved, status, max_filter, min_filter, allowed_missing_skills, company_id))
     
     return reader_many(CompanyOffer, data)
 
@@ -202,36 +207,41 @@ def _get_professional_offer_by_id(id: int, professional_id: int | None = None, a
 def _get_professional_offers(
         min_salary: int = 0,
         max_salary: int = 2147483647,
-        filter_skills: dict = {},
+        filter_distance_from_latest: int | None = None,
         salary_threshold_pct: int = 0,
         allowed_missing_skills: int = 0,
+        user_id: int | None = None,
         professional_id: int | None = None,
         approved = True,
         active = True):
     status = 'active' if active else None
     min_filter, max_filter = apply_salary_threshold(min_salary, max_salary, salary_threshold_pct)
+    user_id = user_id if filter_distance_from_latest is not None else None
+    limit, offset = 1, 0 + (filter_distance_from_latest if filter_distance_from_latest else 0)
     data = read_query(
-         '''WITH filter_skills AS (
-                SELECT %s::jsonb AS skills)
-            SELECT po.id, po.professional_id, po.chosen_company_offer_id, po.description, po.status, po.skills, po.min_salary, po.max_salary 
-            FROM professional_offers po
-            CROSS JOIN filter_skills fs
-            LEFT JOIN professionals p
-            ON po.professional_id=p.id
-            WHERE p.approved = %s
-            AND po.status = COALESCE(%s, po.status)
-            AND po.min_salary <= %s
-            AND po.max_salary >= %s
-            AND GREATEST(
-		        (SELECT COUNT(*) - %s FROM jsonb_object_keys(fs.skills)),
-		        0) <=
-            COALESCE(
-                (SELECT COUNT(*) FROM jsonb_object_keys(fs.skills) key
-                WHERE (po.skills->key->>0)::int >= (fs.skills->key)::int),
-                0)
-            AND p.id = COALESCE(%s, p.id)
+         '''WITH filter_skills AS
+            (SELECT COALESCE
+                ((SELECT filter FROM web_filters WHERE user_id = %s ORDER BY id desc LIMIT %s OFFSET %s),
+            %s)::jsonb AS skills)
+                SELECT po.id, po.professional_id, po.chosen_company_offer_id, po.description, po.status, po.skills, po.min_salary, po.max_salary 
+                FROM professional_offers po
+                CROSS JOIN filter_skills fs
+                LEFT JOIN professionals p
+                ON po.professional_id=p.id
+                WHERE p.approved = %s
+                AND po.status = COALESCE(%s, po.status)
+                AND po.min_salary <= %s
+                AND po.max_salary >= %s
+                AND GREATEST(
+                    (SELECT COUNT(*) - %s FROM jsonb_object_keys(fs.skills)),
+                    0) <=
+                COALESCE(
+                    (SELECT COUNT(*) FROM jsonb_object_keys(fs.skills) key
+                    WHERE (po.skills->key->>0)::int >= (fs.skills->key)::int),
+                    0)
+                AND p.id = COALESCE(%s, p.id)
          ;''',
-         (Json(filter_skills), approved, status, max_filter, min_filter, allowed_missing_skills, professional_id))
+         (user_id, limit, offset, Json({}), approved, status, max_filter, min_filter, allowed_missing_skills, professional_id))
     return reader_many(ProfessionalOffer, data)
 
 
@@ -240,5 +250,12 @@ def propose_new_skills(skills):
         '''UPDATE config
         SET pending_approval_skills = pending_approval_skills || %s
         WHERE lock = %s''', (Json(skills),'X',))
+    ##TODO: check result and remodel
+    return result
+
+def add_webfilter(id, filters):
+    result = insert_query(
+        '''INSERT INTO web_filters (filter, user_id) VALUES (%s, %s) RETURNING id''',
+        (Json(filters), id))
     ##TODO: check result and remodel
     return result

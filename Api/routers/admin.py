@@ -32,12 +32,12 @@ def view_config(x_token: str = Header()):
     user = user_or_401(x_token)
     return admin_service.check_config() if user.__class__.__name__ == 'Admin' else None
 
-@admin_router.put('/config', tags=["Admin"])
+@admin_router.patch('/config', tags=["Admin"])
 def change_config(cfg: UpdateConfig = Body(default={"static_skills": False,"min_level": 0,"max_level": 10}), x_token: str = Header()):
     user = user_or_401(x_token)
     return admin_service.set_config(cfg) if user.__class__.__name__ == 'Admin' else None
 
-@admin_router.put('/prepare_skills', tags=["Admin"])
+@admin_router.post('/prepare_skills', tags=["Admin"])
 def prepare_all_pending_skills(x_token: str = Header()):
     user = user_or_401(x_token)
     return admin_service.approve_pending_skills() if user.__class__.__name__ == 'Admin' else None
@@ -52,7 +52,7 @@ def discard_prepared_skills(skills: list = Body(default=["Skill1", "Skill2"]), x
     user = user_or_401(x_token)
     return admin_service.discard_prepared_skills([s.capitalize() for s in skills]) if user.__class__.__name__ == 'Admin' else None
 
-@admin_router.put('/commit_skills', tags=["Admin"])
+@admin_router.post('/commit_skills', tags=["Admin"])
 def commit_all_prepared_skills(x_token: str = Header()):
     user = user_or_401(x_token)
     return admin_service.commit_prepared_skills() if user.__class__.__name__ == 'Admin' else None

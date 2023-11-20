@@ -106,6 +106,7 @@ def user_or_401(token: str) -> Company | Professional:
 def create_admin_token(admin: Admin) -> str:
     payload = {
         "id": admin.id,
+        "user_id": admin.id,
         "username": admin.username,
         "issued": str(datetime.now())
     }
