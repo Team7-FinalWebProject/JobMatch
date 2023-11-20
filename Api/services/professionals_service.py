@@ -1,3 +1,4 @@
+import json
 from psycopg2.extras import Json
 from psycopg2 import IntegrityError
 from data.models.professional import Professional, ProfessionalRequest, ProfessionalInfoEdit
@@ -75,7 +76,7 @@ def get_offer(offer_id: int, professional_id: int):
 
 def get_offers_by_prof_id(prof_id: int):
     data = read_query(
-        '''SELECT id, professional_id, chosen_company_offer_id
+        '''SELECT id, professional_id, chosen_company_offer_id,
            description, status, skills, min_salary, max_salary 
            FROM professional_offers WHERE professional_id = %s''',
         (prof_id,))
@@ -111,15 +112,18 @@ def match():
     pass
 
 
-def get_requests(offer_id: int):
-    data = read_query(
-        '''SELECT * FROM professional_requests WHERE professional_offer_id = %s''',
-        (offer_id,))
+def get_requests(offers: list[ProfessionalOffer], prof_id: int):
+    output = {}
+    for offer in offers:
+        data = read_query(
+            '''SELECT * FROM professional_requests 
+               WHERE professional_offer_id = %s''',
+            (offer.id,))
 
-    if len(data) > 0:
-        return (ProfessionalRequest.from_query_result(*row) for row in data)
-    
-    return None
+        requests = [ProfessionalRequest.from_query_result(*row) for row in data]
+        output[offer.id] = requests[0]
+
+    return output
 
 
 def archive_offer():

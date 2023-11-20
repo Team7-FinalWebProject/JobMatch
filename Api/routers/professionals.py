@@ -55,10 +55,10 @@ def view_match_requests(x_token: str = Header(default=None)):
     prof = professional_or_401(x_token) if x_token else None
     if not prof:
         return Unauthorized(content='Invalid token')
-    offer = professionals_service.get_offers_by_prof_id(prof.id)
-    if not offer:
+    offers = professionals_service.get_offers_by_prof_id(prof.id)
+    if not offers:
         return NotFound(content=f'No such offer for professional: {prof.id}')
-    return professionals_service.get_requests(offer.id)
+    return professionals_service.get_requests(list(offers), prof.id)
 
 
 @professionals_router.put('/archive')
