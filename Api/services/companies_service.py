@@ -84,3 +84,9 @@ def edit_company_offer(new_offer: CompanyOffer, old_offer: CompanyOffer):
     
     except IntegrityError as e:
         return e.__str__()
+
+
+def check_offer_exists(offer_id: int):
+    return any(read_query(
+        '''SELECT * FROM company_offers WHERE id = %s''',
+        (offer_id,)))

@@ -4,6 +4,7 @@ from data.responses import BadRequest, Unauthorized, NotFound
 from data.models.professional import ProfessionalInfoEdit
 from data.models.offer import ProfessionalOffer, ProfessionalOfferCreate
 from services import professionals_service
+from services.companies_service import check_offer_exists
 
 
 professionals_router = APIRouter(prefix='/professionals')
@@ -61,6 +62,25 @@ def view_match_requests(x_token: str = Header(default=None)):
     return professionals_service.get_requests(list(offers), prof.id)
 
 
+@professionals_router.post('/match')
+def create_match_request(offer_id: int, comp_offer_id: int, x_token: str = Header(default=None)):
+    prof = professional_or_401(x_token) if x_token else None
+    if not prof:
+        return Unauthorized(content=_ERROR_MESSAGE)
+    comp_offer = check_offer_exists(comp_offer_id)
+    if not comp_offer:
+        return NotFound(content=f'No offer with id: {comp_offer_id}')
+    return professionals_service.match(offer_id, comp_offer_id)
+
+
+
+# Maybe no need for these? 
+
+@professionals_router.put('/status')
+def set_status(x_token: str = Header(default=None)):
+    pass
+
+
 @professionals_router.put('/archive')
 def archive_prof_offer(x_token: str = Header(default=None)):
     prof = professional_or_401(x_token) if x_token else None
@@ -68,16 +88,3 @@ def archive_prof_offer(x_token: str = Header(default=None)):
         return Unauthorized(content=_ERROR_MESSAGE)
         
     return professionals_service.archive_offer()
-
-
-@professionals_router.post('/match')
-def create_match_request(x_token: str = Header(default=None)):
-    prof = professional_or_401(x_token) if x_token else None
-    if not prof:
-        return Unauthorized(content=_ERROR_MESSAGE)
-    return professionals_service.match()
-
-
-@professionals_router.put('/status')
-def set_status(x_token: str = Header(default=None)):
-    pass

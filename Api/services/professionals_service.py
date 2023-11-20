@@ -108,7 +108,7 @@ def edit_offer(new_offer: ProfessionalOffer, old_offer: ProfessionalOffer):
         return e.__str__()
     
 
-def match():
+def match(offer_id: int, comp_offer_id: int):
     pass
 
 
