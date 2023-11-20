@@ -48,7 +48,7 @@ def create_offer(new_offer: CompanyOfferCreate, x_token: str = Header(default=No
 
 @companies_router.put('/{company_offer_id}/edit_offer')
 def edit_comp_offer(new_offer: CompanyOfferCreate, 
-                    company_offer_id: int, 
+                    company_offer_id: int,
                     x_token: str = Header(default=None)):
     company = company_or_401(x_token) if x_token else None
     if not company:

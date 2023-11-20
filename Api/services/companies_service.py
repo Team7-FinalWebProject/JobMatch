@@ -68,8 +68,8 @@ def edit_company_offer(new_offer: CompanyOffer, old_offer: CompanyOffer):
         merged = CompanyOffer(
             id=old_offer.id,
             company_id=old_offer.company_id,
-            chosen_professional_id=new_offer.chosen_professional_id or old_offer.chosen_professional_id,
             status=new_offer.status or old_offer.status,
+            chosen_professional_id=new_offer.chosen_professional_id or old_offer.chosen_professional_id,
             requirements=new_offer.requirements or old_offer.requirements,
             min_salary=new_offer.min_salary or old_offer.min_salary,
             max_salary=new_offer.max_salary or old_offer.max_salary)
@@ -77,13 +77,14 @@ def edit_company_offer(new_offer: CompanyOffer, old_offer: CompanyOffer):
         update_query(
             '''UPDATE company_offers SET company_id = %s, status = %s, chosen_professional_id = %s,
                requirements = %s, min_salary = %s, max_salary = %s WHERE id = %s''',
-            (merged.company_id, merged.chosen_professional_id, 
-            merged.status, Json(merged.requirements), merged.min_salary, merged.max_salary, merged.id))
+            (merged.company_id, merged.status, merged.chosen_professional_id,
+            Json(merged.requirements), merged.min_salary, merged.max_salary, merged.id))
         
         return merged
     
     except IntegrityError as e:
         return e.__str__()
+
 
 
 def check_offer_exists(offer_id: int):
