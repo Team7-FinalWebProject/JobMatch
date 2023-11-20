@@ -3,7 +3,7 @@ from psycopg2.extras import Json
 from psycopg2 import IntegrityError
 from data.models.professional import Professional, ProfessionalRequest, ProfessionalInfoEdit
 from data.models.offer import ProfessionalOffer
-from data.database import update_query, insert_query, read_query
+from data.database import update_query, insert_query, read_query, update_queries_transaction
 
 
 
@@ -108,8 +108,30 @@ def edit_offer(new_offer: ProfessionalOffer, old_offer: ProfessionalOffer):
         return e.__str__()
     
 
-def match():
-    pass
+def match_comp_offer(offer_id: int, prof_id: int, comp_offer_id: int):
+    queries = [
+        '''UPDATE professional_offers SET status = %s
+           WHERE id = %s''',
+        
+        '''UPDATE company_offers SET status = %s
+           WHERE id = %s''',
+
+        '''UPDATE professionals SET status = %s
+           WHERE id = %s'''
+    ]
+    #TODO this needs to be reviewed for better implementations
+    params = (('matched', offer_id), ('archived', comp_offer_id), ('busy', prof_id))
+    rowcount = update_queries_transaction(queries, params)
+    return f'Match with company offer {comp_offer_id} | {rowcount}'
+
+
+def create_match_request(prof_offer_id: int, comp_offer_id: int):
+    insert_query(
+        '''INSERT INTO professional_requests(professional_offer_id, company_offer_id)
+           VALUES (%s, %s) RETURNING id''', 
+           (prof_offer_id, comp_offer_id))
+    
+    return f'Sent match request for company offer {comp_offer_id}'
 
 
 def get_requests(offers: list[ProfessionalOffer], prof_id: int):
@@ -126,5 +148,17 @@ def get_requests(offers: list[ProfessionalOffer], prof_id: int):
     return output
 
 
-def archive_offer():
-    pass
+def is_author(prof_id: int, offer_id: int):
+    return any(read_query(
+        '''SELECT 1 FROM professional_offers 
+           WHERE professional_id = %s AND id = %s''',
+        (prof_id, offer_id)))
+
+
+def set_status(prof_id: int, prof_offer_id: int, status: str):
+    rowcount = update_query(
+        '''UPDATE professional_offers SET status = %s
+           WHERE id = %s AND professional_id = %s''',
+           (status, prof_offer_id, prof_id))
+    
+    return f'Changed status | {rowcount}'

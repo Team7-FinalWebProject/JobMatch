@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from data.models.offer import ProfessionalOffer_NoProfessionalId
 from datetime import datetime
+from common.constraints import Alloweed_ProfOffer_Statuses
 
 
 
@@ -108,3 +109,6 @@ class ProfessionalInfoEdit(BaseModel):
             summary=summary,
             address=address,
             picture=picture)
+    
+class ProfStatusSetter(BaseModel):
+    status: Alloweed_ProfOffer_Statuses
