@@ -2,7 +2,7 @@ from fastapi import APIRouter, Header
 from common.auth import professional_or_401
 from data.responses import BadRequest, Unauthorized, NotFound, Forbidden
 from data.models.professional import ProfessionalInfoEdit
-from data.models.offer import ProfessionalOffer, ProfessionalOfferCreate
+from data.models.offer import ProfessionalOfferCreate
 from services import professionals_service
 from services.companies_service import check_offer_exists
 
@@ -94,7 +94,7 @@ def match(offer_id: int, comp_offer_id: int, x_token: str = Header(default=None)
 
 
 
-# Maybe no need for these? 
+# Maybe no need for these? archiving is handled by status and status is handled by matching
 
 @professionals_router.put('/status')
 def set_status(x_token: str = Header(default=None)):
