@@ -3,7 +3,7 @@ from psycopg2.extras import Json
 from psycopg2 import IntegrityError
 from data.models.professional import Professional, ProfessionalRequest, ProfessionalInfoEdit
 from data.models.offer import ProfessionalOffer
-from data.database import update_query, insert_query, read_query
+from data.database import update_query, insert_query, read_query, update_queries_transaction
 
 
 
@@ -108,8 +108,31 @@ def edit_offer(new_offer: ProfessionalOffer, old_offer: ProfessionalOffer):
         return e.__str__()
     
 
-def match(offer_id: int, comp_offer_id: int):
-    pass
+def match_comp_offer(offer_id: int, prof_id: int, comp_offer_id: int):
+    queries = [
+        '''UPDATE professional_offers SET status = %s
+           WHERE id = %s''',
+        
+        '''UPADATE company_offers SET status = %s,
+           WHERE id = %s'''
+
+        '''UPDATE professionals SET status = %s
+           WHERE id = %s'''
+    ]
+    
+    params = (('matched', offer_id), ('archived', comp_offer_id), ('busy', prof_id))
+    rowcount = update_queries_transaction(queries, params)
+    return rowcount
+
+
+def create_match_request(prof_id: int, prof_offer_id: int, comp_offer_id: int):
+    prof_request_id = insert_query(
+        '''INSERT INTO professional_requests(professional_offer_id, company_offer_id)
+           VALUES (%s, %s)''', (prof_offer_id, comp_offer_id))
+    
+    return ProfessionalRequest(id=prof_request_id, 
+                               prof_offer_id=prof_offer_id, 
+                               comp_offer_id=comp_offer_id)
 
 
 def get_requests(offers: list[ProfessionalOffer], prof_id: int):

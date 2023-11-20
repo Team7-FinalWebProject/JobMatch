@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Header
 from common.auth import professional_or_401
-from data.responses import BadRequest, Unauthorized, NotFound
+from data.responses import BadRequest, Unauthorized, NotFound, Forbidden
 from data.models.professional import ProfessionalInfoEdit
 from data.models.offer import ProfessionalOffer, ProfessionalOfferCreate
 from services import professionals_service
@@ -35,6 +35,8 @@ def create_offer(new_offer: ProfessionalOfferCreate, x_token: str = Header(defau
     prof = professional_or_401(x_token) if x_token else None
     if not prof:
         return Unauthorized(content=_ERROR_MESSAGE)
+    if prof.status != 'active':
+        return Forbidden(content='Cannot create offers when busy!')
     return professionals_service.create_offer(new_offer, prof)
 
 
@@ -62,15 +64,33 @@ def view_match_requests(x_token: str = Header(default=None)):
     return professionals_service.get_requests(list(offers), prof.id)
 
 
-@professionals_router.post('/match')
-def create_match_request(offer_id: int, comp_offer_id: int, x_token: str = Header(default=None)):
+@professionals_router.post('/{company_offer_id}/{prof_offer_id}/requests')
+def send_match_request(company_offer_id: int, prof_offer_id: int, x_token: str = Header(default=None)):
     prof = professional_or_401(x_token) if x_token else None
     if not prof:
         return Unauthorized(content=_ERROR_MESSAGE)
+    if prof.status != 'active':
+        return Forbidden(content='Cannot send a match request when busy!')
+    prof_offer = professionals_service.get_offer(prof_offer_id, prof.id)
+    if not prof_offer:
+        return NotFound(content=f'No such offer for professional: {prof.id}')
+    comp_offer = check_offer_exists(company_offer_id)
+    if not comp_offer:
+        return NotFound(content=f'No offer with id: {company_offer_id}')
+    return professionals_service.create_match_request(prof.id, prof_offer_id, company_offer_id)
+
+
+@professionals_router.post('/match')
+def match(offer_id: int, comp_offer_id: int, x_token: str = Header(default=None)):
+    prof = professional_or_401(x_token) if x_token else None
+    if not prof:
+        return Unauthorized(content=_ERROR_MESSAGE)
+    if prof.status != 'active':
+        return Forbidden(content='You have already matched an offer!')
     comp_offer = check_offer_exists(comp_offer_id)
     if not comp_offer:
         return NotFound(content=f'No offer with id: {comp_offer_id}')
-    return professionals_service.match(offer_id, comp_offer_id)
+    return professionals_service.match_comp_offer(offer_id, prof.id, comp_offer_id)
 
 
 
