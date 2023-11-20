@@ -1,38 +1,68 @@
-#TODO: implement
+services:
+  backend:
+    build:
+      context: Api
+      target: backutopia
+    environment:
+      - PORT=8000
+    ports:
+      - 8000:8000
+    networks:
+    - utopia-network
+    secrets:
+      - db-password
+    depends_on:
+      db:
+        condition: service_healthy
 
-# services:
-#   backend:
-#     build:
-#       context: backend
-#       target: builder
-#     secrets:
-#       - db-password
-#     depends_on:
-#       db:
-#         condition: service_healthy
+  # frontend:
+  #   build:
+  #     context: Client
+  #     target: frontutopia
+  #   environment:
+  #     NODE_ENV: production
+  #   ports:
+  #     - 5001:8080
+  #   depends_on:
+  #     - backend
 
-#   db:
-#     image: postgres
-#     restart: always
-#     user: postgres
-#     secrets:
-#       - db-password
-#     volumes:
-#       - db-data:/var/lib/postgresql/data
-#     environment:
-#       - POSTGRES_DB=example
-#       - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
-#     expose:
-#       - 5432
-#     healthcheck:
-#       test: [ "CMD", "pg_isready" ]
-#       interval: 10s
-#       timeout: 5s
-#       retries: 5
+  db:
+    build:
+      context: Api\db_data
+      target: jobgre
+    networks:
+       utopia-network:
+         aliases:
+           - postgresForUtopia
+    restart: always
+    user: postgres
+    secrets:
+      - db-password
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
+    expose:
+      - 5432
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-# volumes:
-#   db-data:
+networks:
+  utopia-network:
+    driver: bridge
 
-# secrets:
-#   db-password:
-#     file: db_password.txt
+volumes:
+  db-data:
+    driver: local
+    driver_opts:
+         type: none
+         o: bind
+         device: .\db_volume
+
+secrets:
+  db-password:
+    file: db_password.txt
