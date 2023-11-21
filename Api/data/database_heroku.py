@@ -1,6 +1,5 @@
 import psycopg2 
-from data.db_password import password_heroku
-
+import os
 
 def _get_connection():
     return psycopg2.connect(
@@ -8,7 +7,7 @@ def _get_connection():
         user = 'postgres',
         dbname = 'postgres',
         options='-c search_path=jobmatch',
-        password = password,
+        password = os.getenv('jobgrepass'),
         port = 5432
     )
 
