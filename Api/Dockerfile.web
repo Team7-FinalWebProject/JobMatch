@@ -47,6 +47,7 @@ USER appuser
 # Copy the source code into the container.
 COPY . .
 COPY data/database_heroku.py data/database.py
+COPY common/auth_heroku.py common/auth.py
 
 # Expose the port that the application listens on.
 EXPOSE 8000
