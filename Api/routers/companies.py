@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Header
 from data.models.company import Company
 from data.models.offer import CompanyOfferCreate
-from services import companies_service
+from services import companies_service, professionals_service
 from common.auth import company_or_401
-from data.responses import BadRequest, Unauthorized, NotFound
+from data.responses import BadRequest, Unauthorized, NotFound, Forbidden
 
 
 _ERROR_MESSAGE = 'You are not authorized [NOT LOGGED IN | TOKEN EXPIRED]'
@@ -57,3 +57,34 @@ def edit_comp_offer(new_offer: CompanyOfferCreate,
     if not offer:
         return NotFound(content=f'No offer with id: {company_offer_id}')
     return companies_service.edit_company_offer(new_offer, offer)
+
+
+
+@companies_router.post('/{company_offer_id}/{prof_offer_id}/request')
+def send_match_request_to_prof_offer(company_offer_id: int, prof_offer_id: int, x_token: str = Header(default=None)):
+    company = company_or_401(x_token) if x_token else None
+
+    company_offer_exist = companies_service.check_offer_exists(company_offer_id)
+
+
+    if not company:
+        return Unauthorized(content=_ERROR_MESSAGE)
+    
+
+    if company_offer_exist:
+        company_offer_info = companies_service.get_company_offer(company_offer_id, company.id)
+    else:
+        return NotFound(content=f'No offer with id: {company_offer_id}')
+
+    
+    if company_offer_info.status != 'active':
+        return Forbidden(content='Cannot send a match request when busy!')
+
+    prof_offer = professionals_service.check_prof_offer_exists(prof_offer_id)
+
+    if not prof_offer:
+        return NotFound(content=f'No professional offer with id: {prof_offer_id}')
+    
+    prof_id = companies_service.get_prof_id_from_prof_offer_id(prof_offer_id)
+
+    return companies_service.create_match_request(company_offer_id, prof_id, prof_offer_id)

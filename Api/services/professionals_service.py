@@ -162,3 +162,9 @@ def set_status(prof_id: int, prof_offer_id: int, status: str):
            (status, prof_offer_id, prof_id))
     
     return f'Changed status | {rowcount}'
+
+
+def check_prof_offer_exists(offer_id: int):
+    return any(read_query(
+        '''SELECT * FROM professional_offers WHERE id = %s''',
+        (offer_id,)))

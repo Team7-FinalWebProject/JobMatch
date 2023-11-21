@@ -63,6 +63,8 @@ def get_company_offer(offer_id: int, company_id: int):
     return next((CompanyOffer.from_query_result(*row) for row in data), None)
 
 
+
+
 def edit_company_offer(new_offer: CompanyOffer, old_offer: CompanyOffer):
     try:
         merged = CompanyOffer(
@@ -91,3 +93,18 @@ def check_offer_exists(offer_id: int):
     return any(read_query(
         '''SELECT * FROM company_offers WHERE id = %s''',
         (offer_id,)))
+
+def get_prof_id_from_prof_offer_id(prof_offer_id: int):
+    data = read_query(
+        '''SELECT professional_id FROM professional_offers WHERE id = %s''',
+        (prof_offer_id,))
+    
+    return next((row[0] for row in data), None)
+
+def create_match_request(comp_offer_id: int, prof_id: int, prof_offer_id: int):
+    insert_query(
+        '''INSERT INTO company_requests(comp_offer_id, prof_id, prof_offer_id)
+           VALUES (%s, %s) RETURNING id''', 
+           (comp_offer_id, prof_id, prof_offer_id))
+    
+    return f'Sent match request for company offer {comp_offer_id}'
