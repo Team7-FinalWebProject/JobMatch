@@ -12,7 +12,7 @@ professionals_router = APIRouter(prefix='/professionals')
 _ERROR_MESSAGE = 'You are not authorized [NOT LOGGED IN | TOKEN EXPIRED]'
 
 
-@professionals_router.put('/info')
+@professionals_router.put('/info', tags=['Professional'])
 def edit_info(new_info: ProfessionalInfoEdit, x_token: str = Header(default=None)):
     prof = professional_or_401(x_token) if x_token else None
     if not prof:
@@ -20,7 +20,7 @@ def edit_info(new_info: ProfessionalInfoEdit, x_token: str = Header(default=None
     return professionals_service.edit(new_info, prof)
         
 
-@professionals_router.put('/{offer_id}/default_offer')
+@professionals_router.put('/{offer_id}/default_offer', tags=['Professional'])
 def set_default_prof_offer(offer_id: int, x_token: str = Header(default=None)):
     prof = professional_or_401(x_token) if x_token else None
     offer = professionals_service.get_offer(offer_id, prof.id)
@@ -31,7 +31,7 @@ def set_default_prof_offer(offer_id: int, x_token: str = Header(default=None)):
     return professionals_service.set_def_offer(offer_id, prof.id)
 
 
-@professionals_router.post('/offer')
+@professionals_router.post('/offer', tags=['Professional'])
 def create_offer(new_offer: ProfessionalOfferCreate, x_token: str = Header(default=None)):
     prof = professional_or_401(x_token) if x_token else None
     if not prof:
@@ -41,7 +41,7 @@ def create_offer(new_offer: ProfessionalOfferCreate, x_token: str = Header(defau
     return professionals_service.create_offer(new_offer, prof)
 
 
-@professionals_router.put('/{offer_id}/edit_offer')
+@professionals_router.put('/{offer_id}/edit_offer', tags=['Professional'])
 def edit_prof_offer(new_offer: ProfessionalOfferCreate, 
                     offer_id: int, 
                     x_token: str = Header(default=None)):
@@ -54,7 +54,7 @@ def edit_prof_offer(new_offer: ProfessionalOfferCreate,
     return professionals_service.edit_offer(new_offer, offer)
 
 
-@professionals_router.post('/{company_offer_id}/{prof_offer_id}/requests')
+@professionals_router.post('/{company_offer_id}/{prof_offer_id}/requests', tags=['Professional'])
 def send_match_request(company_offer_id: int, prof_offer_id: int, x_token: str = Header(default=None)):
     prof = professional_or_401(x_token) if x_token else None
     if not prof:
@@ -70,7 +70,7 @@ def send_match_request(company_offer_id: int, prof_offer_id: int, x_token: str =
     return professionals_service.create_match_request(prof_offer_id, company_offer_id)
 
 
-@professionals_router.post('/match')
+@professionals_router.post('/match', tags=['Professional'])
 def match(offer_id: int, comp_offer_id: int, private_or_hidden = 'hidden', x_token: str = Header(default=None)):
     prof = professional_or_401(x_token) if x_token else None
     if private_or_hidden not in ('hidden', 'private'):
@@ -87,7 +87,7 @@ def match(offer_id: int, comp_offer_id: int, private_or_hidden = 'hidden', x_tok
     return professionals_service.match_comp_offer(offer_id, prof.id, comp_offer_id, private_or_hidden)
 
 
-@professionals_router.put('/status')
+@professionals_router.put('/status', tags=['Professional'])
 def set_offer_status(offer_id: int, status: ProfStatusSetter, x_token: str = Header(default=None)):
     prof = professional_or_401(x_token) if x_token else None
     if not prof:
@@ -98,7 +98,7 @@ def set_offer_status(offer_id: int, status: ProfStatusSetter, x_token: str = Hea
     return professionals_service.set_status(prof.id, offer.id, status)
 
 
-@professionals_router.put('/archive')
+@professionals_router.put('/archive', tags=['Professional'])
 def archive_prof_offer(x_token: str = Header(default=None)):
     prof = professional_or_401(x_token) if x_token else None
     if not prof:
