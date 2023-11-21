@@ -103,8 +103,8 @@ def get_prof_id_from_prof_offer_id(prof_offer_id: int):
 
 def create_match_request(comp_offer_id: int, prof_id: int, prof_offer_id: int):
     insert_query(
-        '''INSERT INTO company_requests(comp_offer_id, prof_id, prof_offer_id)
-           VALUES (%s, %s) RETURNING id''', 
+        '''INSERT INTO company_requests(company_offer_id, professional_id, professional_offer_id)
+           VALUES (%s, %s, %s) RETURNING id''',
            (comp_offer_id, prof_id, prof_offer_id))
     
     return f'Sent match request for company offer {comp_offer_id}'
