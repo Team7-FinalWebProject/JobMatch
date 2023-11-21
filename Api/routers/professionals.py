@@ -5,6 +5,7 @@ from data.models.professional import ProfessionalInfoEdit, ProfStatusSetter
 from data.models.offer import ProfessionalOfferCreate
 from services import professionals_service
 from services.companies_service import check_offer_exists
+from services.search_service import _get_company_offer_by_id
 
 
 professionals_router = APIRouter(prefix='/professionals')
@@ -53,17 +54,6 @@ def edit_prof_offer(new_offer: ProfessionalOfferCreate,
     return professionals_service.edit_offer(new_offer, offer)
 
 
-@professionals_router.get('/requests')
-def view_match_requests(x_token: str = Header(default=None)):
-    prof = professional_or_401(x_token) if x_token else None
-    if not prof:
-        return Unauthorized(content='Invalid token')
-    offers = professionals_service.get_offers_by_prof_id(prof.id)
-    if not offers:
-        return NotFound(content=f'No such offer for professional: {prof.id}')
-    return professionals_service.get_requests(list(offers), prof.id)
-
-
 @professionals_router.post('/{company_offer_id}/{prof_offer_id}/requests')
 def send_match_request(company_offer_id: int, prof_offer_id: int, x_token: str = Header(default=None)):
     prof = professional_or_401(x_token) if x_token else None
@@ -74,15 +64,17 @@ def send_match_request(company_offer_id: int, prof_offer_id: int, x_token: str =
     prof_offer = professionals_service.get_offer(prof_offer_id, prof.id)
     if not prof_offer:
         return NotFound(content=f'No such offer for professional: {prof.id}')
-    comp_offer = check_offer_exists(company_offer_id)
+    comp_offer = _get_company_offer_by_id(company_offer_id)
     if not comp_offer:
         return NotFound(content=f'No offer with id: {company_offer_id}')
     return professionals_service.create_match_request(prof_offer_id, company_offer_id)
 
 
 @professionals_router.post('/match')
-def match(offer_id: int, comp_offer_id: int, x_token: str = Header(default=None)):
+def match(offer_id: int, comp_offer_id: int, private_or_hidden = 'hidden', x_token: str = Header(default=None)):
     prof = professional_or_401(x_token) if x_token else None
+    if private_or_hidden not in ('hidden', 'private'):
+        private_or_hidden = 'hidden'
     if not prof:
         return Unauthorized(content=_ERROR_MESSAGE)
     if prof.status != 'active':
@@ -92,7 +84,7 @@ def match(offer_id: int, comp_offer_id: int, x_token: str = Header(default=None)
         return NotFound(content=f'No offer with id: {comp_offer_id}')
     if not professionals_service.is_author(prof.id, offer_id):
         return Forbidden(content=f'You are not the owner of offer {offer_id}')
-    return professionals_service.match_comp_offer(offer_id, prof.id, comp_offer_id)
+    return professionals_service.match_comp_offer(offer_id, prof.id, comp_offer_id, private_or_hidden)
 
 
 @professionals_router.put('/status')

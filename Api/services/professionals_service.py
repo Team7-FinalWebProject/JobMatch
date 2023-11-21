@@ -108,19 +108,18 @@ def edit_offer(new_offer: ProfessionalOffer, old_offer: ProfessionalOffer):
         return e.__str__()
     
 
-def match_comp_offer(offer_id: int, prof_id: int, comp_offer_id: int):
+def match_comp_offer(offer_id: int, prof_id: int, comp_offer_id: int, private_or_hidden: str):
     queries = [
-        '''UPDATE professional_offers SET status = %s
-           WHERE id = %s''',
-        
-        '''UPDATE company_offers SET status = %s
+        '''UPDATE professional_offers SET status = %s,
+           WHERE professional_id = %s AND status = %s''',
+           
+        '''UPDATE professional_offers SET status = %s, chosen_company_offer_id = %s
            WHERE id = %s''',
 
         '''UPDATE professionals SET status = %s
            WHERE id = %s'''
     ]
-    #TODO this needs to be reviewed for better implementations
-    params = (('matched', offer_id), ('archived', comp_offer_id), ('busy', prof_id))
+    params = ((private_or_hidden, prof_id, 'active'), ('matched', comp_offer_id, offer_id), ('busy', prof_id))
     rowcount = update_queries_transaction(queries, params)
     return f'Match with company offer {comp_offer_id} | {rowcount}'
 
@@ -132,20 +131,6 @@ def create_match_request(prof_offer_id: int, comp_offer_id: int):
            (prof_offer_id, comp_offer_id))
     
     return f'Sent match request for company offer {comp_offer_id}'
-
-
-def get_requests(offers: list[ProfessionalOffer], prof_id: int):
-    output = {}
-    for offer in offers:
-        data = read_query(
-            '''SELECT * FROM professional_requests 
-               WHERE professional_offer_id = %s''',
-            (offer.id,))
-
-        requests = [ProfessionalRequest.from_query_result(*row) for row in data]
-        output[offer.id] = requests[0]
-
-    return output
 
 
 def is_author(prof_id: int, offer_id: int):
