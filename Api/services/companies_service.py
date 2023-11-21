@@ -1,4 +1,4 @@
-from data.database import update_query, insert_query, read_query
+from data.database import update_query, insert_query, read_query, update_queries_transaction
 from fastapi import Header
 from data.models.company import Company
 from data.models.offer import CompanyOffer
@@ -63,6 +63,8 @@ def get_company_offer(offer_id: int, company_id: int):
     return next((CompanyOffer.from_query_result(*row) for row in data), None)
 
 
+
+
 def edit_company_offer(new_offer: CompanyOffer, old_offer: CompanyOffer):
     try:
         merged = CompanyOffer(
@@ -91,3 +93,45 @@ def check_offer_exists(offer_id: int):
     return any(read_query(
         '''SELECT * FROM company_offers WHERE id = %s''',
         (offer_id,)))
+
+def get_prof_id_from_prof_offer_id(prof_offer_id: int):
+    data = read_query(
+        '''SELECT professional_id FROM professional_offers WHERE id = %s''',
+        (prof_offer_id,))
+    
+    return next((row[0] for row in data), None)
+
+def create_match_request(comp_offer_id: int, prof_id: int, prof_offer_id: int):
+    insert_query(
+        '''INSERT INTO company_requests(company_offer_id, professional_id, professional_offer_id)
+           VALUES (%s, %s, %s) RETURNING id''',
+           (comp_offer_id, prof_id, prof_offer_id))
+    
+    return f'Sent match request for company offer {comp_offer_id}'
+
+
+
+def is_author(company_id: int, offer_id: int):
+    return any(read_query(
+        '''SELECT 1 FROM company_offers 
+           WHERE company_id = %s AND id = %s''',
+        (company_id, offer_id)))
+
+
+def match_prof_offer(prof_offer_id: int, prof_id: int, comp_offer_id: int, private_or_hidden: str):
+    # queries = [
+        # '''UPDATE company_offers SET status = %s,
+        #    WHERE professional_id = %s AND status = %s''',
+           
+    update_query('''UPDATE company_offers SET status = %s, chosen_professional_id = %s
+           WHERE id = %s''',
+           ("matched", prof_id))
+
+        # '''UPDATE professionals SET status = %s
+        #    WHERE id = %s'''
+    # ]
+    # params = ((private_or_hidden, prof_id, 'active'), ('matched', comp_offer_id, offer_id), ('busy', prof_id))
+    # rowcount = update_queries_transaction(queries, params)
+    # return f'Match with company offer {comp_offer_id} | {rowcount}'
+
+    return f'Match with professional offer {prof_offer_id}'
