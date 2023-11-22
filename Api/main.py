@@ -1,6 +1,8 @@
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from dotenv import load_dotenv
+load_dotenv()
 
 from routers.login import login_router
 from routers.register import register_router
@@ -9,6 +11,8 @@ from routers.admin import  admin_router
 from routers.companies import companies_router
 from routers.professionals import professionals_router
 from routers.messages import messages_router
+
+
 
 app = FastAPI()
 origins = [

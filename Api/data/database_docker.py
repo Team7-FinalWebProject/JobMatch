@@ -2,8 +2,7 @@
 ###Set password_docker
 
 import psycopg2 
-from data.db_password import password_docker
-
+import os
 
 def _get_connection():
     return psycopg2.connect(
@@ -11,7 +10,7 @@ def _get_connection():
         user = 'postgres',
         dbname = 'postgres',
         options='-c search_path=jobmatch',
-        password = password_docker,
+        password = os.getenv("password_docker"),
         port = 5432
     )
 

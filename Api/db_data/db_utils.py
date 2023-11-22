@@ -1,53 +1,70 @@
-from os import getcwd, environ, path
+from os import getcwd, environ, path, getenv
 from time import sleep
 import psycopg2
-from data.db_password import password
+# from data.db_password import password
 from db_data import config
 from subprocess import PIPE, run
 
 _USER, _DBNAME, _SCHEMA = config._USER, config._DBNAME, config._SCHEMA
 _BIN_PATH, _PSQL, _PG_DUMP = config._BIN_PATH, config._PSQL, config._PG_DUMP
 _REL_IMPORT_DUMP_PATH, _REL_EXPORT_DUMP_PATH = config._REL_IMPORT_DUMP_PATH, config._REL_EXPORT_DUMP_PATH
+_REMOTE_HOST =  config._REMOTE_HOST
 
 current_directory = getcwd()
 
 
-def _get_connection():
+def _get_connection(remote=False):
     return psycopg2.connect(
-        host='localhost',
+        host='localhost' if not remote else _REMOTE_HOST,
         user=_USER,
         dbname=_DBNAME,
         # Schemas
         options=f'-c search_path={_SCHEMA}',
-        password=password,
+        password=getenv('password') if not remote else getenv('jobgrepass'),
         port=5432
     )
 
 
-def delete_db():
-    with _get_connection() as conn:
+def delete_db(remote=False):
+    with _get_connection(remote=remote) as conn:
         cursor = conn.cursor()
         cursor.execute(f"DROP SCHEMA IF EXISTS {_SCHEMA} CASCADE")
         conn.commit()
+        print(cursor)
         cursor.close()
     print('DB dropped successfully if exists')
     return
 
 
-def mysql_io(io, binary, dump):
-    environ['PGPASSWORD'] = password
-    if io == 'import':
-        process = run(args=[binary, f'--username={_USER}', f'--dbname={_DBNAME}', f'--file={current_directory + dump}'], stdin=PIPE, stdout=PIPE, stderr=PIPE, universal_newlines=True)
-        print('DB imported successfully' if not process.stderr or not process.stderr.strip(
-        ) else process.stderr)
-    elif io == 'dump':
-        process = run(args=[binary, f'--username={_USER}', f'--dbname={_DBNAME}', f'--schema={_SCHEMA}'], stdin=PIPE, stdout=PIPE, stderr=PIPE, universal_newlines=True)
-        if process.stderr and process.stderr.strip():
-            print(f"Error: {process.stderr}")
-        else:
-            with open(current_directory + dump, "w") as dump_file:
-                dump_file.write(process.stdout)
-            print(f'DB dumped (check file {current_directory + dump})')
+def mysql_io(io, binary, dump, remote=False):
+    if not remote:
+        environ['PGPASSWORD'] = getenv('password')
+        if io == 'import':
+            process = run(args=[binary, f'--username={_USER}', f'--dbname={_DBNAME}', f'--file={current_directory + dump}'], stdin=PIPE, stdout=PIPE, stderr=PIPE, universal_newlines=True)
+            print('DB imported successfully' if not process.stderr or not process.stderr.strip(
+            ) else process.stderr)
+        elif io == 'dump':
+            process = run(args=[binary, f'--username={_USER}', f'--dbname={_DBNAME}', f'--schema={_SCHEMA}'], stdin=PIPE, stdout=PIPE, stderr=PIPE, universal_newlines=True)
+            if process.stderr and process.stderr.strip():
+                print(f"Error: {process.stderr}")
+            else:
+                with open(current_directory + dump, "w") as dump_file:
+                    dump_file.write(process.stdout)
+                print(f'DB dumped (check file {current_directory + dump})')
+    if remote:
+        environ['PGPASSWORD'] = getenv('jobgrepass')
+        if io == 'import':
+            process = run(args=[binary, f'--username={_USER}', f'--dbname={_DBNAME}', f'--file={current_directory + dump}', f'--host={_REMOTE_HOST}'], stdin=PIPE, stdout=PIPE, stderr=PIPE, universal_newlines=True)
+            print('DB imported successfully' if not process.stderr or not process.stderr.strip(
+            ) else process.stderr)
+        elif io == 'dump':
+            process = run(args=[binary, f'--username={_USER}', f'--dbname={_DBNAME}', f'--schema={_SCHEMA}', f'--host={_REMOTE_HOST}'], stdin=PIPE, stdout=PIPE, stderr=PIPE, universal_newlines=True)
+            if process.stderr and process.stderr.strip():
+                print(f"Error: {process.stderr}")
+            else:
+                with open(current_directory + dump, "w") as dump_file:
+                    dump_file.write(process.stdout)
+                print(f'DB dumped (check file {current_directory + dump})')
     return
 
 
@@ -66,29 +83,30 @@ def get_bkp_dump_extension(extensions):
     return return_extension
 
 
-def make_copy():
-    bkp_extension = get_bkp_dump_extension([".1.bkp", ".2.bkp", ".3.bkp"])
+def make_copy(remote=False):
+    extensions = [".1.bkp", ".2.bkp", ".3.bkp"] if not remote else [".remote.1.bkp", ".remote.2.bkp", ".remote.3.bkp"]
+    bkp_extension = get_bkp_dump_extension(extensions)
     mysql_io('dump', _BIN_PATH + _PG_DUMP,
-             _REL_EXPORT_DUMP_PATH + bkp_extension)
+             _REL_EXPORT_DUMP_PATH + bkp_extension, remote=remote)
 
 
 def main(silent_export=False, silent_import=False):
-    def dump():
-        mysql_io('dump', _BIN_PATH + _PG_DUMP, _REL_EXPORT_DUMP_PATH)
+    def dump(remote=False):
+        mysql_io('dump', _BIN_PATH + _PG_DUMP, _REL_EXPORT_DUMP_PATH, remote=remote)
 
-    def drop():
-        make_copy()
+    def drop(remote=False):
+        make_copy(remote=remote)
         sleep(2)
         try:
-            delete_db()
+            delete_db(remote=remote)
         except:
             print(f'DB schema {_SCHEMA} does not exist or other error, skipping drop')
 
-    def imp(copy=True):
+    def imp(copy=True, remote=False):
         if copy:
-            make_copy()
+            make_copy(remote=remote)
             sleep(2)
-        mysql_io('import', _BIN_PATH + _PSQL, _REL_IMPORT_DUMP_PATH)
+        mysql_io('import', _BIN_PATH + _PSQL, _REL_IMPORT_DUMP_PATH, remote=remote)
 
     def user_query(question):
         answer = None
@@ -102,14 +120,25 @@ def main(silent_export=False, silent_import=False):
         dump()
     else:
         copy = True
-        if user_query(f'Would you like to export the {_SCHEMA} schema (Y/N)?') == 'Y':
+        if user_query(f'Would you like to export the local {_SCHEMA} schema (Y/N)?') == 'Y':
             dump()
-        if user_query(f'Would you like to drop and import the {_SCHEMA} schema (Y/N)?') == 'Y':
+        if user_query(f'Would you like to drop and import the local {_SCHEMA} schema (Y/N)?') == 'Y':
             drop()
             imp(copy=False)
+        if user_query(f'Would you like remote commands (Y/N)?') == 'Y':
+            if user_query(f'Would you like to export the remote {_SCHEMA} schema (Y/N)?') == 'Y':
+                dump(remote=True)
+            if user_query(f'Would you like to drop and import the remote {_SCHEMA} schema (Y/N)?') == 'Y':
+                drop(remote=True)
+                imp(copy=False,remote=True)
         if user_query(f'Would you like additional commands (Y/N)?') == 'Y':
-            if user_query(f'Would you like to drop the {_SCHEMA} schema (Y/N)?') == 'Y':
+            if user_query(f'Would you like to drop the local {_SCHEMA} schema (Y/N)?') == 'Y':
                 drop()
                 copy = False
-            if user_query(f'Would you like to import the {_SCHEMA} schema (Y/N)?') == 'Y':
+            if user_query(f'Would you like to import the local {_SCHEMA} schema (Y/N)?') == 'Y':
                 imp(copy=copy)
+            if user_query(f'Would you like to drop the remote {_SCHEMA} schema (Y/N)?') == 'Y':
+                drop(remote=True)
+                copy = False
+            if user_query(f'Would you like to import the remote {_SCHEMA} schema (Y/N)?') == 'Y':
+                imp(copy=copy, remote=True)

@@ -33,23 +33,43 @@ CREATE FUNCTION jobmatch.check_user_id_admin_not_in_professionals_or_companies()
     LANGUAGE plpgsql
     AS $$
 
+
+
 BEGIN
+
+
 
   IF NEW.admin AND (
 
+
+
     EXISTS (SELECT 1 FROM jobmatch.professionals WHERE jobmatch.professionals.user_id = NEW.id) OR
+
+
 
     EXISTS (SELECT 1 FROM jobmatch.companies WHERE jobmatch.companies.user_id = NEW.id)
 
+
+
   ) THEN
+
+
 
     RAISE EXCEPTION 'id for admin cannot be the same as user_id in jobmatch.companies or jobmatch.professionals';
 
+
+
   END IF;
+
+
 
   RETURN NEW;
 
+
+
 END;
+
+
 
 $$;
 
@@ -64,17 +84,31 @@ CREATE FUNCTION jobmatch.check_user_id_companies_not_in_professionals() RETURNS 
     LANGUAGE plpgsql
     AS $$
 
+
+
 BEGIN
+
+
 
   IF EXISTS (SELECT 1 FROM jobmatch.professionals WHERE jobmatch.professionals.user_id = NEW.user_id) THEN
 
+
+
     RAISE EXCEPTION 'user_id in jobmatch.companies cannot be the same as jobmatch.professionals';
+
+
 
   END IF;
 
+
+
   RETURN NEW;
 
+
+
 END;
+
+
 
 $$;
 
@@ -89,17 +123,31 @@ CREATE FUNCTION jobmatch.check_user_id_professionals_not_in_companies() RETURNS 
     LANGUAGE plpgsql
     AS $$
 
+
+
 BEGIN
+
+
 
   IF EXISTS (SELECT 1 FROM jobmatch.companies WHERE jobmatch.companies.user_id = NEW.user_id) THEN
 
+
+
     RAISE EXCEPTION 'user_id in jobmatch.professionals cannot be the same as jobmatch.companies';
+
+
 
   END IF;
 
+
+
   RETURN NEW;
 
+
+
 END;
+
+
 
 $$;
 
@@ -113,10 +161,15 @@ ALTER FUNCTION jobmatch.check_user_id_professionals_not_in_companies() OWNER TO 
 CREATE PROCEDURE jobmatch.insert_into_companies_and_users(IN new_username text, IN new_password bytea, IN new_name text, IN new_description text, IN new_address text)
     LANGUAGE plpgsql
     AS $_$
+
 BEGIN
+
   WITH new_user_id AS (INSERT INTO jobmatch.users (username,password) VALUES ($1,$2) RETURNING id)
+
   INSERT INTO jobmatch.companies (user_id,name,description,address) VALUES (new_user_id,$3,$4,$5) RETURNING id;
+
 END;
+
 $_$;
 
 
@@ -125,42 +178,6 @@ ALTER PROCEDURE jobmatch.insert_into_companies_and_users(IN new_username text, I
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
-
---
--- Name: company_requests; Type: TABLE; Schema: jobmatch; Owner: postgres
---
-
-CREATE TABLE jobmatch.company_requests (
-    id integer NOT NULL,
-    company_offer_id integer NOT NULL,
-    professional_id integer NOT NULL,
-    professional_offer_id integer
-);
-
-
-ALTER TABLE jobmatch.company_requests OWNER TO postgres;
-
---
--- Name: comcompany_requests_id_seq; Type: SEQUENCE; Schema: jobmatch; Owner: postgres
---
-
-CREATE SEQUENCE jobmatch.comcompany_requests_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE jobmatch.comcompany_requests_id_seq OWNER TO postgres;
-
---
--- Name: comcompany_requests_id_seq; Type: SEQUENCE OWNED BY; Schema: jobmatch; Owner: postgres
---
-
-ALTER SEQUENCE jobmatch.comcompany_requests_id_seq OWNED BY jobmatch.company_requests.id;
-
 
 --
 -- Name: companies; Type: TABLE; Schema: jobmatch; Owner: postgres
@@ -243,7 +260,7 @@ CREATE TABLE jobmatch.company_offers (
     id integer NOT NULL,
     company_id integer NOT NULL,
     status character varying DEFAULT 'active'::character varying NOT NULL,
-    chosen_professional_id integer,
+    chosen_professional_offer_id integer,
     requirements jsonb DEFAULT '{}'::jsonb,
     min_salary integer DEFAULT 0 NOT NULL,
     max_salary integer DEFAULT 2147483647 NOT NULL,
@@ -371,41 +388,6 @@ ALTER SEQUENCE jobmatch.professional_offers_id_seq OWNED BY jobmatch.professiona
 
 
 --
--- Name: professional_requests; Type: TABLE; Schema: jobmatch; Owner: postgres
---
-
-CREATE TABLE jobmatch.professional_requests (
-    id integer NOT NULL,
-    professional_offer_id integer NOT NULL,
-    company_offer_id integer NOT NULL
-);
-
-
-ALTER TABLE jobmatch.professional_requests OWNER TO postgres;
-
---
--- Name: professional_requests_id_seq; Type: SEQUENCE; Schema: jobmatch; Owner: postgres
---
-
-CREATE SEQUENCE jobmatch.professional_requests_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER SEQUENCE jobmatch.professional_requests_id_seq OWNER TO postgres;
-
---
--- Name: professional_requests_id_seq; Type: SEQUENCE OWNED BY; Schema: jobmatch; Owner: postgres
---
-
-ALTER SEQUENCE jobmatch.professional_requests_id_seq OWNED BY jobmatch.professional_requests.id;
-
-
---
 -- Name: professionals; Type: TABLE; Schema: jobmatch; Owner: postgres
 --
 
@@ -420,7 +402,7 @@ CREATE TABLE jobmatch.professionals (
     picture bytea,
     approved boolean DEFAULT false NOT NULL,
     status character varying DEFAULT 'active'::character varying NOT NULL,
-    CONSTRAINT cns_professionals CHECK (((status)::text = ANY ((ARRAY['active'::character varying, 'busy'::character varying])::text[])))
+    CONSTRAINT cns_professionals CHECK (((status)::text = ANY (ARRAY[('active'::character varying)::text, ('busy'::character varying)::text])))
 );
 
 
@@ -447,6 +429,36 @@ ALTER SEQUENCE jobmatch.professionals_id_seq OWNER TO postgres;
 
 ALTER SEQUENCE jobmatch.professionals_id_seq OWNED BY jobmatch.professionals.id;
 
+
+--
+-- Name: requests_id_seq; Type: SEQUENCE; Schema: jobmatch; Owner: postgres
+--
+
+CREATE SEQUENCE jobmatch.requests_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE jobmatch.requests_id_seq OWNER TO postgres;
+
+--
+-- Name: requests; Type: TABLE; Schema: jobmatch; Owner: postgres
+--
+
+CREATE TABLE jobmatch.requests (
+    id integer DEFAULT nextval('jobmatch.requests_id_seq'::regclass) NOT NULL,
+    professional_offer_id integer NOT NULL,
+    company_offer_id integer NOT NULL,
+    request_from character varying NOT NULL,
+    CONSTRAINT cns_requests CHECK (((request_from)::text = ANY (ARRAY[('company'::character varying)::text, ('professional'::character varying)::text])))
+);
+
+
+ALTER TABLE jobmatch.requests OWNER TO postgres;
 
 --
 -- Name: users_id_seq; Type: SEQUENCE; Schema: jobmatch; Owner: postgres
@@ -520,13 +532,6 @@ ALTER TABLE ONLY jobmatch.company_offers ALTER COLUMN id SET DEFAULT nextval('jo
 
 
 --
--- Name: company_requests id; Type: DEFAULT; Schema: jobmatch; Owner: postgres
---
-
-ALTER TABLE ONLY jobmatch.company_requests ALTER COLUMN id SET DEFAULT nextval('jobmatch.comcompany_requests_id_seq'::regclass);
-
-
---
 -- Name: messages id; Type: DEFAULT; Schema: jobmatch; Owner: postgres
 --
 
@@ -538,13 +543,6 @@ ALTER TABLE ONLY jobmatch.messages ALTER COLUMN id SET DEFAULT nextval('jobmatch
 --
 
 ALTER TABLE ONLY jobmatch.professional_offers ALTER COLUMN id SET DEFAULT nextval('jobmatch.professional_offers_id_seq'::regclass);
-
-
---
--- Name: professional_requests id; Type: DEFAULT; Schema: jobmatch; Owner: postgres
---
-
-ALTER TABLE ONLY jobmatch.professional_requests ALTER COLUMN id SET DEFAULT nextval('jobmatch.professional_requests_id_seq'::regclass);
 
 
 --
@@ -583,18 +581,10 @@ COPY jobmatch.companies (id, name, description, address, picture, approved, user
 -- Data for Name: company_offers; Type: TABLE DATA; Schema: jobmatch; Owner: postgres
 --
 
-COPY jobmatch.company_offers (id, company_id, status, chosen_professional_id, requirements, min_salary, max_salary) FROM stdin;
+COPY jobmatch.company_offers (id, company_id, status, chosen_professional_offer_id, requirements, min_salary, max_salary) FROM stdin;
 1	1	active	\N	{"English": [7, "Native"], "Computers": [10, "Master"]}	3000	8000
 2	2	active	\N	{"English": [5, "Advanced"], "Computers": [5, "Advanced"]}	2500	5500
 3	3	active	\N	{"English": [4, "Advanced"], "Computers": [3, "Entry"]}	1500	2500
-\.
-
-
---
--- Data for Name: company_requests; Type: TABLE DATA; Schema: jobmatch; Owner: postgres
---
-
-COPY jobmatch.company_requests (id, company_offer_id, professional_id, professional_offer_id) FROM stdin;
 \.
 
 
@@ -627,17 +617,6 @@ COPY jobmatch.professional_offers (id, professional_id, description, chosen_comp
 
 
 --
--- Data for Name: professional_requests; Type: TABLE DATA; Schema: jobmatch; Owner: postgres
---
-
-COPY jobmatch.professional_requests (id, professional_offer_id, company_offer_id) FROM stdin;
-1	1	1
-2	2	2
-3	3	3
-\.
-
-
---
 -- Data for Name: professionals; Type: TABLE DATA; Schema: jobmatch; Owner: postgres
 --
 
@@ -645,6 +624,17 @@ COPY jobmatch.professionals (id, first_name, last_name, address, user_id, summar
 1	John	Ivanov	bul.Skobelev, 24, Sofia, BG	2	10 years of experience in C# ASP.NET development	1	\N	t	active
 2	Michael	Livingston	Ubbo-Emmunslaan str., Amsterdam, NE	3	Experienced Python developer	2	\N	t	active
 3	William	Pique	Buterpark str., London, GBT	4	Junior Java developer	3	\N	f	active
+\.
+
+
+--
+-- Data for Name: requests; Type: TABLE DATA; Schema: jobmatch; Owner: postgres
+--
+
+COPY jobmatch.requests (id, professional_offer_id, company_offer_id, request_from) FROM stdin;
+1	1	1	company
+2	2	2	company
+3	3	3	professional
 \.
 
 
@@ -669,13 +659,6 @@ COPY jobmatch.users (id, username, admin, password) FROM stdin;
 
 COPY jobmatch.web_filters (id, filter, user_id) FROM stdin;
 \.
-
-
---
--- Name: comcompany_requests_id_seq; Type: SEQUENCE SET; Schema: jobmatch; Owner: postgres
---
-
-SELECT pg_catalog.setval('jobmatch.comcompany_requests_id_seq', 1, false);
 
 
 --
@@ -707,17 +690,17 @@ SELECT pg_catalog.setval('jobmatch.professional_offers_id_seq', 4, false);
 
 
 --
--- Name: professional_requests_id_seq; Type: SEQUENCE SET; Schema: jobmatch; Owner: postgres
---
-
-SELECT pg_catalog.setval('jobmatch.professional_requests_id_seq', 1, false);
-
-
---
 -- Name: professionals_id_seq; Type: SEQUENCE SET; Schema: jobmatch; Owner: postgres
 --
 
 SELECT pg_catalog.setval('jobmatch.professionals_id_seq', 4, false);
+
+
+--
+-- Name: requests_id_seq; Type: SEQUENCE SET; Schema: jobmatch; Owner: postgres
+--
+
+SELECT pg_catalog.setval('jobmatch.requests_id_seq', 4, false);
 
 
 --
@@ -751,14 +734,6 @@ ALTER TABLE ONLY jobmatch.company_offers
 
 
 --
--- Name: company_requests pk_company_requests; Type: CONSTRAINT; Schema: jobmatch; Owner: postgres
---
-
-ALTER TABLE ONLY jobmatch.company_requests
-    ADD CONSTRAINT pk_company_requests PRIMARY KEY (id);
-
-
---
 -- Name: config pk_config; Type: CONSTRAINT; Schema: jobmatch; Owner: postgres
 --
 
@@ -783,10 +758,10 @@ ALTER TABLE ONLY jobmatch.professional_offers
 
 
 --
--- Name: professional_requests pk_professional_requests; Type: CONSTRAINT; Schema: jobmatch; Owner: postgres
+-- Name: requests pk_professional_requests; Type: CONSTRAINT; Schema: jobmatch; Owner: postgres
 --
 
-ALTER TABLE ONLY jobmatch.professional_requests
+ALTER TABLE ONLY jobmatch.requests
     ADD CONSTRAINT pk_professional_requests PRIMARY KEY (id);
 
 
@@ -823,22 +798,6 @@ ALTER TABLE ONLY jobmatch.companies
 
 
 --
--- Name: company_requests unq_company_requests_professional_id; Type: CONSTRAINT; Schema: jobmatch; Owner: postgres
---
-
-ALTER TABLE ONLY jobmatch.company_requests
-    ADD CONSTRAINT unq_company_requests_professional_id UNIQUE (professional_id);
-
-
---
--- Name: professional_requests unq_professional_requests_company_offer_id; Type: CONSTRAINT; Schema: jobmatch; Owner: postgres
---
-
-ALTER TABLE ONLY jobmatch.professional_requests
-    ADD CONSTRAINT unq_professional_requests_company_offer_id UNIQUE (company_offer_id);
-
-
---
 -- Name: professionals unq_professionals; Type: CONSTRAINT; Schema: jobmatch; Owner: postgres
 --
 
@@ -852,6 +811,13 @@ ALTER TABLE ONLY jobmatch.professionals
 
 ALTER TABLE ONLY jobmatch.users
     ADD CONSTRAINT unq_users_username UNIQUE (username);
+
+
+--
+-- Name: unq_requests; Type: INDEX; Schema: jobmatch; Owner: postgres
+--
+
+CREATE UNIQUE INDEX unq_requests ON jobmatch.requests USING btree (professional_offer_id, company_offer_id);
 
 
 --
@@ -892,35 +858,11 @@ ALTER TABLE ONLY jobmatch.company_offers
 
 
 --
--- Name: company_offers fk_company_offers_company_requests; Type: FK CONSTRAINT; Schema: jobmatch; Owner: postgres
+-- Name: company_offers fk_company_offers_professional_offers; Type: FK CONSTRAINT; Schema: jobmatch; Owner: postgres
 --
 
 ALTER TABLE ONLY jobmatch.company_offers
-    ADD CONSTRAINT fk_company_offers_company_requests FOREIGN KEY (chosen_professional_id) REFERENCES jobmatch.company_requests(professional_id);
-
-
---
--- Name: company_requests fk_company_requests_company_offers; Type: FK CONSTRAINT; Schema: jobmatch; Owner: postgres
---
-
-ALTER TABLE ONLY jobmatch.company_requests
-    ADD CONSTRAINT fk_company_requests_company_offers FOREIGN KEY (company_offer_id) REFERENCES jobmatch.company_offers(id);
-
-
---
--- Name: company_requests fk_company_requests_professional_offers; Type: FK CONSTRAINT; Schema: jobmatch; Owner: postgres
---
-
-ALTER TABLE ONLY jobmatch.company_requests
-    ADD CONSTRAINT fk_company_requests_professional_offers FOREIGN KEY (professional_offer_id) REFERENCES jobmatch.professional_offers(id);
-
-
---
--- Name: company_requests fk_company_requests_professionals; Type: FK CONSTRAINT; Schema: jobmatch; Owner: postgres
---
-
-ALTER TABLE ONLY jobmatch.company_requests
-    ADD CONSTRAINT fk_company_requests_professionals FOREIGN KEY (professional_id) REFERENCES jobmatch.professionals(id);
+    ADD CONSTRAINT fk_company_offers_professional_offers FOREIGN KEY (chosen_professional_offer_id) REFERENCES jobmatch.professional_offers(id);
 
 
 --
@@ -940,11 +882,11 @@ ALTER TABLE ONLY jobmatch.messages
 
 
 --
--- Name: professional_offers fk_professional_offers_professional_requests; Type: FK CONSTRAINT; Schema: jobmatch; Owner: postgres
+-- Name: professional_offers fk_professional_offers_company_offers; Type: FK CONSTRAINT; Schema: jobmatch; Owner: postgres
 --
 
 ALTER TABLE ONLY jobmatch.professional_offers
-    ADD CONSTRAINT fk_professional_offers_professional_requests FOREIGN KEY (chosen_company_offer_id) REFERENCES jobmatch.professional_requests(company_offer_id);
+    ADD CONSTRAINT fk_professional_offers_company_offers FOREIGN KEY (chosen_company_offer_id) REFERENCES jobmatch.company_offers(id);
 
 
 --
@@ -956,18 +898,18 @@ ALTER TABLE ONLY jobmatch.professional_offers
 
 
 --
--- Name: professional_requests fk_professional_requests_company_offers; Type: FK CONSTRAINT; Schema: jobmatch; Owner: postgres
+-- Name: requests fk_professional_requests_company_offers; Type: FK CONSTRAINT; Schema: jobmatch; Owner: postgres
 --
 
-ALTER TABLE ONLY jobmatch.professional_requests
+ALTER TABLE ONLY jobmatch.requests
     ADD CONSTRAINT fk_professional_requests_company_offers FOREIGN KEY (company_offer_id) REFERENCES jobmatch.company_offers(id);
 
 
 --
--- Name: professional_requests fk_professional_requests_professional_offers; Type: FK CONSTRAINT; Schema: jobmatch; Owner: postgres
+-- Name: requests fk_professional_requests_professional_offers; Type: FK CONSTRAINT; Schema: jobmatch; Owner: postgres
 --
 
-ALTER TABLE ONLY jobmatch.professional_requests
+ALTER TABLE ONLY jobmatch.requests
     ADD CONSTRAINT fk_professional_requests_professional_offers FOREIGN KEY (professional_offer_id) REFERENCES jobmatch.professional_offers(id);
 
 

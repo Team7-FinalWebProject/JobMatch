@@ -1,14 +1,15 @@
 import psycopg2 
-from data.db_password import password
+import os
 
+remoteorlocal = os.getenv('remoteorlocal')
 
 def _get_connection():
     return psycopg2.connect(
-        host = 'localhost',
+        host = 'org-team6a51p-inst-jobgre.data-1.use1.tembo.io' if remoteorlocal=="remote" else "localhost",
         user = 'postgres',
         dbname = 'postgres',
         options='-c search_path=jobmatch',
-        password = password,
+        password = os.getenv('jobgrepass') if remoteorlocal=="remote" else os.getenv("password"),
         port = 5432
     )
 
