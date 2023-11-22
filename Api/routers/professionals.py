@@ -99,12 +99,3 @@ def set_offer_status(offer_id: int, status: ProfStatusSetter, x_token: str = Hea
     if not offer:
         return NotFound(content=f'No offer with id: {offer_id}')
     return professionals_service.set_status(prof.id, offer.id, status)
-
-
-@professionals_router.put('/archive', tags=['Professional'])
-def archive_prof_offer(x_token: str = Header(default=None)):
-    prof = professional_or_401(x_token) if x_token else None
-    if not prof:
-        return Unauthorized(content=_ERROR_MESSAGE)
-        
-    return professionals_service.archive_offer()
