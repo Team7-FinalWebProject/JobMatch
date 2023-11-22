@@ -172,3 +172,4 @@ cython_debug/
 #.idea/
 
 secret.py
+mailjet_secret.py
