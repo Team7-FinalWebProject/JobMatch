@@ -1,10 +1,11 @@
 import jwt
-from common.secret import _JWT_SECRET
 from data.responses import Unauthorized, ExpiredException
 from data.models.company import Company
 from data.models.professional import Professional
 from data.models.admin import Admin
 from datetime import datetime, timedelta
+import os
+_JWT_SECRET = os.getenv('JWT_SECRET')
 
 
 def _base_auth(token: str):
