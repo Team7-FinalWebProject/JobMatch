@@ -68,7 +68,7 @@ def send_match_request(company_offer_id: int, prof_offer_id: int, x_token: str =
     if not comp_offer:
         return NotFound(content=f'No offer with id: {company_offer_id}')
     return professionals_service.create_match_request(prof_offer_id, company_offer_id)
-
+   
 
 @professionals_router.post('/match', tags=['Professional'])
 def match(offer_id: int, comp_offer_id: int, private_or_hidden = 'hidden', x_token: str = Header(default=None)):

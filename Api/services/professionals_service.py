@@ -1,7 +1,7 @@
 import json
 from psycopg2.extras import Json
 from psycopg2 import IntegrityError
-from data.models.professional import Professional, ProfessionalRequest, ProfessionalInfoEdit
+from data.models.professional import Professional, ProfessionalInfoEdit
 from data.models.offer import ProfessionalOffer
 from data.database import update_query, insert_query, read_query, update_queries_transaction
 
@@ -128,7 +128,7 @@ def create_match_request(prof_offer_id: int, comp_offer_id: int):
     insert_query(
         '''INSERT INTO professional_requests(professional_offer_id, company_offer_id)
            VALUES (%s, %s) RETURNING id''', 
-           (prof_offer_id, comp_offer_id))
+        (prof_offer_id, comp_offer_id))
     
     return f'Sent match request for company offer {comp_offer_id}'
 
