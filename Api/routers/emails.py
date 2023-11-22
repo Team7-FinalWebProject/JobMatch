@@ -1,3 +1,7 @@
 from mailjet_rest import Client
 import os
-from data.mailjet_secret import _MJ_APIKEY_PUBLIC, _API_SECRET
+
+API_KEY = os.environ['_MJ_APIKEY_PUBLIC']
+API_SECRET = os.environ['_API_SECRET']
+
+mailjet = Client(auth=(API_KEY, API_SECRET))
