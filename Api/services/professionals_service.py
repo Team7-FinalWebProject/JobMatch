@@ -110,8 +110,7 @@ def edit_offer(new_offer: ProfessionalOffer, old_offer: ProfessionalOffer):
     
 
 def match_comp_offer(offer_id: int, prof_id: int, comp_offer_id: int, private_or_hidden: str):
-    #TODO Maybe add a query to update the company_offer status to archived ?
-    queries = [
+    queries = (
         '''UPDATE professional_offers SET status = %s
            WHERE professional_id = %s AND status = %s''',
         
@@ -123,7 +122,7 @@ def match_comp_offer(offer_id: int, prof_id: int, comp_offer_id: int, private_or
 
         '''UPDATE professionals SET status = %s
            WHERE id = %s'''
-    ]
+    )
     params = ((private_or_hidden, prof_id, 'active'), ('archived', comp_offer_id), 
               ('matched', comp_offer_id, offer_id), ('busy', prof_id))
     rowcount = update_queries_transaction(queries, params)
@@ -134,7 +133,7 @@ def create_match_request(prof_offer_id: int, comp_offer_id: int):
     try:
         insert_query(
             '''INSERT INTO requests(professional_offer_id, company_offer_id, request_from)
-            VALUES (%s, %s, %s)''', 
+            VALUES (%s, %s, %s) RETURNING id''', 
             (prof_offer_id, comp_offer_id, 'professional'))
         
         return f'Sent match request for company offer {comp_offer_id}'
@@ -163,5 +162,5 @@ def check_prof_offer_exists(offer_id: int):
         '''SELECT * FROM professional_offers WHERE id = %s''',
         (offer_id,)))
 
+
 #TODO Maybe add func to view requests sent from company to prof
-#TODO Refactor matching to work with new database
