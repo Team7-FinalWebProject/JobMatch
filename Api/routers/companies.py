@@ -13,7 +13,7 @@ _ERROR_MESSAGE = 'You are not authorized [NOT LOGGED IN | TOKEN EXPIRED]'
 companies_router = APIRouter(prefix='/companies')
 
 
-@companies_router.put('/info')
+@companies_router.put('/info', tags=['Companies'])
 def edit_company(new_info: Company, x_token: str = Header(default=None)):
     company = company_or_401(x_token) if x_token else None
     if not company:
@@ -21,7 +21,7 @@ def edit_company(new_info: Company, x_token: str = Header(default=None)):
     return companies_service.edit_company_info(new_info, company)
 
 
-@companies_router.post('/create_offer')
+@companies_router.post('/create_offer', tags=['Companies'])
 def create_offer(new_offer: CompanyOfferCreate, x_token: str = Header(default=None)):
     company = company_or_401(x_token) if x_token else None
     if not company:
@@ -47,7 +47,7 @@ def create_offer(new_offer: CompanyOfferCreate, x_token: str = Header(default=No
 # }
 
 
-@companies_router.put('/{company_offer_id}/edit_offer')
+@companies_router.put('/{company_offer_id}/edit_offer', tags=['Companies'])
 def edit_comp_offer(new_offer: CompanyOfferCreate, 
                     company_offer_id: int,
                     x_token: str = Header(default=None)):
@@ -61,7 +61,7 @@ def edit_comp_offer(new_offer: CompanyOfferCreate,
 
 
 
-@companies_router.post('/{company_offer_id}/{prof_offer_id}/request')
+@companies_router.post('/{company_offer_id}/{prof_offer_id}/request', tags=['Companies'])
 def send_match_request_to_prof_offer(company_offer_id: int, prof_offer_id: int, x_token: str = Header(default=None)):
     company = company_or_401(x_token) if x_token else None
 
@@ -92,7 +92,7 @@ def send_match_request_to_prof_offer(company_offer_id: int, prof_offer_id: int, 
 
 
 
-@companies_router.post('/match', tags=['Professional'])
+@companies_router.post('/match', tags=['Companies'])
 def match(prof_offer_id: int, company_offer_id: int, private_or_hidden = 'hidden', x_token: str = Header(default=None)):
     company = company_or_401(x_token) if x_token else None
     
