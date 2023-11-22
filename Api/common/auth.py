@@ -48,44 +48,7 @@ def professional_or_401(token: str) -> Professional:
         raise e
     
 
-def create_prof_token(prof: Professional) -> str:
-    payload = {
-        "id": prof.id,
-        "user_id": prof.user_id,
-        "default_offer_id": prof.default_offer_id,
-        "first_name": prof.first_name,
-        "last_name": prof.last_name,
-        "summary": prof.summary,
-        "address": prof.address,
-        "picture": prof.picture,
-        "status": prof.status,
-        "username": prof.username,
-        "issued": str(datetime.now())
-    }
-
-    return jwt.encode(payload, _JWT_SECRET, algorithm="HS256")
-
-
-def create_company_token(comp: Company) -> str:
-    payload = {
-        "id": comp.id,
-        "user_id": comp.user_id,
-        "name": comp.name,
-        "description": comp.description,
-        "address": comp.address,
-        "picture": comp.picture,
-        "username": comp.username,
-        "issued": str(datetime.now())
-    }
-
-    return jwt.encode(payload, _JWT_SECRET, algorithm="HS256")
-
-
-def _is_authenticated(token: str):
-    return jwt.decode(token, _JWT_SECRET, algorithms=["HS256"])
-
-
-def user_or_401(token: str) -> Company | Professional:
+def user_or_error(token: str) -> Company | Professional:
     '''Authenticate a profile
        Returns a Company/Professional object.'''
     try:
@@ -104,6 +67,45 @@ def user_or_401(token: str) -> Company | Professional:
         raise e
     
 
+def create_prof_token(prof: Professional) -> str:
+    payload = {
+        "id": prof.id,
+        "user_id": prof.user_id,
+        "default_offer_id": prof.default_offer_id,
+        "first_name": prof.first_name,
+        "last_name": prof.last_name,
+        "summary": prof.summary,
+        "address": prof.address,
+        "picture": prof.picture,
+        "status": prof.status,
+        "username": prof.username,
+        "approved": prof.approved,
+        "issued": str(datetime.now())
+    }
+
+    return jwt.encode(payload, _JWT_SECRET, algorithm="HS256")
+
+
+def create_company_token(comp: Company) -> str:
+    payload = {
+        "id": comp.id,
+        "user_id": comp.user_id,
+        "name": comp.name,
+        "description": comp.description,
+        "address": comp.address,
+        "picture": comp.picture,
+        "username": comp.username,
+        "approved": comp.approved,
+        "issued": str(datetime.now())
+    }
+
+    return jwt.encode(payload, _JWT_SECRET, algorithm="HS256")
+
+
+def _is_authenticated(token: str):
+    return jwt.decode(token, _JWT_SECRET, algorithms=["HS256"])
+
+    
 def create_admin_token(admin: Admin) -> str:
     payload = {
         "id": admin.id,
@@ -113,19 +115,4 @@ def create_admin_token(admin: Admin) -> str:
     }
 
     return jwt.encode(payload, _JWT_SECRET, algorithm="HS256")
-
-
-
-
-# CURRENTLY OUT OF USE
-
-
-# def _user_or_401(token: str):
-#     try:
-#         payload = _base_auth(token)
-#         return User.from_query_result(**payload)
-#     except ExpiredException:
-#         raise Unauthorized(content='Expired token.')
-#     except Exception:
-#         raise BadRequest(content='Unexpected error occured')
     

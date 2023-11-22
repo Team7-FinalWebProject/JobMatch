@@ -10,10 +10,11 @@ class Company(BaseModel):
     address: str
     picture: bytes | None = None
     username: str | None = None
+    approved: bool | None = None
     issued: datetime | None = None
 
     @classmethod
-    def from_query_result(cls, id, user_id, name, description, address, picture, username, issued=None):
+    def from_query_result(cls, id, user_id, name, description, address, picture, username, approved, issued=None):
         return cls(
             id=id,
             user_id=user_id,
@@ -21,7 +22,8 @@ class Company(BaseModel):
             description=description,
             address=address,
             picture=picture,
-            username=username)
+            username=username,
+            approved=approved)
 
 
 class Company_Slim(BaseModel):

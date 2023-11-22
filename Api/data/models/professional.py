@@ -16,10 +16,11 @@ class Professional(BaseModel):
     picture: bytes | None = None
     status: str | None = None
     username: str | None = None
+    approved: bool | None = None
     issued: datetime | None = None
 
     @classmethod
-    def from_query_result(cls, id, user_id, default_offer_id, first_name, last_name, summary, address, picture, status, username, issued=None):
+    def from_query_result(cls, id, user_id, default_offer_id, first_name, last_name, summary, address, picture, status, username, approved, issued=None):
         return cls(
             id=id,
             user_id=user_id,
@@ -30,7 +31,8 @@ class Professional(BaseModel):
             address=address,
             picture=picture,
             status=status,
-            username=username)
+            username=username,
+            approved=approved)
     
 
 class Professional_Slim(BaseModel):

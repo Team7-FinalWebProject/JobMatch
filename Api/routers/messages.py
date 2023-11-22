@@ -3,7 +3,7 @@ from services.register_service import check_user_exist
 from fastapi import APIRouter, Header
 from data.responses import NotFound, Unauthorized
 from data.models.message import Message
-from common.auth import user_or_401
+from common.auth import user_or_error
 
 
 messages_router = APIRouter(prefix='/messages')
@@ -16,7 +16,7 @@ _ERROR_MESSAGE = 'You are not authorized [NOT LOGGED IN | TOKEN EXPIRED]'
 
 @messages_router.get('/{receiver_username}')
 def view_user_messages(receiver_username: str, x_token: str = Header(default=None)):
-    user = user_or_401(x_token) if x_token else None
+    user = user_or_error(x_token) if x_token else None
     receiver = check_user_exist(receiver_username)
     if user:
         if receiver:
@@ -33,7 +33,7 @@ def view_user_messages(receiver_username: str, x_token: str = Header(default=Non
 
 @messages_router.post('/{receiver_username}')
 def send_message(receiver_username: str, message: Message, x_token: str = Header(default=None)):
-    user = user_or_401(x_token) if x_token else None
+    user = user_or_error(x_token) if x_token else None
     receiver = check_user_exist(receiver_username)
     if user:
         if receiver:
