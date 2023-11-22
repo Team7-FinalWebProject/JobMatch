@@ -112,7 +112,7 @@ def edit_offer(new_offer: ProfessionalOffer, old_offer: ProfessionalOffer):
 def match_comp_offer(offer_id: int, prof_id: int, comp_offer_id: int, private_or_hidden: str):
     #TODO Maybe add a query to update the company_offer status to archived ?
     queries = [
-        '''UPDATE professional_offers SET status = %s,
+        '''UPDATE professional_offers SET status = %s
            WHERE professional_id = %s AND status = %s''',
         
         '''UPDATE company_offers SET status = %s
