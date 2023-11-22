@@ -1,6 +1,7 @@
 import json
 from psycopg2.extras import Json
 from psycopg2 import IntegrityError
+from psycopg2.errors import UniqueViolation
 from data.models.professional import Professional, ProfessionalInfoEdit
 from data.models.offer import ProfessionalOffer
 from data.database import update_query, insert_query, read_query, update_queries_transaction
@@ -109,28 +110,36 @@ def edit_offer(new_offer: ProfessionalOffer, old_offer: ProfessionalOffer):
     
 
 def match_comp_offer(offer_id: int, prof_id: int, comp_offer_id: int, private_or_hidden: str):
+    #TODO Maybe add a query to update the company_offer status to archived ?
     queries = [
         '''UPDATE professional_offers SET status = %s,
            WHERE professional_id = %s AND status = %s''',
-           
+        
+        '''UPDATE company_offers SET status = %s
+           WHERE id = %s''',
+
         '''UPDATE professional_offers SET status = %s, chosen_company_offer_id = %s
            WHERE id = %s''',
 
         '''UPDATE professionals SET status = %s
            WHERE id = %s'''
     ]
-    params = ((private_or_hidden, prof_id, 'active'), ('matched', comp_offer_id, offer_id), ('busy', prof_id))
+    params = ((private_or_hidden, prof_id, 'active'), ('archived', comp_offer_id), 
+              ('matched', comp_offer_id, offer_id), ('busy', prof_id))
     rowcount = update_queries_transaction(queries, params)
     return f'Match with company offer {comp_offer_id} | {rowcount}'
 
 
 def create_match_request(prof_offer_id: int, comp_offer_id: int):
-    insert_query(
-        '''INSERT INTO professional_requests(professional_offer_id, company_offer_id)
-           VALUES (%s, %s) RETURNING id''', 
-        (prof_offer_id, comp_offer_id))
-    
-    return f'Sent match request for company offer {comp_offer_id}'
+    try:
+        insert_query(
+            '''INSERT INTO requests(professional_offer_id, company_offer_id, request_from)
+            VALUES (%s, %s, %s)''', 
+            (prof_offer_id, comp_offer_id, 'professional'))
+        
+        return f'Sent match request for company offer {comp_offer_id}'
+    except UniqueViolation:
+        return None
 
 
 def is_author(prof_id: int, offer_id: int):

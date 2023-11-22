@@ -64,11 +64,14 @@ def send_match_request(company_offer_id: int, prof_offer_id: int, x_token: str =
     prof_offer = professionals_service.get_offer(prof_offer_id, prof.id)
     if not prof_offer:
         return NotFound(content=f'No such offer for professional: {prof.id}')
-    comp_offer = _get_company_offer_by_id(company_offer_id)
+    comp_offer = check_offer_exists(company_offer_id)
     if not comp_offer:
         return NotFound(content=f'No offer with id: {company_offer_id}')
-    return professionals_service.create_match_request(prof_offer_id, company_offer_id)
-   
+    request = professionals_service.create_match_request(prof_offer_id, company_offer_id)
+    if not request:
+        return Forbidden(content='Cannot send the same offer to the same company twice')
+    return request
+
 
 @professionals_router.post('/match', tags=['Professional'])
 def match(offer_id: int, comp_offer_id: int, private_or_hidden = 'hidden', x_token: str = Header(default=None)):
