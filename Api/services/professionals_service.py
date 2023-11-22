@@ -153,3 +153,6 @@ def check_prof_offer_exists(offer_id: int):
     return any(read_query(
         '''SELECT * FROM professional_offers WHERE id = %s''',
         (offer_id,)))
+
+#TODO Maybe add func to view requests sent from company to prof
+#TODO Refactor matching to work with new database
