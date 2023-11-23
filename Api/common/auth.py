@@ -58,31 +58,19 @@ def professional_or_401(token: str) -> Professional:
 
 def user_or_error(token: str) -> Company | Professional:
     '''Authenticate a profile
-       Returns a Company/Professional/Admin object.'''
+       Returns a Company/Professional object.'''
     try:
         payload = _base_auth(token)
     except ExpiredException:
         return None
     try:
         try:
-            prof = Professional.from_query_result(**payload)
-            if prof.approved == False:
-                raise HTTPException(status_code=403, detail=_ADMIN_MESSAGE)
-        except Exception as e:
-            raise e
-        try:
-            company = Company.from_query_result(**payload)
-            if company.approved == False:
-                raise HTTPException(status_code=403, detail=_ADMIN_MESSAGE)
-        except Exception as e:
-            raise e
-        try:
-            admin = Admin.from_query_result(**payload)
-        except Exception as e:
-            raise e
-        
-        return prof or company or admin
-    
+            return Professional.from_query_result(**payload)
+        except:
+            try:
+                return Company.from_query_result(**payload)
+            except:
+                return Admin.from_query_result(**payload)
     except Exception as e:
         raise e
 
@@ -154,22 +142,36 @@ def create_admin_token(admin: Admin) -> str:
     
 
 
-# USER OR ERROR OLD VERSION
+
+
+# VERY BUGGY FOR NOW 
 
 # def user_or_error(token: str) -> Company | Professional:
 #     '''Authenticate a profile
-#        Returns a Company/Professional object.'''
+#        Returns a Company/Professional/Admin object.'''
 #     try:
 #         payload = _base_auth(token)
 #     except ExpiredException:
 #         return None
 #     try:
 #         try:
-#             return Professional.from_query_result(**payload)
-#         except:
-#             try:
-#                 return Company.from_query_result(**payload)
-#             except:
-#                 return Admin.from_query_result(**payload)
+#             prof = Professional.from_query_result(**payload)
+#             if prof.approved == False:
+#                 raise HTTPException(status_code=403, detail=_ADMIN_MESSAGE)
+#         except Exception as e:
+#             raise e
+#         try:
+#             company = Company.from_query_result(**payload)
+#             if company.approved == False:
+#                 raise HTTPException(status_code=403, detail=_ADMIN_MESSAGE)
+#         except Exception as e:
+#             raise e
+#         try:
+#             admin = Admin.from_query_result(**payload)
+#         except Exception as e:
+#             raise e
+        
+#         return prof or company or admin
+    
 #     except Exception as e:
 #         raise e
