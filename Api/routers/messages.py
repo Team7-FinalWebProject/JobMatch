@@ -7,7 +7,7 @@ from common.auth import user_or_error
 
 
 messages_router = APIRouter(prefix='/messages')
-_ERROR_MESSAGE = 'You are not authorized [NOT LOGGED IN | TOKEN EXPIRED]'
+_ERROR_MESSAGE = 'You are not authorized [NOT LOGGED IN | TOKEN EXPIRED | NOT APPROVED]'
 
 
 #TODO Figure out a way to add audio recording ass message
@@ -18,7 +18,7 @@ _ERROR_MESSAGE = 'You are not authorized [NOT LOGGED IN | TOKEN EXPIRED]'
 def view_user_messages(receiver_username: str, x_token: str = Header(default=None)):
     user = user_or_error(x_token) if x_token else None
     receiver = check_user_exist(receiver_username)
-    if user:
+    if user and user.approved == True:
         if receiver:
             sender_username = messages_service.extract_username(user)
             messages = messages_service.get_messages(sender_username, receiver_username)
@@ -35,7 +35,7 @@ def view_user_messages(receiver_username: str, x_token: str = Header(default=Non
 def send_message(receiver_username: str, message: Message, x_token: str = Header(default=None)):
     user = user_or_error(x_token) if x_token else None
     receiver = check_user_exist(receiver_username)
-    if user:
+    if user and user.approved == True:
         if receiver:
             sender_username = messages_service.extract_username(user)
             return messages_service.create(sender_username, receiver_username, message)

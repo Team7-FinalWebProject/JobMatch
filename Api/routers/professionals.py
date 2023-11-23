@@ -9,7 +9,7 @@ from services.search_service import _get_company_offer_by_id
 
 
 professionals_router = APIRouter(prefix='/professionals')
-_ERROR_MESSAGE = 'You are not authorized [NOT LOGGED IN | TOKEN EXPIRED]'
+_ERROR_MESSAGE = 'You are not authorized [NOT LOGGED IN | TOKEN EXPIRED | NOT APPROVED]'
 
 
 @professionals_router.put('/info', tags=['Professional'])

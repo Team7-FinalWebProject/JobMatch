@@ -69,8 +69,20 @@ def commit_prepared_skills():
         '''UPDATE config
         SET baseline_skills = (SELECT jsonb_object_agg(key, NULL::jsonb) FROM
             (SELECT key FROM
-                (SELECT jsonb_object_keys(baseline_skills || approved_skills) AS key) AS keys)),
+                (SELECT jsonb_object_keys(baseline_skills || approved_skills) AS key) AS keys) AS subquery),
         approved_skills = %s
         WHERE lock = %s''', (Json({}), 'X'))
     ##TODO: check result and remodel
     return result
+
+def approve_professional(id):
+    result = update_query(
+        '''UPDATE professionals
+        SET approved = %s
+        WHERE id = %s''', ('t', id))
+
+def approve_company(id):
+    result = update_query(
+        '''UPDATE companies
+        SET approved = %s
+        WHERE id = %s''', ('t', id))

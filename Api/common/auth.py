@@ -1,11 +1,13 @@
 import jwt
-from data.responses import Unauthorized, ExpiredException
+from fastapi import HTTPException
+from data.responses import ExpiredException
 from data.models.company import Company
 from data.models.professional import Professional
 from data.models.admin import Admin
 from datetime import datetime, timedelta
 import os
 _JWT_SECRET = os.getenv('JWT_SECRET')
+_ADMIN_MESSAGE = 'Cannot execute request. [MUST BE APPROVED BY ADMIN]'
 
 
 def _base_auth(token: str):
@@ -30,7 +32,10 @@ def company_or_401(token: str) -> Company:
     except ExpiredException:
         return None
     try:
-        return Company.from_query_result(**payload)
+        company = Company.from_query_result(**payload)
+        if company.approved == False:
+            raise HTTPException(status_code=403, detail=_ADMIN_MESSAGE)
+        return company
     except Exception as e:
         raise e
     
@@ -43,29 +48,60 @@ def professional_or_401(token: str) -> Professional:
     except ExpiredException:
         return None
     try:
-        return Professional.from_query_result(**payload)
+        prof = Professional.from_query_result(**payload)
+        if prof.approved == False:
+            raise HTTPException(status_code=403, detail=_ADMIN_MESSAGE)
+        return prof
     except Exception as e:
         raise e
     
 
 def user_or_error(token: str) -> Company | Professional:
     '''Authenticate a profile
-       Returns a Company/Professional object.'''
+       Returns a Company/Professional/Admin object.'''
     try:
         payload = _base_auth(token)
     except ExpiredException:
         return None
     try:
         try:
-            return Professional.from_query_result(**payload)
-        except:
-            try:
-                return Company.from_query_result(**payload)
-            except:
-                return Admin.from_query_result(**payload)
+            prof = Professional.from_query_result(**payload)
+            if prof.approved == False:
+                raise HTTPException(status_code=403, detail=_ADMIN_MESSAGE)
+        except Exception as e:
+            raise e
+        try:
+            company = Company.from_query_result(**payload)
+            if company.approved == False:
+                raise HTTPException(status_code=403, detail=_ADMIN_MESSAGE)
+        except Exception as e:
+            raise e
+        try:
+            admin = Admin.from_query_result(**payload)
+        except Exception as e:
+            raise e
+        
+        return prof or company or admin
+    
     except Exception as e:
         raise e
-    
+
+
+def admin_or_error(token: str) -> Company | Professional:
+    '''Authenticate a profile
+       Returns an Admin object.'''
+    try:
+        payload = _base_auth(token)
+    except ExpiredException:
+        return None
+    try:
+        admin = Admin.from_query_result(**payload)
+    except Exception as e:
+        raise e
+
+    return admin
+
+
 
 def create_prof_token(prof: Professional) -> str:
     payload = {
@@ -116,3 +152,24 @@ def create_admin_token(admin: Admin) -> str:
 
     return jwt.encode(payload, _JWT_SECRET, algorithm="HS256")
     
+
+
+# USER OR ERROR OLD VERSION
+
+# def user_or_error(token: str) -> Company | Professional:
+#     '''Authenticate a profile
+#        Returns a Company/Professional object.'''
+#     try:
+#         payload = _base_auth(token)
+#     except ExpiredException:
+#         return None
+#     try:
+#         try:
+#             return Professional.from_query_result(**payload)
+#         except:
+#             try:
+#                 return Company.from_query_result(**payload)
+#             except:
+#                 return Admin.from_query_result(**payload)
+#     except Exception as e:
+#         raise e
