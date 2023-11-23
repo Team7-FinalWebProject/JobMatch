@@ -1,11 +1,13 @@
 import jwt
-from data.responses import Unauthorized, ExpiredException
+from fastapi import HTTPException
+from data.responses import ExpiredException
 from data.models.company import Company
 from data.models.professional import Professional
 from data.models.admin import Admin
 from datetime import datetime, timedelta
 import os
 _JWT_SECRET = os.getenv('JWT_SECRET')
+_ADMIN_MESSAGE = 'Cannot execute request. [MUST BE APPROVED BY ADMIN]'
 
 
 def _base_auth(token: str):
@@ -30,7 +32,10 @@ def company_or_401(token: str) -> Company:
     except ExpiredException:
         return None
     try:
-        return Company.from_query_result(**payload)
+        company = Company.from_query_result(**payload)
+        if company.approved == False:
+            raise HTTPException(status_code=403, detail=_ADMIN_MESSAGE)
+        return company
     except Exception as e:
         raise e
     
@@ -43,7 +48,10 @@ def professional_or_401(token: str) -> Professional:
     except ExpiredException:
         return None
     try:
-        return Professional.from_query_result(**payload)
+        prof = Professional.from_query_result(**payload)
+        if prof.approved == False:
+            raise HTTPException(status_code=403, detail=_ADMIN_MESSAGE)
+        return prof
     except Exception as e:
         raise e
     
