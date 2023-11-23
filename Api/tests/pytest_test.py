@@ -1,5 +1,6 @@
 import pytest
 from data import database
+from data.database import read_query
 from fastapi.testclient import TestClient
 from main import app
 client = TestClient(app)
@@ -23,13 +24,10 @@ def test_db_conn_test_fail_skipped_with_xfail():
 def test_db_conn_test_skipped_with_skip():
     assert database._get_connection()
 
-
 def test_db_conn():
-    with database._get_connection() as conn:
-        cur = conn.cursor()
-        cur.execute("select username from users")
-        assert list(cur) == [('adminuser',), ('testuser1',), ('testuser2',), ('testuser3',), ('testuser4',), ('testuser5',),('testuser6',),('Ivo',)]
-    assert True
+    expected = [('adminuser',), ('testuser1',), ('testuser2',), ('testuser3',), ('testuser4',), ('testuser5',),('testuser6',),('Ivo',)]
+    result = read_query("select username from users", ())
+    assert expected == result
 
 def is_gtr_11(val):
     return val > 11

@@ -6,7 +6,6 @@ from data import database
 from dotenv import load_dotenv
 from datetime import datetime
 
-
 load_dotenv()
 
 remoteorlocal = os.getenv('remoteorlocal')
@@ -20,6 +19,14 @@ remote,remoteorlocal= False,'local'
 def example_fixture():
     return 1
 
+@pytest.fixture(autouse=False)
+def disable_db_calls(monkeypatch):
+    def stunted_get_connection():
+        raise RuntimeError("DB access not allowed during testing!")
+    monkeypatch.setattr(database, "_get_connection", lambda *args, **kwargs: stunted_get_connection())
+
+###CHANGES DB to a dynamically created test_db database, apply consideration if changing
+###BEGIN
 @pytest.fixture(autouse=True, scope='session')
 def pre_post_fixture():
     print(datetime.now())
@@ -28,12 +35,6 @@ def pre_post_fixture():
     yield
     print(datetime.now())
     db_sync.main(silent_action='dropdb',silent_remote=remote)
-
-@pytest.fixture(autouse=False)
-def disable_db_calls(monkeypatch):
-    def stunted_get_connection():
-        raise RuntimeError("DB access not allowed during testing!")
-    monkeypatch.setattr(database, "_get_connection", lambda *args, **kwargs: stunted_get_connection())
 
 def test_db_get_connection():
     return psycopg2.connect(
@@ -46,19 +47,12 @@ def test_db_get_connection():
         # password = os.getenv("password"),
         port = 5432
     )
+###CHANGES DB to a dynamically created test_db database, apply consideration if changing
+###END
 
 @pytest.fixture(autouse=True)
 def replace_db_conn(monkeypatch):
     monkeypatch.setattr(database, "_get_connection", lambda *args, **kwargs: test_db_get_connection())
-
-
-# @pytest.fixture(autouse=True)
-# def import_mock(mocker):
-#     return mocker.patch("db_data.config._REL_IMPORT_DUMP_PATH", new=r'\db_data\db_test.sql', autospec=False)
-
-
-# @pytest.mark.usefixtures("test_db")
-
 
 # ##Hook patterns not sure if functional
 # @pytest.hookimpl(hookwrapper=True)
