@@ -77,6 +77,12 @@ def commit_prepared_skills():
 
 def approve_professional(id):
     result = update_query(
-        '''UPDATE users
+        '''UPDATE professionals
+        SET approved = %s
+        WHERE id = %s''', ('t', id))
+
+def approve_company(id):
+    result = update_query(
+        '''UPDATE companies
         SET approved = %s
         WHERE id = %s''', ('t', id))

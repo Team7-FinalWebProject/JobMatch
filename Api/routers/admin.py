@@ -1,8 +1,8 @@
-
 from fastapi import APIRouter, Response, Header, Body
 from services import search_service, admin_service
 from common.auth import user_or_error
 from data.models.admin import ReadConfig, UpdateConfig
+
 
 admin_router = APIRouter(prefix='/admin')
 
@@ -58,8 +58,12 @@ def commit_all_prepared_skills(x_token: str = Header()):
     return admin_service.commit_prepared_skills() if user.__class__.__name__ == 'Admin' else None
 
 @admin_router.post('/approve_professional', tags=["Admin"])
-def approve_professional(prof_id: int, x_token: str = Header()):
+def approve_professional_by_id(prof_id: int, x_token: str = Header()):
     user = user_or_error(x_token)
     return admin_service.approve_professional(id) if user.__class__.__name__ == 'Admin' else None
 
 
+@admin_router.post('/approve_company', tags=["Admin"])
+def approve_company_by_id(comp_id: int, x_token: str = Header()):
+    user = user_or_error(x_token)
+    return admin_service.approve_company(id) if user.__class__.__name__ == 'Admin' else None
