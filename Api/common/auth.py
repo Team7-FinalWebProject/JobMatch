@@ -86,7 +86,22 @@ def user_or_error(token: str) -> Company | Professional:
     except Exception as e:
         raise e
 
-    
+
+def admin_or_error(token: str) -> Company | Professional:
+    '''Authenticate a profile
+       Returns an Admin object.'''
+    try:
+        payload = _base_auth(token)
+    except ExpiredException:
+        return None
+    try:
+        admin = Admin.from_query_result(**payload)
+    except Exception as e:
+        raise e
+
+    return admin
+
+
 
 def create_prof_token(prof: Professional) -> str:
     payload = {
