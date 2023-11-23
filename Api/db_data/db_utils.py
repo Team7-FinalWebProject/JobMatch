@@ -1,3 +1,8 @@
+# Quick and dirty solution for a small problem-->
+# initially written for Mariadb, because I couldn't find the functionality in the connector, adapted for postgre
+# Probably better to integrate with libq C API directly.
+# Or use psycopg, it is significantly more developed than mariadb connector
+
 from os import getcwd, environ, path, getenv
 from time import sleep
 import psycopg2
@@ -6,69 +11,16 @@ from db_data import config
 from subprocess import PIPE, run
 
 _USER, _DBNAME, _SCHEMA = config._USER, config._DBNAME, config._SCHEMA
-_BIN_PATH, _PSQL, _PG_DUMP = config._BIN_PATH, config._PSQL, config._PG_DUMP
+_BIN_PATH = config._BIN_PATH
 _REL_IMPORT_DUMP_PATH, _REL_EXPORT_DUMP_PATH = config._REL_IMPORT_DUMP_PATH, config._REL_EXPORT_DUMP_PATH
 _REMOTE_HOST =  config._REMOTE_HOST
 
+_PSQL, _PG_DUMP = r'\psql.exe', r'\pg_dump.exe'
+_CREATEDB, _DROPDB = r'\createdb.exe', r'\dropdb.exe'
+
 current_directory = getcwd()
 
-
-def _get_connection(remote=False):
-    return psycopg2.connect(
-        host='localhost' if not remote else _REMOTE_HOST,
-        user=_USER,
-        dbname=_DBNAME,
-        # Schemas
-        options=f'-c search_path={_SCHEMA}',
-        password=getenv('password') if not remote else getenv('jobgrepass'),
-        port=5432
-    )
-
-
-def delete_db(remote=False):
-    with _get_connection(remote=remote) as conn:
-        cursor = conn.cursor()
-        cursor.execute(f"DROP SCHEMA IF EXISTS {_SCHEMA} CASCADE")
-        conn.commit()
-        print(cursor)
-        cursor.close()
-    print('DB dropped successfully if exists')
-    return
-
-
-def mysql_io(io, binary, dump, remote=False):
-    if not remote:
-        environ['PGPASSWORD'] = getenv('password')
-        if io == 'import':
-            process = run(args=[binary, f'--username={_USER}', f'--dbname={_DBNAME}', f'--file={current_directory + dump}'], stdin=PIPE, stdout=PIPE, stderr=PIPE, universal_newlines=True)
-            print('DB imported successfully' if not process.stderr or not process.stderr.strip(
-            ) else process.stderr)
-        elif io == 'dump':
-            process = run(args=[binary, f'--username={_USER}', f'--dbname={_DBNAME}', f'--schema={_SCHEMA}'], stdin=PIPE, stdout=PIPE, stderr=PIPE, universal_newlines=True)
-            if process.stderr and process.stderr.strip():
-                print(f"Error: {process.stderr}")
-            else:
-                with open(current_directory + dump, "w") as dump_file:
-                    dump_file.write(process.stdout)
-                print(f'DB dumped (check file {current_directory + dump})')
-    if remote:
-        environ['PGPASSWORD'] = getenv('jobgrepass')
-        if io == 'import':
-            process = run(args=[binary, f'--username={_USER}', f'--dbname={_DBNAME}', f'--file={current_directory + dump}', f'--host={_REMOTE_HOST}'], stdin=PIPE, stdout=PIPE, stderr=PIPE, universal_newlines=True)
-            print('DB imported successfully' if not process.stderr or not process.stderr.strip(
-            ) else process.stderr)
-        elif io == 'dump':
-            process = run(args=[binary, f'--username={_USER}', f'--dbname={_DBNAME}', f'--schema={_SCHEMA}', f'--host={_REMOTE_HOST}'], stdin=PIPE, stdout=PIPE, stderr=PIPE, universal_newlines=True)
-            if process.stderr and process.stderr.strip():
-                print(f"Error: {process.stderr}")
-            else:
-                with open(current_directory + dump, "w") as dump_file:
-                    dump_file.write(process.stdout)
-                print(f'DB dumped (check file {current_directory + dump})')
-    return
-
-
-def get_bkp_dump_extension(extensions):
+def get_bkp_dump_extension_helper(extensions):
     # Choses .bkp file to use. Choses non-existing or oldest files to delay overwriting the newest file.
     for extension in extensions:
         if not path.isfile(current_directory + _REL_EXPORT_DUMP_PATH + extension):
@@ -82,63 +34,123 @@ def get_bkp_dump_extension(extensions):
             return_extension = extension
     return return_extension
 
+##Core functionality:
+def cmd_interface(action, remote=False, skipcopy=False, dump=None):
 
-def make_copy(remote=False):
-    extensions = [".1.bkp", ".2.bkp", ".3.bkp"] if not remote else [".remote.1.bkp", ".remote.2.bkp", ".remote.3.bkp"]
-    bkp_extension = get_bkp_dump_extension(extensions)
-    mysql_io('dump', _BIN_PATH + _PG_DUMP,
-             _REL_EXPORT_DUMP_PATH + bkp_extension, remote=remote)
+    success,fail = lambda proc:None,lambda proc:None
+    dbname = _DBNAME
 
-
-def main(silent_export=False, silent_import=False):
-    def dump(remote=False):
-        mysql_io('dump', _BIN_PATH + _PG_DUMP, _REL_EXPORT_DUMP_PATH, remote=remote)
-
-    def drop(remote=False):
-        make_copy(remote=remote)
-        sleep(2)
+    def dump_success(process):
         try:
-            delete_db(remote=remote)
-        except:
-            print(f'DB schema {_SCHEMA} does not exist or other error, skipping drop')
-
-    def imp(copy=True, remote=False):
-        if copy:
-            make_copy(remote=remote)
+            with open(current_directory + dump, "w") as dump_file:
+                dump_file.write(process.stdout)
+            print(f'DB dumped to extra file (check file {current_directory + dump})')
+        except(Exception) as e:
+            print(e)
+      
+    match action:
+        case 'import':
+            if not skipcopy:
+                cmd_interface('make_copy', remote=remote)
+                sleep(2)
+            binary, dump = (_BIN_PATH + _PSQL), _REL_IMPORT_DUMP_PATH
+            success = lambda process:print('DB imported successfully')
+            fail = lambda process:print(f'Impored failed error:{process.stderr}')
+        case 'dump':
+            binary, dump = (_BIN_PATH + _PG_DUMP), _REL_EXPORT_DUMP_PATH
+            success = lambda process:dump_success(process)
+            fail = lambda process:print(f"Error: {process.stderr}") 
+        case 'drop':
+            cmd_interface('make_copy', remote=remote)
             sleep(2)
-        mysql_io('import', _BIN_PATH + _PSQL, _REL_IMPORT_DUMP_PATH, remote=remote)
+            binary, dump = (_BIN_PATH + _PSQL), _REL_IMPORT_DUMP_PATH
+            success = lambda process:print('DB dropped successfully if exists')
+            fail = lambda process:print(f'DB schema {_SCHEMA} does not exist or error:{process.stderr}, skipping drop')
+        case 'dropdb':
+            binary, dump, dbname = (_BIN_PATH + _DROPDB), None, 'test_db'
+            success = lambda process:print(f"DB: {dbname} dropped successfully in remote:{remote}")
+            fail = lambda process:print(f"Error: {process.stderr}") 
+        case 'createdb':
+            binary, dump, dbname = (_BIN_PATH + _CREATEDB), None, 'test_db'
+            success = lambda process:print(f"DB: {dbname} created successfully in remote:{remote}")
+            fail = lambda process:print(f"Error: {process.stderr}") 
+        case 'drop_and_imp':
+            cmd_interface('drop', remote=remote)
+            return cmd_interface('import', remote=remote,skipcopy=True)
+        case 'make_copy':
+            extensions = [".1.bkp", ".2.bkp", ".3.bkp"] if not remote else [".remote.1.bkp", ".remote.2.bkp", ".remote.3.bkp"]
+            bkp_extension = get_bkp_dump_extension_helper(extensions)
+            binary, dump, action = (_BIN_PATH + _PG_DUMP),(_REL_EXPORT_DUMP_PATH + bkp_extension),'dump'
+            success = lambda process:dump_success(process)
+            fail = lambda process:print(f"Error, extra copy not created: {process.stderr}") 
+        case _:
+            return
 
-    def user_query(question):
+    ###Second match kept for easier to reading of args
+    # (also logic is windy due to different exes having different synthax)
+    args=[
+    binary,
+    f'--username={_USER}']
+    if action not in ['createdb','dropdb']:
+        args.append(f'--dbname={dbname}')
+    if remote:
+        args.append(f'--host={_REMOTE_HOST}')
+    match action:
+        case 'import':
+            args.append(f'--file={current_directory + dump}')
+        case 'dump':
+            args.append(f'--schema={_SCHEMA}')
+        case 'drop':
+            args.append(f'-c')
+            args.append(f'DROP SCHEMA IF EXISTS {_SCHEMA} CASCADE')
+        case 'createdb':
+            args.append(dbname)
+        case 'dropdb':
+            args.append(f'-f')
+            args.append(dbname)
+
+    # print(args)
+    environ['PGPASSWORD'] = getenv('jobgrepass') if remote else getenv('password')
+    process = run(args=args, stdin=PIPE, stdout=PIPE, stderr=PIPE, universal_newlines=True)
+
+    err = process.stderr
+    if not err or not process.stderr.strip() or process.stderr.strip().startswith("NOTICE"):
+        success(process)
+    else:
+        fail(process)
+
+##User interface:
+def main(silent_action=None, silent_remote=False, silent_test_sql=False):
+    if silent_test_sql:
+        global _REL_IMPORT_DUMP_PATH
+        global _DBNAME
+        global _SCHEMA
+        _REL_IMPORT_DUMP_PATH = r'\db_data\db_test.sql'
+        _DBNAME = 'test_db'
+        _SCHEMA = 'test_schema'
+
+    def user_query(question, action, remote=False):
         answer = None
         while not answer or answer.upper() not in ['Y', 'N']:
             answer = input(question)
-        return answer.upper()
-    if silent_import and not silent_export:
-        drop()
-        imp(copy=False)
-    elif silent_export and not silent_import:
-        dump()
+        if answer.upper() == 'Y':
+            if action == 'nest':
+                return True
+            return cmd_interface(action=action, remote=remote)
+        return False
+    
+    if silent_action:
+        cmd_interface(silent_action, remote=silent_remote)
     else:
-        copy = True
-        if user_query(f'Would you like to export the local {_SCHEMA} schema (Y/N)?') == 'Y':
-            dump()
-        if user_query(f'Would you like to drop and import the local {_SCHEMA} schema (Y/N)?') == 'Y':
-            drop()
-            imp(copy=False)
-        if user_query(f'Would you like remote commands (Y/N)?') == 'Y':
-            if user_query(f'Would you like to export the remote {_SCHEMA} schema (Y/N)?') == 'Y':
-                dump(remote=True)
-            if user_query(f'Would you like to drop and import the remote {_SCHEMA} schema (Y/N)?') == 'Y':
-                drop(remote=True)
-                imp(copy=False,remote=True)
-        if user_query(f'Would you like additional commands (Y/N)?') == 'Y':
-            if user_query(f'Would you like to drop the local {_SCHEMA} schema (Y/N)?') == 'Y':
-                drop()
-                copy = False
-            if user_query(f'Would you like to import the local {_SCHEMA} schema (Y/N)?') == 'Y':
-                imp(copy=copy)
-            if user_query(f'Would you like to drop the remote {_SCHEMA} schema (Y/N)?') == 'Y':
-                drop(remote=True)
-                copy = False
-            if user_query(f'Would you like to import the remote {_SCHEMA} schema (Y/N)?') == 'Y':
-                imp(copy=copy, remote=True)
+        user_query(f'Would you like to export the local {_SCHEMA} schema (Y/N)?', action='dump')
+        user_query(f'Would you like to drop and import the local {_SCHEMA} schema (Y/N)?', action='drop_and_imp')
+        if user_query(f'Would you like remote commands (Y/N)?', action='nest'):
+            user_query(f'Would you like to export the remote {_SCHEMA} schema (Y/N)?', action='dump', remote=True)
+            user_query(f'Would you like to drop and import the remote {_SCHEMA} schema (Y/N)?', action='drop_and_imp', remote=True)
+        if user_query(f'Would you like additional commands (Y/N)?', action='nest'):
+            user_query(f'Would you like to drop the local test_db database (Y/N)?', action='dropdb')
+            user_query(f'Would you like to create a local test_db database (Y/N)?', action='createdb')
+            user_query(f'Would you like to drop the local {_SCHEMA} schema (Y/N)?', action='drop')
+            user_query(f'Would you like to import the local {_SCHEMA} schema (Y/N)?', action='import')
+            user_query(f'Would you like to drop the remote {_SCHEMA} schema (Y/N)?', action='drop', remote=True)
+            user_query(f'Would you like to import the remote {_SCHEMA} schema (Y/N)?', action='import', remote=True)

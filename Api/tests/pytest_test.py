@@ -1,28 +1,35 @@
 import pytest
-import data.database
+from data import database
 from fastapi.testclient import TestClient
 from main import app
 client = TestClient(app)
-
-@pytest.fixture
-def example_fixture():
-    return 1
 
 @pytest.mark.usefixtures("example_fixture")
 def test_with_fixture(example_fixture):
     assert example_fixture == 1
 
-def test_db_conn_fails_with_autofixture():
+@pytest.mark.usefixtures("disable_db_calls")
+def test_db_conn_fails_with_fixture():
     with pytest.raises(RuntimeError):
-        assert data.database._get_connection()
+        assert database._get_connection()
 
+@pytest.mark.usefixtures("disable_db_calls")
 @pytest.mark.xfail
 def test_db_conn_test_fail_skipped_with_xfail():
-    assert data.database._get_connection()
+    assert database._get_connection()
 
+@pytest.mark.usefixtures("disable_db_calls")
 @pytest.mark.skip
 def test_db_conn_test_skipped_with_skip():
-    assert data.database._get_connection()
+    assert database._get_connection()
+
+
+def test_db_conn():
+    with database._get_connection() as conn:
+        cur = conn.cursor()
+        cur.execute("select username from users")
+        assert list(cur) == [('adminuser',), ('testuser1',), ('testuser2',), ('testuser3',), ('testuser4',), ('testuser5',),('testuser6',),('Ivo',)]
+    assert True
 
 def is_gtr_11(val):
     return val > 11
