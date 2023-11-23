@@ -74,3 +74,9 @@ def commit_prepared_skills():
         WHERE lock = %s''', (Json({}), 'X'))
     ##TODO: check result and remodel
     return result
+
+def approve_professional(id):
+    result = update_query(
+        '''UPDATE users
+        SET approved = %s
+        WHERE id = %s''', ('t', id))

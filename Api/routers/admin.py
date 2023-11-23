@@ -56,3 +56,10 @@ def discard_prepared_skills(skills: list = Body(default=["Skill1", "Skill2"]), x
 def commit_all_prepared_skills(x_token: str = Header()):
     user = user_or_error(x_token)
     return admin_service.commit_prepared_skills() if user.__class__.__name__ == 'Admin' else None
+
+@admin_router.post('/approve_professional', tags=["Admin"])
+def approve_professional(prof_id: int, x_token: str = Header()):
+    user = user_or_error(x_token)
+    return admin_service.approve_professional(id) if user.__class__.__name__ == 'Admin' else None
+
+
