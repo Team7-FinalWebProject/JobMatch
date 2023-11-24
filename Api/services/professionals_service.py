@@ -1,4 +1,4 @@
-import json
+from io import BytesIO
 from psycopg2.extras import Json
 from psycopg2 import IntegrityError
 from psycopg2.errors import UniqueViolation
@@ -148,7 +148,7 @@ def is_author(prof_id: int, offer_id: int):
         (prof_id, offer_id)))
 
 
-def set_status(prof_id: int, prof_offer_id: int, status: str):
+def set_status(prof_id: int, prof_offer_id: int, status):
     rowcount = update_query(
         '''UPDATE professional_offers SET status = %s
            WHERE id = %s AND professional_id = %s''',
@@ -171,5 +171,14 @@ def get_match_requests(prof: Professional):
            WHERE p.professional_id = %s''', (prof.id,))
     
     return (ProfessionalRequest.from_query_result(*row) for row in data)
+
+
+def upload_img(prof: Professional, image):
+    rowcount = update_query(
+        '''UPDATE professionals SET picture = %s
+           WHERE id = %s''', (image, prof.id))
+    
+    return f'Updated photo [{rowcount}]'
+
 
 

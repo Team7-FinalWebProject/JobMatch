@@ -5,7 +5,8 @@ from main import app
 from dotenv import load_dotenv
 
 client = TestClient(app)
-
+valid_password = os.getenv('userpassword')
+load_dotenv()
 
 valid_professional = {"username": "testuser1", "password": f"{valid_password}"}
 proftoken = client.post("/login/professionals", json=valid_professional).json()["token"]
