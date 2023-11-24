@@ -1,7 +1,6 @@
 from pydantic import BaseModel
 from data.models.offer import ProfessionalOffer_NoProfessionalId
 from datetime import datetime
-from common.constraints import Allowed_ProfOffer_Statuses
 
 
 
