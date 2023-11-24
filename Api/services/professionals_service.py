@@ -2,7 +2,7 @@ import json
 from psycopg2.extras import Json
 from psycopg2 import IntegrityError
 from psycopg2.errors import UniqueViolation
-from data.models.professional import Professional, ProfessionalInfoEdit
+from data.models.professional import Professional, ProfessionalInfoEdit, ProfessionalRequest
 from data.models.offer import ProfessionalOffer, ProfessionalOfferEdit
 from data.database import update_query, insert_query, read_query, update_queries_transaction
 
@@ -163,4 +163,13 @@ def check_prof_offer_exists(offer_id: int):
         (offer_id,)))
 
 
-#TODO Maybe add func to view requests sent from company to prof
+def get_match_requests(prof: Professional):
+    data = read_query(
+        '''SELECT r.professional_offer_id, r.company_offer_id, r.request_from
+           FROM requests AS r
+           JOIN professional_offers AS p ON r.professional_offer_id = p.id
+           WHERE p.professional_id = %s''', (prof.id,))
+    
+    return (ProfessionalRequest.from_query_result(*row) for row in data)
+
+
