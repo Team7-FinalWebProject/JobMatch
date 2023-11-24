@@ -1,12 +1,13 @@
-from fastapi import APIRouter, Header
+import os
+import secrets
+from fastapi import APIRouter, Header, UploadFile, File
 from common.auth import professional_or_401
-from data.responses import BadRequest, Unauthorized, NotFound, Forbidden
+from data.responses import BadRequest, Unauthorized, NotFound, Forbidden, InternalServerError
 from data.models.professional import ProfessionalInfoEdit
 from data.models.offer import ProfessionalOfferCreate, ProfessionalOfferEdit
 from services import professionals_service
 from services.companies_service import check_offer_exists
 from PIL import Image
-from urllib.request import urlopen
 
 
 professionals_router = APIRouter(prefix='/professionals')
@@ -110,11 +111,34 @@ def get_match_requests(x_token: str = Header(default=None)):
     return professionals_service.get_match_requests(prof)
 
 
-@professionals_router.put('/upload_photo')
-def upload_photo(photo_url: str, x_token: str = Header(default=None)):
+@professionals_router.post('/upload_photo')
+def create_upload_file(myfile: UploadFile = File(...), x_token: str = Header(default=None)):
+    _IMAGE_DIR = "./data/logos"
     prof = professional_or_401(x_token) if x_token else None
     if not prof:
         return Unauthorized(content=_ERROR_MESSAGE)
-    image = Image.open(urlopen(photo_url))
-    return professionals_service.upload_img(prof, image)
-    
+
+    filename = myfile.filename
+    extention = filename.split('.')[-1]
+
+    if extention not in ('png', 'jpg', 'jpeg'):
+        return Forbidden(content='File extention not allowed')
+    token_name = secrets.token_hex(10) + "." + extention
+    generated_name = _IMAGE_DIR + token_name
+    file_content = myfile.file.read()
+    try:
+        with open(generated_name, "wb") as f:
+            f.write(file_content)
+
+        img = Image.open(generated_name)
+        img = img.resize(size = (200, 200))
+        img.save(generated_name)
+
+        with open(generated_name, "rb") as f:
+            image_bytes = f.read()
+        
+        return professionals_service.upload_img(prof, image_bytes)
+    except Exception as e:
+        return InternalServerError()
+    finally:
+        os.remove(generated_name)

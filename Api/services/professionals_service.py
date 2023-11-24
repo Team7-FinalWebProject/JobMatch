@@ -174,14 +174,9 @@ def get_match_requests(prof: Professional):
 
 
 def upload_img(prof: Professional, image):
-    with BytesIO() as byte_stream:
-        image.save(byte_stream, format="PNG")
-        byte_stream.seek(0)
-        image_bytes = byte_stream.read()
-
     rowcount = update_query(
         '''UPDATE professionals SET picture = %s
-           WHERE id = %s''', (image_bytes, prof.id))
+           WHERE id = %s''', (image, prof.id))
     
     return f'Updated photo [{rowcount}]'
 
