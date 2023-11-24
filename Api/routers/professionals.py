@@ -2,10 +2,11 @@ from fastapi import APIRouter, Header
 from common.auth import professional_or_401
 from data.responses import BadRequest, Unauthorized, NotFound, Forbidden
 from data.models.professional import ProfessionalInfoEdit, ProfStatusSetter
-from data.models.offer import ProfessionalOfferCreate, ProfessionalOffer, ProfessionalOfferEdit
+from data.models.offer import ProfessionalOfferCreate, ProfessionalOfferEdit
 from services import professionals_service
 from services.companies_service import check_offer_exists
-from common.constraints import Allowed_ProfOffer_Statuses
+from PIL import Image
+from urllib.request import urlopen
 
 
 professionals_router = APIRouter(prefix='/professionals')
@@ -90,8 +91,8 @@ def match(offer_id: int, comp_offer_id: int, private_or_hidden = 'hidden', x_tok
     return professionals_service.match_comp_offer(offer_id, prof.id, comp_offer_id, private_or_hidden)
 
 
-@professionals_router.put('/status', tags=['Professional'])
-def set_offer_status(offer_id: int, status: Allowed_ProfOffer_Statuses, x_token: str = Header(default=None)):
+@professionals_router.put('/offer_status', tags=['Professional'])
+def set_offer_status(offer_id: int, status: str, x_token: str = Header(default=None)):
     prof = professional_or_401(x_token) if x_token else None
     if not prof:
         return Unauthorized(content=_ERROR_MESSAGE)
@@ -107,3 +108,13 @@ def get_match_requests(x_token: str = Header(default=None)):
     if not prof:
         return Unauthorized(content=_ERROR_MESSAGE)
     return professionals_service.get_match_requests(prof)
+
+
+@professionals_router.put('/upload_photo')
+def upload_photo(photo_url: str, x_token: str = Header(default=None)):
+    prof = professional_or_401(x_token) if x_token else None
+    if not prof:
+        return Unauthorized(content=_ERROR_MESSAGE)
+    image = Image.open(urlopen(photo_url))
+    return professionals_service.upload_img(prof, image)
+    

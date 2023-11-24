@@ -111,6 +111,3 @@ class ProfessionalInfoEdit(BaseModel):
             summary=summary,
             address=address,
             picture=picture)
-    
-class ProfStatusSetter(BaseModel):
-    status: Allowed_ProfOffer_Statuses
