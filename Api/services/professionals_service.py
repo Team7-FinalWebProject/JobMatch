@@ -3,7 +3,7 @@ from psycopg2.extras import Json
 from psycopg2 import IntegrityError
 from psycopg2.errors import UniqueViolation
 from data.models.professional import Professional, ProfessionalInfoEdit
-from data.models.offer import ProfessionalOffer
+from data.models.offer import ProfessionalOffer, ProfessionalOfferEdit
 from data.database import update_query, insert_query, read_query, update_queries_transaction
 
 
@@ -38,15 +38,15 @@ def create_offer(offer, prof: Professional):
         skills = Json(offer.skills)
         generated_id = insert_query(
             '''INSERT INTO professional_offers (professional_id, description, 
-               chosen_company_offer_id, skills, min_salary, max_salary)
-               VALUES (%s, %s, %s, %s, %s, %s) RETURNING id''', 
-               (prof.id, offer.description, offer.chosen_company_offer_id, 
+               skills, min_salary, max_salary)
+               VALUES (%s, %s, %s, %s, %s) RETURNING id''', 
+               (prof.id, offer.description, 
                 skills, offer.min_salary, offer.max_salary))
         
         return ProfessionalOffer(
             id=generated_id,
             professional_id=prof.id,
-            chosen_company_offer_id=offer.chosen_company_offer_id,
+            chosen_company_offer_id=None,
             description=offer.description,
             status='active',
             skills=offer.skills,
@@ -85,14 +85,14 @@ def get_offers_by_prof_id(prof_id: int):
     return (ProfessionalOffer.from_query_result(*row) for row in data)
 
 
-def edit_offer(new_offer: ProfessionalOffer, old_offer: ProfessionalOffer):
+def edit_offer(new_offer: ProfessionalOfferEdit, old_offer: ProfessionalOffer):
     try:
         merged = ProfessionalOffer(
             id=old_offer.id,
             professional_id=old_offer.professional_id,
             chosen_company_offer_id=new_offer.chosen_company_offer_id or old_offer.chosen_company_offer_id,
             description=new_offer.description or old_offer.description,
-            status=new_offer.status or old_offer.status,
+            status=old_offer.status,
             skills=new_offer.skills or old_offer.skills,
             min_salary=new_offer.min_salary or old_offer.min_salary,
             max_salary=new_offer.max_salary or old_offer.max_salary)

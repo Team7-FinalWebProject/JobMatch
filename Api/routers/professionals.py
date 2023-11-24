@@ -2,7 +2,7 @@ from fastapi import APIRouter, Header
 from common.auth import professional_or_401
 from data.responses import BadRequest, Unauthorized, NotFound, Forbidden
 from data.models.professional import ProfessionalInfoEdit, ProfStatusSetter
-from data.models.offer import ProfessionalOfferCreate
+from data.models.offer import ProfessionalOfferCreate, ProfessionalOffer, ProfessionalOfferEdit
 from services import professionals_service
 from services.companies_service import check_offer_exists
 from services.search_service import _get_company_offer_by_id
@@ -42,7 +42,7 @@ def create_offer(new_offer: ProfessionalOfferCreate, x_token: str = Header(defau
 
 
 @professionals_router.put('/{offer_id}/edit_offer', tags=['Professional'])
-def edit_prof_offer(new_offer: ProfessionalOfferCreate, 
+def edit_prof_offer(new_offer: ProfessionalOfferEdit, 
                     offer_id: int, 
                     x_token: str = Header(default=None)):
     prof = professional_or_401(x_token) if x_token else None

@@ -87,13 +87,20 @@ class CompanyOffer_NoCompanyId(BaseModel):
             max_salary=max_salary)
     
 class ProfessionalOfferCreate(BaseModel):
-    chosen_company_offer_id: int | None = None
+    # chosen_company_offer_id: int | None = None
     description: str | None = None
     status: str | None = None
     skills: Skills | None = None
     min_salary: int | None = None
     max_salary: int | None = None
 
+class ProfessionalOfferEdit(BaseModel):
+    chosen_company_offer_id: int | None = None
+    description: str | None = None
+    # status: str | None = None
+    skills: Skills | None = None
+    min_salary: int | None = None
+    max_salary: int | None = None
 
 class CompanyOfferCreate(BaseModel):
     chosen_professional_id: int | None = None
@@ -101,3 +108,5 @@ class CompanyOfferCreate(BaseModel):
     requirements: Skills | None = None
     min_salary: int | None = None
     max_salary: int | None = None
+
+
