@@ -111,7 +111,7 @@ def get_match_requests(x_token: str = Header(default=None)):
     return professionals_service.get_match_requests(prof)
 
 
-@professionals_router.post('/upload_photo')
+@professionals_router.post('/upload_photo', tags=['Professional'])
 def create_upload_file(myfile: UploadFile = File(...), x_token: str = Header(default=None)):
     _IMAGE_DIR = "./data/logos"
     prof = professional_or_401(x_token) if x_token else None

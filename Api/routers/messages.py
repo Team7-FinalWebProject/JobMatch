@@ -14,7 +14,7 @@ _ERROR_MESSAGE = 'You are not authorized [NOT LOGGED IN | TOKEN EXPIRED]'
 #TODO See for the most optimal way to aquire the user.
 
 
-@messages_router.get('/{receiver_username}')
+@messages_router.get('/{receiver_username}', tags=['Messages'])
 def view_user_messages(receiver_username: str, x_token: str = Header(default=None)):
     user = user_or_error(x_token) if x_token else None
     receiver = check_user_exist(receiver_username)
@@ -33,7 +33,7 @@ def view_user_messages(receiver_username: str, x_token: str = Header(default=Non
         return Unauthorized(content=_ERROR_MESSAGE)
     
 
-@messages_router.post('/{receiver_username}')
+@messages_router.post('/{receiver_username}', tags=['Messages'])
 def send_message(receiver_username: str, message: Message, x_token: str = Header(default=None)):
     user = user_or_error(x_token) if x_token else None
     receiver = check_user_exist(receiver_username)
