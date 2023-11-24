@@ -62,7 +62,7 @@ def prof_response_object(user, professional: Professional):
         "username": user.username,
         "first_name": professional.first_name,
         "last_name": professional.last_name,
-        "summary": professional.summary,
+        "summary": professional.summary
     }
 
 
