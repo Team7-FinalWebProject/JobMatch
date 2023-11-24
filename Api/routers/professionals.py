@@ -6,6 +6,7 @@ from data.models.offer import ProfessionalOfferCreate, ProfessionalOffer, Profes
 from services import professionals_service
 from services.companies_service import check_offer_exists
 from services.search_service import _get_company_offer_by_id
+from typing import Annotated
 
 
 professionals_router = APIRouter(prefix='/professionals')
@@ -91,7 +92,7 @@ def match(offer_id: int, comp_offer_id: int, private_or_hidden = 'hidden', x_tok
 
 
 @professionals_router.put('/status', tags=['Professional'])
-def set_offer_status(offer_id: int, status: ProfStatusSetter, x_token: str = Header(default=None)):
+def set_offer_status(offer_id: int, status: Annotated[str, lambda s: s in ['active', 'hidden', 'private', 'matched']], x_token: str = Header(default=None)):
     prof = professional_or_401(x_token) if x_token else None
     if not prof:
         return Unauthorized(content=_ERROR_MESSAGE)
