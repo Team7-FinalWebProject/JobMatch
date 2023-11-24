@@ -5,7 +5,7 @@ Allowed_Username = Annotated[str, StringConstraints(pattern=r'^\w{2,20}$')]
 Allowed_Register_Password = Optional[Annotated[str, StringConstraints(min_length=8, max_length=30)]]
 Allowed_Login_Password = Annotated[str, StringConstraints(min_length=8, max_length=30)]
 _PROF_OFFER_STATUSES = ['active', 'hidden', 'private', 'matched']
-Alloweed_ProfOffer_Statuses = Annotated[str, lambda s: s in _PROF_OFFER_STATUSES] 
+Allowed_ProfOffer_Statuses = Annotated[str, lambda s: s in _PROF_OFFER_STATUSES] 
 
 ##TODO: Store in DB -> Baseline skills + extendible by admin + Extra skills for company + admin approval ?
 ##Config table? Could also be a file

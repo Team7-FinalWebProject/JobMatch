@@ -5,7 +5,7 @@ from data.models.professional import ProfessionalInfoEdit, ProfStatusSetter
 from data.models.offer import ProfessionalOfferCreate, ProfessionalOffer, ProfessionalOfferEdit
 from services import professionals_service
 from services.companies_service import check_offer_exists
-from common.constraints import Alloweed_ProfOffer_Statuses
+from common.constraints import Allowed_ProfOffer_Statuses
 
 
 professionals_router = APIRouter(prefix='/professionals')
@@ -91,7 +91,7 @@ def match(offer_id: int, comp_offer_id: int, private_or_hidden = 'hidden', x_tok
 
 
 @professionals_router.put('/status', tags=['Professional'])
-def set_offer_status(offer_id: int, status: Alloweed_ProfOffer_Statuses, x_token: str = Header(default=None)):
+def set_offer_status(offer_id: int, status: Allowed_ProfOffer_Statuses, x_token: str = Header(default=None)):
     prof = professional_or_401(x_token) if x_token else None
     if not prof:
         return Unauthorized(content=_ERROR_MESSAGE)
