@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Header
 from common.auth import professional_or_401
 from data.responses import BadRequest, Unauthorized, NotFound, Forbidden
-from data.models.professional import ProfessionalInfoEdit, ProfStatusSetter
+from data.models.professional import ProfessionalInfoEdit
 from data.models.offer import ProfessionalOfferCreate, ProfessionalOfferEdit
 from services import professionals_service
 from services.companies_service import check_offer_exists
