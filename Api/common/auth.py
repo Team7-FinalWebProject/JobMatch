@@ -90,7 +90,6 @@ def admin_or_error(token: str) -> Company | Professional:
     return admin
 
 
-
 def create_prof_token(prof: Professional) -> str:
     payload = {
         "id": prof.id,
