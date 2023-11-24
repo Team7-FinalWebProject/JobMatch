@@ -41,6 +41,8 @@ class Conflict(Response):
         super().__init__(status_code=409, content=content)
 
 
+
+
 class ExpiredException(BaseException):
     '''
     Exception that determines if a token has expired.

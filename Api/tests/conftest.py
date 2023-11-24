@@ -5,6 +5,7 @@ import db_sync
 from data import database
 from dotenv import load_dotenv
 from datetime import datetime
+import warnings
 
 load_dotenv()
 
@@ -30,10 +31,12 @@ def disable_db_calls(monkeypatch):
 @pytest.fixture(autouse=True, scope='session')
 def pre_post_fixture():
     print(datetime.now())
+    # warnings.warn("loeading test db", datetime.now())
     db_sync.main(silent_action='createdb',silent_remote=remote)
     db_sync.main(silent_action='drop_and_imp',silent_remote=remote,silent_test_sql=True)
     yield
     print(datetime.now())
+    # warnings.warn("dropping test db", datetime.now())
     db_sync.main(silent_action='dropdb',silent_remote=remote)
 
 def test_db_get_connection():
@@ -47,12 +50,16 @@ def test_db_get_connection():
         # password = os.getenv("password"),
         port = 5432
     )
+
+@pytest.fixture(autouse=True)
+def replace_db_conn(monkeypatch,capsys):
+    print(datetime.now())
+    # warnings.warn("db conn replaced", datetime.now())
+    monkeypatch.setattr(database, "_get_connection", lambda *args, **kwargs: test_db_get_connection())
 ###CHANGES DB to a dynamically created test_db database, apply consideration if changing
 ###END
 
-@pytest.fixture(autouse=True)
-def replace_db_conn(monkeypatch):
-    monkeypatch.setattr(database, "_get_connection", lambda *args, **kwargs: test_db_get_connection())
+
 
 # ##Hook patterns not sure if functional
 # @pytest.hookimpl(hookwrapper=True)

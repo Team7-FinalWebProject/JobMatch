@@ -16,3 +16,4 @@ def reader_one(cls : ClassType, data: list[tuple[Any, ...]]) -> ClassType | None
 
 def reader_many(cls : ClassType, data: list[tuple[Any, ...]]) -> tuple[ClassType, ...]:
     return (cls.from_query_result(*row) for row in data)
+
