@@ -29,12 +29,3 @@ def create(sender_username: str, receiver_username: str, message: Message):
         sender_username=sender_username,
         receiver_username=receiver_username,
         content=message.content)
-
-
-def extract_username(user: Professional | Company):
-    username = read_query(
-        '''SELECT u.username FROM users AS u
-           LEFT JOIN professionals AS p ON u.id = p.user_id
-           WHERE p.user_id = %s''', (user.id,))
-    
-    return username[0][0]
