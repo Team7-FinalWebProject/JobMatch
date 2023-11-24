@@ -1,7 +1,7 @@
 import os
 import pytest
 import psycopg2
-import db_sync
+from db_data import db_utils
 from data import database
 from dotenv import load_dotenv
 from datetime import datetime
@@ -9,11 +9,58 @@ import warnings
 
 load_dotenv()
 
+user_password = os.getenv('userpassword')
+# invalid_user = {"username": "EFrQjeqVSwyPx_t6O", "password": "stringst"}
+# invalid_username = {"username": "EFrQjeqVSwyPx_t6O", "password": f"{valid_password}"}
+# invalid_admin_password = {"username": "adminfortest", "password": "stringst"}
+# invalid_prof_password = {"username": "testuser1", "password": "stringst"}
+# invalid_comp_password =  {"username": "testuser4", "password": "stringst"}
+# valid_admin = {"username": "adminfortest", "password": f"{valid_password}"}
+# valid_professional = {"username": "testuser1", "password": f"{valid_password}"}
+# valid_company = {"username": "testuser4", "password": f"{valid_password}"}
+
+@pytest.fixture
+def valid_password():
+    return user_password
+
+@pytest.fixture
+def invalid_user():
+    return {"username": "EFrQjeqVSwyPx_t6O", "password": "stringst"}
+
+@pytest.fixture
+def invalid_username():
+    return {"username": "EFrQjeqVSwyPx_t6O", "password": user_password}
+
+@pytest.fixture
+def invalid_admin_password():
+    return {"username": "adminfortest", "password": "stringst"}
+
+@pytest.fixture
+def invalid_prof_password():
+    return {"username": "testuser1", "password": "stringst"}
+
+@pytest.fixture
+def invalid_comp_password():
+    return {"username": "testuser4", "password": "stringst"}
+
+@pytest.fixture
+def valid_admin():
+    return {"username": "adminfortest", "password": user_password}
+
+@pytest.fixture
+def valid_professional():
+    return {"username": "testuser1", "password": user_password}
+
+@pytest.fixture
+def valid_company():
+    return {"username": "testuser4", "password": user_password}
+
 remoteorlocal = os.getenv('remoteorlocal')
 if remoteorlocal == 'remote':
     pass
 if remoteorlocal == 'local':
     pass
+##Hardcoded for local for the time being
 remote,remoteorlocal= False,'local'
 
 @pytest.fixture
@@ -28,37 +75,34 @@ def disable_db_calls(monkeypatch):
 
 ###CHANGES DB to a dynamically created test_db database, apply consideration if changing
 ###BEGIN
-@pytest.fixture(autouse=True, scope='session')
-def pre_post_fixture():
-    print(datetime.now())
-    # warnings.warn("loeading test db", datetime.now())
-    db_sync.main(silent_action='createdb',silent_remote=remote)
-    db_sync.main(silent_action='drop_and_imp',silent_remote=remote,silent_test_sql=True)
-    yield
-    print(datetime.now())
-    # warnings.warn("dropping test db", datetime.now())
-    db_sync.main(silent_action='dropdb',silent_remote=remote)
-
 def test_db_get_connection():
     return psycopg2.connect(
         host = 'db.gboblangoijwxkkvkmsn.supabase.co' if remoteorlocal=="remote" else "localhost",
-        # host = "localhost",
         user = 'postgres',
         dbname = 'test_db',
         options='-c search_path=test_schema',
         password = os.getenv('jobgrepass') if remoteorlocal=="remote" else os.getenv("password"),
-        # password = os.getenv("password"),
         port = 5432
     )
 
 @pytest.fixture(autouse=True)
-def replace_db_conn(monkeypatch,capsys):
+def replace_db_conn(monkeypatch):
     print(datetime.now())
-    # warnings.warn("db conn replaced", datetime.now())
     monkeypatch.setattr(database, "_get_connection", lambda *args, **kwargs: test_db_get_connection())
-###CHANGES DB to a dynamically created test_db database, apply consideration if changing
-###END
+    expected = [('adminfortest',),]
+    result = database.read_query("select username from users where id = 1", ())
+    if expected != result:
+        pytest.skip("Skipping remaining tests, test_db validation failed, cannot guarantee prod db is not being tested.")
 
+@pytest.fixture(autouse=True, scope='session')
+def pre_post_fixture():
+    print(datetime.now())
+    db_utils.main(silent_action='createdb',silent_remote=remote)
+    db_utils.main(silent_action='drop_and_imp',silent_remote=remote,silent_test_sql=True)
+    yield
+    db_utils.main(silent_action='dropdb',silent_remote=remote)
+###/CHANGES DB to a dynamically created test_db database, apply consideration if changing
+###END
 
 
 # ##Hook patterns not sure if functional

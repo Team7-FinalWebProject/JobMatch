@@ -5,3 +5,5 @@ load_dotenv()
 
 def main(**kwargs):
     db_utils.main(**kwargs)
+
+main()
