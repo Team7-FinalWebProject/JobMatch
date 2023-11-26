@@ -16,12 +16,17 @@ from routers.messages import messages_router
 
 app = FastAPI()
 origins = [
-    "http://localhost:3000",
-    "localhost:3000",
-    "https://localhost:3000",
-    "127.0.0.1:3000",
-    "http://127.0.0.1:3000",
-    "https://127.0.0.1:3000",
+    "http://localhost",
+    "https://localhost",
+    "127.0.0.1",
+    "http://127.0.0.1",
+    "https://127.0.0.1",
+    "http://localhost:80",
+    "localhost:80",
+    "https://localhost:80",
+    "127.0.0.1:80",
+    "http://127.0.0.1:80",
+    "https://127.0.0.1:80",
 ]
 
 
