@@ -102,7 +102,7 @@ def generate_random_password(registation_data: RegisterCompanyData | RegisterPro
     import random
     import string
 
-    max_length = 10
+    max_length = 20
 
     lower_case = string.ascii_lowercase
     upper_case = string.ascii_uppercase
