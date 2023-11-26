@@ -8,9 +8,6 @@ client = TestClient(app)
 valid_password = os.getenv('userpassword')
 load_dotenv()
 
-valid_professional = {"username": "testuser1", "password": f"{valid_password}"}
-proftoken = client.post("/login/professionals", json=valid_professional).json()["token"]
-
 valid_prof_info = {
   "first_name": "string",
   "last_name": "string",
@@ -71,7 +68,7 @@ invalid_offer_edit_info = {
 }
 
 
-def test_edit_professional_info_valid_info_200():
+def test_edit_professional_info_valid_info_200(proftoken):
     response = client.put("/professionals/info", json=valid_prof_info, headers={"X-Token": proftoken})
     assert response.status_code == 200
     assert response.json()["first_name"] == valid_prof_info["first_name"]
@@ -81,27 +78,27 @@ def test_edit_professional_info_valid_info_200():
     assert response.json()["picture"] == valid_prof_info["picture"]
 
 
-def test_edit_professional_info__no_token_401():
+def test_edit_professional_info__no_token_401(proftoken):
     response = client.put("/professionals/info", json=valid_prof_info)
     assert response.status_code == 401
 
 
-def test_set_default_offer_valid_info_200():
+def test_set_default_offer_valid_info_200(proftoken):
     response = client.put("/professionals/1/default_offer", headers={"X-Token": proftoken})
     assert response.status_code == 200
 
 
-def test_set_default_offer_valid_info_401():
+def test_set_default_offer_valid_info_401(proftoken):
     response = client.put("/professionals/1/default_offer", headers={})
     assert response.status_code == 401
 
 
-def test_set_default_offer_valid_info_400():
+def test_set_default_offer_valid_info_400(proftoken):
     response = client.put("/professionals/2/default_offer", headers={"X-Token": proftoken})
     assert response.status_code == 400
 
 
-def test_create_prof_offer_valid_info_200():
+def test_create_prof_offer_valid_info_200(proftoken):
     response = client.post("/professionals/offer", json=valid_prof_offer_info, headers={"X-Token": proftoken})
     assert response.status_code == 200
     assert response.json()["description"] == valid_prof_offer_info["description"]
@@ -111,7 +108,7 @@ def test_create_prof_offer_valid_info_200():
     assert response.json()["max_salary"] == valid_prof_offer_info["max_salary"]
 
 
-def test_create_prof_offer_invalid_data_422():
+def test_create_prof_offer_invalid_data_422(proftoken):
     response = client.post("/professionals/offer", json=invalid_prof_offer_info, headers={"X-Token": proftoken})
     assert response.status_code == 422
 
@@ -121,7 +118,7 @@ def test_create_prof_offer_401():
     assert response.status_code == 401
 
 
-def test_edit_prof_offer_valid_data_200():
+def test_edit_prof_offer_valid_data_200(proftoken):
     response = client.put("/professionals/1/edit_offer", json=valid_offer_edit_info, headers={"X-Token": proftoken})
     assert response.status_code == 200
     assert response.json()["description"] == valid_offer_edit_info["description"]
@@ -131,7 +128,7 @@ def test_edit_prof_offer_valid_data_200():
     assert response.json()["max_salary"] == valid_offer_edit_info["max_salary"]
 
 
-def test_edit_prof_offer_invalid_data_422():
+def test_edit_prof_offer_invalid_data_422(proftoken):
     response = client.put("/professionals/1/edit_offer", json=invalid_offer_edit_info, headers={"X-Token": proftoken})
     assert response.status_code == 422
 

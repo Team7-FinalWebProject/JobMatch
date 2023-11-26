@@ -5,27 +5,19 @@ from dotenv import load_dotenv
 from main import app
 
 client = TestClient(app)
-valid_password = os.getenv('userpassword')
-load_dotenv()
 
-valid_admin = {"username": "adminuser", "password": f"{valid_password}"}
-valid_professional = {"username": "testuser1", "password": f"{valid_password}"}
-valid_company = {"username": "testuser4", "password": f"{valid_password}"}
-proftoken = client.post("/login/professionals", json=valid_professional).json()["token"]
-companytoken = client.post("/login/companies", json=valid_company).json()["token"]
-admintoken = client.post("/login/admins", json=valid_admin).json()["token"]
 
-def test_get_company_id_valid_company_200():
+def test_get_company_id_valid_company_200(companytoken):
     response = client.get("/search/company/1", headers={"X-Token": companytoken})
     assert response.status_code == 200
     assert response.json() == "JobUtopia"
 
-def test_get_company_id_valid_prof_200():
+def test_get_company_id_valid_prof_200(proftoken):
     response = client.get("/search/company/1", headers={"X-Token": proftoken})
     assert response.status_code == 200
     assert response.json() == "JobUtopia"
 
-def test_get_company_id_valid_admin_200():
+def test_get_company_id_valid_admin_200(admintoken):
     response = client.get("/search/company/1", headers={"X-Token": admintoken})
     assert response.status_code == 200
     assert response.json() == "JobUtopia"
