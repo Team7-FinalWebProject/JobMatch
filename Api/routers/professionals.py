@@ -25,9 +25,9 @@ def edit_info(new_info: ProfessionalInfoEdit, x_token: str = Header(default=None
 @professionals_router.put('/{offer_id}/default_offer', tags=['Professional'])
 def set_default_prof_offer(offer_id: int, x_token: str = Header(default=None)):
     prof = professional_or_401(x_token) if x_token else None
-    offer = professionals_service.get_offer(offer_id, prof.id)
     if not prof:
         return Unauthorized(content=_ERROR_MESSAGE)
+    offer = professionals_service.get_offer(offer_id, prof.id)
     if not offer:
         return BadRequest(content='You are not the owner or offer doesnt exist')
     return professionals_service.set_def_offer(offer_id, prof.id)
