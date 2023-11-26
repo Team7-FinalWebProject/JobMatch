@@ -91,4 +91,12 @@ def test_register_company_valid_200():
     assert response.json()["description"] == expected_company_data['description']
     assert response.json()["address"] == expected_company_data["address"]
 
+
+def test_register_prof_400():
+    response = client.post("/register/professionals", json=valid_professional_password)
+    assert response.status_code == 400
+
+def test_register_comp_400():
+    response = client.post("/register/companies", json=valid_company_password)
+    assert response.status_code == 400
     
