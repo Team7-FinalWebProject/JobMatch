@@ -66,7 +66,7 @@ useEffect(() => {
     fetchDataAndSetData();
   }, [authToken, dropdownData]);
 
-  const baseURL = import.meta.env.VITE_BASE_URL || "http://localhost:8000";
+  const baseURL = import.meta.env.VITE_BE_URL || "http://localhost:8000";
 
   const handleLoginSubmit = (username: string, password: string) => {
     setUserData({username, password});
