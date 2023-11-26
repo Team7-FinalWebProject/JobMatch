@@ -1,4 +1,4 @@
-import React, { useState, useEffect, } from "react";
+import { useState, useEffect, } from "react";
 
 // import RootTestGet from './services/old/getreqtest'
 // import Vitetemplate from './pages/template'
@@ -30,7 +30,7 @@ function App() {
 
 
 useEffect(() => {
-  const handleLogin = async (userData: Data) => {
+  const handleLogin = async (userData: Data | null) => {
     if (!userData || !userData.username || !userData.password){
       return
     }
@@ -66,7 +66,7 @@ useEffect(() => {
     fetchDataAndSetData();
   }, [authToken, dropdownData]);
 
-  const baseURL = "http://localhost:8000"
+  const baseURL = import.meta.env.VITE_BASE_URL || "http://localhost:8000";
 
   const handleLoginSubmit = (username: string, password: string) => {
     setUserData({username, password});
