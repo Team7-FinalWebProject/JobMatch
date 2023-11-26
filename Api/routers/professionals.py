@@ -7,6 +7,7 @@ from data.models.professional import ProfessionalInfoEdit
 from data.models.offer import ProfessionalOfferCreate, ProfessionalOfferEdit
 from services import professionals_service
 from services.companies_service import check_offer_exists
+from common.utils.file_uploader import create_upload_file
 from PIL import Image
 
 
@@ -112,33 +113,9 @@ def get_match_requests(x_token: str = Header(default=None)):
 
 
 @professionals_router.post('/upload_photo', tags=['Professional'])
-def create_upload_file(myfile: UploadFile = File(...), x_token: str = Header(default=None)):
-    _IMAGE_DIR = "./data/logos"
+def create_upload_prof_photo(myfile: UploadFile = File(...), x_token: str = Header(default=None)):
     prof = professional_or_401(x_token) if x_token else None
     if not prof:
         return Unauthorized(content=_ERROR_MESSAGE)
-
-    filename = myfile.filename
-    extention = filename.split('.')[-1]
-
-    if extention not in ('png', 'jpg', 'jpeg'):
-        return Forbidden(content='File extention not allowed')
-    token_name = secrets.token_hex(10) + "." + extention
-    generated_name = _IMAGE_DIR + token_name
-    file_content = myfile.file.read()
-    try:
-        with open(generated_name, "wb") as f:
-            f.write(file_content)
-
-        img = Image.open(generated_name)
-        img = img.resize(size = (200, 200))
-        img.save(generated_name)
-
-        with open(generated_name, "rb") as f:
-            image_bytes = f.read()
-        
-        return professionals_service.upload_img(prof, image_bytes)
-    except Exception as e:
-        return InternalServerError()
-    finally:
-        os.remove(generated_name)
+    image_bytes = create_upload_file(myfile)
+    return professionals_service.upload_img(prof, image_bytes)
