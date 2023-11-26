@@ -27,6 +27,10 @@ origins = [
     "127.0.0.1:80",
     "http://127.0.0.1:80",
     "https://127.0.0.1:80",
+    "https://job-match-seven.vercel.app/",
+    "http://job-match-seven.vercel.app/",
+    "https://job-match-seven.vercel.app",
+    "http://job-match-seven.vercel.app",
 ]
 
 
