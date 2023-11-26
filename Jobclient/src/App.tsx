@@ -13,7 +13,7 @@ import Dropdown from "./components/Dropdown";
 
 
 type Data = {
-  [key: string]: string | Data;
+  [key: string]: string | number | Data | null;
 };
 
 
