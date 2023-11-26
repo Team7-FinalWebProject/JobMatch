@@ -13,7 +13,7 @@ valid_prof_info = {
   "last_name": "string",
   "summary": "string",
   "address": "string",
-  "picture": "string"
+  "picture": None
 }
 
 valid_prof_offer_info = {

@@ -65,7 +65,7 @@ def valid_company():
 def proftoken(valid_professional):
     try:
         result = client.post("/login/professionals", json=valid_professional).json()["token"]
-    except ас е:
+    except:
         raise(Exception)
     return result
 

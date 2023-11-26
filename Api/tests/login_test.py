@@ -73,14 +73,14 @@ def test_login_companies_invalid_professional_400(valid_professional):
     response = client.post("/login/companies", json=valid_professional)
     assert response.status_code == 400
 
-def test_login_admins_invalid_professional_400(valid_professional):
-    response = client.post("/login/admins", json=valid_professional)
+def test_login_admins_invalid_professional_400(invalid_user):
+    response = client.post("/login/admins", json=invalid_user)
     assert response.status_code == 400
 
 def test_login_professional_invalid_company_400(valid_company):
     response = client.post("/login/professionals", json=valid_company)
     assert response.status_code == 400
 
-def test_login_admins_invalid_company_400(valid_company):
-    response = client.post("/login/admins", json=valid_company)
+def test_login_admins_invalid_company_400(invalid_user):
+    response = client.post("/login/admins", json=invalid_user)
     assert response.status_code == 400
