@@ -1,13 +1,19 @@
 import os
+from datetime import datetime
 import pytest
 import psycopg2
+from dotenv import load_dotenv
 from db_data import db_utils
 from data import database
-from dotenv import load_dotenv
-from datetime import datetime
 import warnings
+from fastapi.testclient import TestClient
 
 load_dotenv()
+
+from main import app
+
+client = TestClient(app)
+
 
 user_password = os.getenv('userpassword')
 # invalid_user = {"username": "EFrQjeqVSwyPx_t6O", "password": "stringst"}
@@ -54,6 +60,31 @@ def valid_professional():
 @pytest.fixture
 def valid_company():
     return {"username": "testuser4", "password": user_password}
+
+@pytest.fixture
+def proftoken(valid_professional):
+    try:
+        result = client.post("/login/professionals", json=valid_professional).json()["token"]
+    except:
+        raise(Exception)
+    return result
+
+@pytest.fixture
+def companytoken(valid_company):
+    try:
+        result = client.post("/login/companies", json=valid_company).json()["token"]
+    except:
+        raise(Exception)
+    return result
+
+@pytest.fixture
+def admintoken(valid_admin):
+    try:
+        result = client.post("/login/admins", json=valid_admin).json()["token"]
+    except:
+        raise(Exception)
+    return result
+
 
 remoteorlocal = os.getenv('remoteorlocal')
 if remoteorlocal == 'remote':
