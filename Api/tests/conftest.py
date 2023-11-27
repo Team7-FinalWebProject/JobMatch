@@ -65,24 +65,24 @@ def valid_company():
 def proftoken(valid_professional):
     try:
         result = client.post("/login/professionals", json=valid_professional).json()["token"]
-    except:
-        raise(Exception)
+    except Exception as e:
+        raise Exception from e
     return result
 
 @pytest.fixture
 def companytoken(valid_company):
     try:
         result = client.post("/login/companies", json=valid_company).json()["token"]
-    except:
-        raise(Exception)
+    except Exception as e:
+        raise Exception from e
     return result
 
 @pytest.fixture
 def admintoken(valid_admin):
     try:
         result = client.post("/login/admins", json=valid_admin).json()["token"]
-    except:
-        raise(Exception)
+    except Exception as e:
+        raise Exception from e
     return result
 
 
