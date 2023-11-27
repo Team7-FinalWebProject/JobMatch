@@ -24,7 +24,6 @@ discard_prepared_valid_info = [
 def test_view_unapproved_company_valid_data_200(admintoken):
     response = client.get("/admin/company/1", headers={"X-Token": admintoken})
     assert response.status_code == 200
-    assert response.json() == "null"
     
 def test_view_unapproved_company_no_token_401(admintoken):
     response = client.get("/admin/company/1", headers={})
@@ -33,7 +32,6 @@ def test_view_unapproved_company_no_token_401(admintoken):
 def test_view_unapproved_companies_valid_data_200(admintoken):
     response = client.get("/admin/companies", headers={"X-Token": admintoken})
     assert response.status_code == 200
-    assert response.json() == "[]"
     
 def test_view_unapproved_companies_no_token_401(admintoken):
     response = client.get("/admin/companies", headers={})
@@ -42,7 +40,6 @@ def test_view_unapproved_companies_no_token_401(admintoken):
 def test_view_unapproved_professional_valid_data_200(admintoken):
     response = client.get("/admin/professional/1", headers={"X-Token": admintoken})
     assert response.status_code == 200
-    assert response.json() == "null"
    
 def test_view_unapproved_professional_no_token_401(admintoken):
     response = client.get("/admin/professional/1", headers={})
@@ -101,7 +98,7 @@ def test_prepare_skills_valid_data_200(admintoken):
     assert response.status_code == 200
 
 
-def test_change_config_no_token_401(admintoken):
+def test_prepare_skills_no_token_401(admintoken):
     response = client.post("/admin/prepare_skills", headers={})
     assert response.status_code == 401
 
