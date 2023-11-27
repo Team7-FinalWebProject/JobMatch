@@ -113,18 +113,18 @@ def match_comp_offer(offer_id: int, prof_id: int, comp_offer_id: int, private_or
     queries = (
         '''UPDATE professional_offers SET status = %s
            WHERE professional_id = %s AND status = %s''',
-        
-        '''UPDATE company_offers SET status = %s
-           WHERE id = %s''',
 
         '''UPDATE professional_offers SET status = %s, chosen_company_offer_id = %s
            WHERE id = %s''',
 
         '''UPDATE professionals SET status = %s
+           WHERE id = %s''',
+        
+        '''UPDATE company_offers SET status = %s
            WHERE id = %s'''
     )
-    params = ((private_or_hidden, prof_id, 'active'), ('archived', comp_offer_id), 
-              ('matched', comp_offer_id, offer_id), ('busy', prof_id))
+    params = ((private_or_hidden, prof_id, 'active'), ('matched', comp_offer_id, offer_id), 
+              ('busy', prof_id), ('archived', comp_offer_id))
     rowcount = update_queries_transaction(queries, params)
     return f'Match with company offer {comp_offer_id} | {rowcount}'
 

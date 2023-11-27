@@ -136,3 +136,67 @@ def test_edit_prof_offer_invalid_data_422(proftoken):
 def test_edit_prof_offer_401():
     response = client.put("/professionals/1/edit_offer", json=valid_offer_edit_info)
     assert response.status_code == 401
+
+
+def test_send_match_request_invalid_data_403(proftoken):
+    response = client.post("/professionals/1/1/requests", headers={"X-Token": proftoken})
+    assert response.status_code == 403
+
+
+def test_send_match_request_valid_data_200(proftoken):
+    response = client.post("/professionals/2/1/requests", headers={"X-Token": proftoken})
+    assert response.status_code == 200
+
+
+def test_send_match_request_invalid_data_401(proftoken):
+    response = client.post("/professionals/1/1/requests", headers={})
+    assert response.status_code == 401
+
+
+def test_send_match_request_invalid_data_404(proftoken):
+    response = client.post("/professionals/1/-1/requests", headers={"X-Token": proftoken})
+    assert response.status_code == 404
+
+
+def test_match_valid_data_200(proftoken):
+    response = client.post("/professionals/match?offer_id=1&comp_offer_id=1", headers={"X-Token": proftoken})
+    assert response.status_code == 200
+
+
+def test_match_invalid_data_401(proftoken):
+    response = client.post("/professionals/match?offer_id=1&comp_offer_id=1", headers={})
+    assert response.status_code == 401
+
+
+def test_match_invalid_data_403(proftoken):
+    response = client.post("/professionals/match?offer_id=3&comp_offer_id=1", headers={"X-Token": proftoken})
+    assert response.status_code == 403
+
+
+def test_set_offer_status_valid_data_200(proftoken):
+    response = client.put("/professionals/offer_status?offer_id=1&status=hidden", headers={"X-Token": proftoken})
+    assert response.status_code == 200
+
+
+def test_set_offer_status_invalid_data_401(proftoken):
+    response = client.put("/professionals/offer_status?offer_id=1&status=hidden", headers={})
+    assert response.status_code == 401
+
+
+def test_set_offer_status_invalid_data_404(proftoken):
+    response = client.put("/professionals/offer_status?offer_id=20&status=hidden", headers={"X-Token": proftoken})
+    assert response.status_code == 404
+
+
+def test_get_match_requests_valid_data_200(proftoken):
+    response = client.get("/professionals/match_requests", headers={"X-Token": proftoken})
+    assert response.status_code == 200
+    response = response.json()
+    assert "prof_offer_id" in response[0]
+    assert "comp_offer_id" in response[0]
+    assert "request_from" in response[0]
+
+
+def test_get_match_requests_invalid_data_401(proftoken):
+    response = client.get("/professionals/match_requests", headers={})
+    assert response.status_code == 401
