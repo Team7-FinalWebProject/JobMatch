@@ -21,7 +21,7 @@ def data_input(sender_email: str, sender_username: str, receiver_email: str):
                 ],
                 "Subject": "Your offer has been matched",
                 "TextPart": f"Dear {receiver_email}, we are happy to inform you that your offer has been matched by {sender_username}",
-                "HTMLPart": '''<h3>Dear {receiver_email}, we are happy to inform you that your offer has been matched 
+                "HTMLPart": f'''<h3>Dear {receiver_email}, we are happy to inform you that your offer has been matched 
                                 <a href=\"https://www.mailjet.com/\">Mailjet</a>!</h3><br />May the job force be with you! From: {sender_username}'''
             }
         ]

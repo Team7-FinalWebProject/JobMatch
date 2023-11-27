@@ -9,7 +9,7 @@ valid_password = os.getenv('userpassword')
 load_dotenv()
 
 change_config_valid_info = {
-  "static_skills": false,
+  "static_skills": False,
   "min_level": 0,
   "max_level": 10
 }
