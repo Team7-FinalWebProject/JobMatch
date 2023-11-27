@@ -126,7 +126,7 @@ def match_comp_offer(offer_id: int, prof_id: int, comp_offer_id: int, private_or
     params = ((private_or_hidden, prof_id, 'active'), ('matched', comp_offer_id, offer_id), 
               ('busy', prof_id), ('archived', comp_offer_id))
     rowcount = update_queries_transaction(queries, params)
-    return f'Match with company offer {comp_offer_id} | {rowcount}'
+    return rowcount
 
 
 def create_match_request(prof_offer_id: int, comp_offer_id: int):
