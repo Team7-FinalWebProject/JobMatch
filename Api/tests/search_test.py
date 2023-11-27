@@ -7,26 +7,24 @@ from main import app
 client = TestClient(app)
 
 
+def test_get_company_id_invalid_token_401():
+    response = client.get("/search/company/1", headers={"X-Token": b"hailhydra"})
+    assert response.status_code == 401
+
 def test_get_company_id_valid_company_200(companytoken):
     response = client.get("/search/company/1", headers={"X-Token": companytoken})
     assert response.status_code == 200
-    assert response.json() == "JobUtopia"
+    assert response.json()["name"] == "Pepsi"
 
 def test_get_company_id_valid_prof_200(proftoken):
     response = client.get("/search/company/1", headers={"X-Token": proftoken})
     assert response.status_code == 200
-    assert response.json() == "JobUtopia"
+    assert response.json()["name"] == "Pepsi"
 
 def test_get_company_id_valid_admin_200(admintoken):
     response = client.get("/search/company/1", headers={"X-Token": admintoken})
     assert response.status_code == 200
-    assert response.json() == "JobUtopia"
-
-def test_get_company_id_invalid_token_400():
-    response = client.get("/search/company/1", headers={"X-Token": b"hailhydra"})
-    assert response.status_code == 400
-    assert response.json() == "JobUtopia"
-
+    assert response.json()["name"] == "Pepsi"
 
 
 
