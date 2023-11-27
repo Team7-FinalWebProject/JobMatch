@@ -51,6 +51,8 @@ useEffect(() => {
   useEffect(() => {
     const fetchDataAndSetData = async () => {
       try {
+        // const baseURL = import.meta.env.VITE_BE_URL
+        const baseURL = import.meta.env.VITE_BE_URL || "http://localhost:8000";
         // const authToken = await handleLogin(userData);
         if (!authToken || !dropdownData) {
           // console.warn('Auth token is not available. Skipping data fetch.');
@@ -66,8 +68,6 @@ useEffect(() => {
     fetchDataAndSetData();
   }, [authToken, dropdownData]);
 
-  // const baseURL = import.meta.env.VITE_BE_URL
-  const baseURL = import.meta.env.VITE_BE_URL || "http://localhost:8000";
 
   const handleLoginSubmit = (username: string, password: string) => {
     setUserData({username, password});
