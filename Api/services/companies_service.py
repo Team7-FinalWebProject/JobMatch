@@ -135,3 +135,11 @@ def match_prof_offer(prof_offer_id: int, prof_id: int, comp_offer_id: int, priva
     # return f'Match with company offer {comp_offer_id} | {rowcount}'
 
     return f'Match with professional offer {prof_offer_id}'
+
+
+def upload_img(comp: Company, image):
+    rowcount = update_query(
+        '''UPDATE companies SET picture = %s
+           WHERE id = %s''', (image, comp.id))
+    
+    return f'Updated photo [{rowcount}]'

@@ -1,10 +1,13 @@
-from fastapi import APIRouter, Header
+from fastapi import APIRouter, Header, UploadFile, File
 from data.models.company import Company
 from data.models.offer import CompanyOfferCreate
 from services import companies_service, professionals_service
 from common.auth import company_or_401
 from data.responses import BadRequest, Unauthorized, NotFound, Forbidden
 from services.search_service import _get_professional_offer_by_id
+from common.utils.file_uploader import create_upload_file
+
+
 
 
 _ERROR_MESSAGE = 'You are not authorized [NOT LOGGED IN | TOKEN EXPIRED]'
@@ -117,3 +120,12 @@ def match(prof_offer_id: int, company_offer_id: int, private_or_hidden = 'hidden
         return Forbidden(content=f'You are not the owner of offer {company_offer_id}')
     
     return professionals_service.match_comp_offer(prof_offer_id, company.id, company_offer_id, private_or_hidden)
+
+
+@companies_router.post('/upload_photo', tags=['Companies'])
+def create_upload_company_photo(myfile: UploadFile = File(...), x_token: str = Header(default=None)):
+    company = company_or_401(x_token) if x_token else None
+    if not company:
+        return Unauthorized(content=_ERROR_MESSAGE)
+    image_bytes = create_upload_file(myfile)
+    return companies_service.upload_img(company, image_bytes)
