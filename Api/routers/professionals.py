@@ -1,14 +1,13 @@
-import os
-import secrets
 from fastapi import APIRouter, Header, UploadFile, File
 from common.auth import professional_or_401
-from data.responses import BadRequest, Unauthorized, NotFound, Forbidden, InternalServerError
+from data.responses import BadRequest, Unauthorized, NotFound, Forbidden
 from data.models.professional import ProfessionalInfoEdit
 from data.models.offer import ProfessionalOfferCreate, ProfessionalOfferEdit
 from services import professionals_service
 from services.companies_service import check_offer_exists
 from common.utils.file_uploader import create_upload_file
-from PIL import Image
+from common.utils.emailing import data_input, mailjet
+
 
 
 professionals_router = APIRouter(prefix='/professionals')
@@ -90,8 +89,14 @@ def match(offer_id: int, comp_offer_id: int, private_or_hidden = 'hidden', x_tok
         return NotFound(content=f'No offer with id: {comp_offer_id}')
     if not professionals_service.is_author(prof.id, offer_id):
         return Forbidden(content=f'You are not the owner of offer {offer_id}')
-    return professionals_service.match_comp_offer(offer_id, prof.id, comp_offer_id, private_or_hidden)
-
+    match = professionals_service.match_comp_offer(offer_id, prof.id, comp_offer_id, private_or_hidden)
+    if match is True:
+        mail_data = data_input('anotherinbox@mailsac.com', prof.username, 'jobtestmail@mailsac.com')
+        result = mailjet.send.create(mail_data)
+        print(result.status_code)
+        print(result.json())
+        return f'Matched with company offer: {comp_offer_id}'
+    
 
 @professionals_router.put('/offer_status', tags=['Professional'])
 def set_offer_status(offer_id: int, status: str, x_token: str = Header(default=None)):
