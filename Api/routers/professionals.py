@@ -1,14 +1,12 @@
-import os
-import secrets
 from fastapi import APIRouter, Header, UploadFile, File
 from common.auth import professional_or_401
-from data.responses import BadRequest, Unauthorized, NotFound, Forbidden, InternalServerError
+from data.responses import BadRequest, Unauthorized, NotFound, Forbidden
 from data.models.professional import ProfessionalInfoEdit
 from data.models.offer import ProfessionalOfferCreate, ProfessionalOfferEdit
 from services import professionals_service
 from services.companies_service import check_offer_exists
 from common.utils.file_uploader import create_upload_file
-from PIL import Image
+
 
 
 professionals_router = APIRouter(prefix='/professionals')
