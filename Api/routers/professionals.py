@@ -92,10 +92,10 @@ def match(offer_id: int, comp_offer_id: int, private_or_hidden = 'hidden', x_tok
         return Forbidden(content=f'You are not the owner of offer {offer_id}')
     match = professionals_service.match_comp_offer(offer_id, prof.id, comp_offer_id, private_or_hidden)
     if match is True:
-        mail_data = data_input(os.getenv('sender_email'), prof.username, 'usermail@mailsac.com')
-        result = mailjet.send.create(mail_data)
-        print(result.status_code)
-        print(result.json())
+        # mail_data = data_input(os.getenv('sender_email'), prof.username, 'usermail@mailsac.com')
+        # result = mailjet.send.create(mail_data)
+        # print(result.status_code)
+        # print(result.json())
         return f'Matched with company offer: {comp_offer_id}'
 
 
