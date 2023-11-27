@@ -11,12 +11,12 @@ def data_input(sender_email: str, sender_username: str, receiver_email: str):
         'Messages': [
             {
                 "From": {
-                    "Email": "some_email",
-                    "Name": "Mailjet Pilot"
+                    "Email": f"{sender_email}",
+                    "Name": f"{sender_username}"
                 },
                 "To": [
                     {
-                        "Email": "some_email"
+                        "Email": f"{receiver_email}"
                     }
                 ],
                 "Subject": "Your offer has been matched",
@@ -26,9 +26,5 @@ def data_input(sender_email: str, sender_username: str, receiver_email: str):
             }
         ]
     }
-
-    data['Messages'][0]['From']['Email'] = sender_email
-    data['Messages'][0]['From']['Name'] = sender_username
-    data['Messages'][0]['To'][0]['Email'] = receiver_email
 
     return data
