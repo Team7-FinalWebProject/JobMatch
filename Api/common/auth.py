@@ -1,5 +1,6 @@
 import jwt
-from fastapi import HTTPException
+from jose import JWTError
+from fastapi import HTTPException, status
 from data.responses import ExpiredException
 from data.models.company import Company
 from data.models.professional import Professional
@@ -126,7 +127,18 @@ def create_company_token(comp: Company) -> str:
 
 
 def _is_authenticated(token: str):
-    return jwt.decode(token, _JWT_SECRET, algorithms=["HS256"])
+    try:
+        payload = jwt.decode(token, _JWT_SECRET, algorithms=["HS256"])
+        
+    except Exception as e:
+        # Catch any exception and raise an HTTPException with status code 401 (Unauthorized)
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or expired token",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    return payload
 
     
 def create_admin_token(admin: Admin) -> str:
