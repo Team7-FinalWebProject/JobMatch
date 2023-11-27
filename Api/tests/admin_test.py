@@ -15,6 +15,7 @@ change_config_valid_info = {
 }
 
 
+
 def test_view_unapproved_company_valid_data_200(admintoken):
     response = client.get("/admin/company/1", headers={"X-Token": admintoken})
     assert response.status_code == 200
