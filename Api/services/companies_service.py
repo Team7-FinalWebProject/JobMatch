@@ -55,7 +55,7 @@ def create_company_offer(offer, company: Company):
 
 def get_company_offer(offer_id: int, company_id: int):
     data = read_query(
-        '''SELECT id, company_id, status, chosen_professional_id, 
+        '''SELECT id, company_id, status, chosen_professional_offer_id, 
            requirements, min_salary, max_salary 
            FROM company_offers WHERE id = %s AND company_id = %s''',
         (offer_id, company_id))
