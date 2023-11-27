@@ -7,6 +7,7 @@ from services import professionals_service
 from services.companies_service import check_offer_exists
 from common.utils.file_uploader import create_upload_file
 from common.utils.emailing import data_input, mailjet
+import os
 
 
 
@@ -82,7 +83,7 @@ def match(offer_id: int, comp_offer_id: int, private_or_hidden = 'hidden', x_tok
         private_or_hidden = 'hidden'
     if not prof:
         return Unauthorized(content=_ERROR_MESSAGE)
-    if prof.status != 'active':
+    if prof.status == 'busy':
         return Forbidden(content='You have already matched an offer!')
     comp_offer = check_offer_exists(comp_offer_id)
     if not comp_offer:
@@ -91,12 +92,12 @@ def match(offer_id: int, comp_offer_id: int, private_or_hidden = 'hidden', x_tok
         return Forbidden(content=f'You are not the owner of offer {offer_id}')
     match = professionals_service.match_comp_offer(offer_id, prof.id, comp_offer_id, private_or_hidden)
     if match is True:
-        mail_data = data_input('anotherinbox@mailsac.com', prof.username, 'jobtestmail@mailsac.com')
+        mail_data = data_input(os.getenv('sender_email'), prof.username, 'usermail@mailsac.com')
         result = mailjet.send.create(mail_data)
         print(result.status_code)
         print(result.json())
         return f'Matched with company offer: {comp_offer_id}'
-    
+
 
 @professionals_router.put('/offer_status', tags=['Professional'])
 def set_offer_status(offer_id: int, status: str, x_token: str = Header(default=None)):
