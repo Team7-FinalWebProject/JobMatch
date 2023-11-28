@@ -8,10 +8,9 @@ import { useState, useEffect, } from "react";
 import { loginUser } from "./services/login";
 import { getData } from "./services/getData"
 import DataDisplay from "./pages/displayData";
-import LoginForm from "./components/LoginForm";
 import Dropdown from "./components/Dropdown";
 // import Heading from "./components/Heading";
-import LoginTW from "./components/LoginForm_TW";
+import LoginForm from "./components/LoginForm";
 
 type Data = {
   [key: string]: string | number | Data | null;
@@ -82,8 +81,8 @@ function App() {
       {/* <RootTestGet/> */}
       {/* <Post apiUrl='http://localhost:8000/login/admins"  />'/> */}
       {/* <Heading title={"JobUtopia"} links={links}/> */}
-      <LoginTW/>
-      <LoginForm onSubmit={handleLogin} />
+      <LoginForm onSubmit={handleLogin}/>
+      {/* <LoginForm onSubmit={handleLogin} /> */}
       <Dropdown options={dropdownOptions} onSelect={handleDropdownSelect} />
       <DataDisplay data={data} />
     </>
