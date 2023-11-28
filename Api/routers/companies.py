@@ -89,9 +89,8 @@ def send_match_request_to_prof_offer(company_offer_id: int, prof_offer_id: int, 
     if not prof_offer:
         return NotFound(content=f'No professional offer with id: {prof_offer_id}')
     
-    prof_id = companies_service.get_prof_id_from_prof_offer_id(prof_offer_id)
 
-    return companies_service.create_match_request(company_offer_id, prof_id, prof_offer_id)
+    return companies_service.create_match_request(company_offer_id, prof_offer_id)
 
 
 
@@ -120,6 +119,22 @@ def match(prof_offer_id: int, company_offer_id: int, private_or_hidden = 'hidden
         return Forbidden(content=f'You are not the owner of offer {company_offer_id}')
     
     return professionals_service.match_comp_offer(prof_offer_id, company.id, company_offer_id, private_or_hidden)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 @companies_router.post('/upload_photo', tags=['Companies'])
