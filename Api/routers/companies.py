@@ -67,20 +67,16 @@ def edit_comp_offer(new_offer: CompanyOfferCreate,
 @companies_router.post('/{company_offer_id}/{prof_offer_id}/request', tags=['Companies'])
 def send_match_request_to_prof_offer(company_offer_id: int, prof_offer_id: int, x_token: str = Header(default=None)):
     company = company_or_401(x_token) if x_token else None
-
     company_offer_exist = companies_service.check_offer_exists(company_offer_id)
-
 
     if not company:
         return Unauthorized(content=_ERROR_MESSAGE)
-    
 
     if company_offer_exist:
         company_offer_info = companies_service.get_company_offer(company_offer_id, company.id)
     else:
         return NotFound(content=f'No offer with id: {company_offer_id}')
 
-    
     if company_offer_info.status != 'active':
         return Forbidden(content='Cannot send a match request when busy!')
 
@@ -89,37 +85,52 @@ def send_match_request_to_prof_offer(company_offer_id: int, prof_offer_id: int, 
     if not prof_offer:
         return NotFound(content=f'No professional offer with id: {prof_offer_id}')
     
-    prof_id = companies_service.get_prof_id_from_prof_offer_id(prof_offer_id)
-
-    return companies_service.create_match_request(company_offer_id, prof_id, prof_offer_id)
+    return companies_service.create_match_request(company_offer_id, prof_offer_id)
 
 
 
 @companies_router.post('/match', tags=['Companies'])
-def match(prof_offer_id: int, company_offer_id: int, private_or_hidden = 'hidden', x_token: str = Header(default=None)):
+def match(offer_id: int, prof_offer_id: int, private_or_hidden = 'hidden', x_token: str = Header(default=None)):
     company = company_or_401(x_token) if x_token else None
-    
-    # if private_or_hidden not in ('hidden', 'private'):
-    #     private_or_hidden = 'hidden'
-
-    company_offer_exist = companies_service.check_offer_exists(company_offer_id)
-
+    if private_or_hidden not in ('hidden', 'private'):
+        private_or_hidden = 'hidden'
     if not company:
         return Unauthorized(content=_ERROR_MESSAGE)
+    # if company.status == 'busy':
+    #     return Forbidden(content='You have already matched an offer!')
+    prof_offer = professionals_service.check_prof_offer_exists(prof_offer_id)
+    if not prof_offer:
+        return NotFound(content=f'No professional offer with id: {prof_offer}')
+    if not companies_service.is_author(company.id, offer_id):
+        return Forbidden(content=f'You are not the owner of offer {offer_id}')
+    prof_id = companies_service.get_prof_id_from_prof_offer_id(prof_offer_id)
     
-    if company_offer_exist:
-        company_offer_info = companies_service.get_company_offer(company_offer_id, company.id)
-    else:
-        return NotFound(content=f'No offer with id: {company_offer_id}')
-    
-    if company_offer_info.status != 'active':
-        return Forbidden(content='You have already matched an offer!')
+    match = companies_service.match_prof_offer(offer_id, prof_id, prof_offer_id, private_or_hidden)
     
     
-    if not professionals_service.is_author(company.id, company_offer_id):
-        return Forbidden(content=f'You are not the owner of offer {company_offer_id}')
     
-    return professionals_service.match_comp_offer(prof_offer_id, company.id, company_offer_id, private_or_hidden)
+    # if match is True:
+    #     mail_data = data_input(os.getenv('sender_email'), prof.username, 'usermail@mailsac.com')
+    #     result = mailjet.send.create(mail_data)
+    #     print(result.status_code)
+    #     print(result.json())
+    return f'Matched with company offer: {prof_offer_id}'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 @companies_router.post('/upload_photo', tags=['Companies'])

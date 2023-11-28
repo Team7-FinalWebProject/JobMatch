@@ -5,6 +5,8 @@ from data.models.offer import CompanyOffer
 from psycopg2 import IntegrityError
 from psycopg2.extras import Json
 from data.responses import InvalidStatusError
+from psycopg2.errors import UniqueViolation
+
 
 
 
@@ -122,14 +124,20 @@ def get_prof_id_from_prof_offer_id(prof_offer_id: int):
     
     return next((row[0] for row in data), None)
 
-def create_match_request(comp_offer_id: int, prof_id: int, prof_offer_id: int):
-    insert_query(
-        '''INSERT INTO company_requests(company_offer_id, professional_id, professional_offer_id)
-           VALUES (%s, %s, %s) RETURNING id''',
-           (comp_offer_id, prof_id, prof_offer_id))
-    
-    return f'Sent match request for company offer {comp_offer_id}'
 
+
+def create_match_request(comp_offer_id: int, prof_offer_id: int):
+    try:
+        insert_query(
+            '''INSERT INTO requests(company_offer_id, professional_offer_id, request_from)
+            VALUES (%s, %s, %s) RETURNING id''', 
+            (comp_offer_id, prof_offer_id, 'company'))
+        
+        return f'Sent match request for professional offer {prof_offer_id}'
+    except UniqueViolation:
+        return None
+    
+    
 
 
 def is_author(company_id: int, offer_id: int):
@@ -139,23 +147,30 @@ def is_author(company_id: int, offer_id: int):
         (company_id, offer_id)))
 
 
-def match_prof_offer(prof_offer_id: int, prof_id: int, comp_offer_id: int, private_or_hidden: str):
-    # queries = [
-        # '''UPDATE company_offers SET status = %s,
-        #    WHERE professional_id = %s AND status = %s''',
-           
-    update_query('''UPDATE company_offers SET status = %s, chosen_professional_id = %s
+def match_prof_offer(offer_id: int, prof_id: int, prof_offer_id: int, private_or_hidden: str):
+    queries = (
+        '''UPDATE professional_offers SET status = %s
+           WHERE professional_id = %s AND status = %s''',
+
+        '''UPDATE professional_offers SET status = %s, chosen_company_offer_id = %s
            WHERE id = %s''',
-           ("matched", prof_id))
 
-        # '''UPDATE professionals SET status = %s
-        #    WHERE id = %s'''
-    # ]
-    # params = ((private_or_hidden, prof_id, 'active'), ('matched', comp_offer_id, offer_id), ('busy', prof_id))
-    # rowcount = update_queries_transaction(queries, params)
-    # return f'Match with company offer {comp_offer_id} | {rowcount}'
+        '''UPDATE professionals SET status = %s
+           WHERE id = %s''',
+        
+        '''UPDATE company_offers SET status = %s
+           WHERE id = %s'''
+    )
+    params = ((private_or_hidden, prof_id, 'active'), ('matched', offer_id, prof_offer_id), 
+              ('busy', prof_id), ('archived', offer_id))
+    rowcount = update_queries_transaction(queries, params)
+    return rowcount
 
-    return f'Match with professional offer {prof_offer_id}'
+
+
+
+
+
 
 
 def upload_img(comp: Company, image):
