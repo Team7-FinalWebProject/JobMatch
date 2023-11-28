@@ -2,7 +2,7 @@ import '../index.css';
 interface LoginForm_Props {
   onSubmit: (username: string, password: string) => void;
 }
-const LoginForm_TW: React.FC<LoginForm_Props> = ({ onSubmit }) => {
+const LoginForm: React.FC<LoginForm_Props> = ({ onSubmit }) => {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         const target = e.target as typeof e.target & {
@@ -100,4 +100,4 @@ const LoginForm_TW: React.FC<LoginForm_Props> = ({ onSubmit }) => {
     )
   }
 
-  export default LoginForm_TW;
+  export default LoginForm;

@@ -8,9 +8,10 @@ import { useState, useEffect, } from "react";
 import { loginUser } from "./services/login";
 import { getData } from "./services/getData"
 import DataDisplay from "./pages/displayData";
-import Dropdown from "./components/Dropdown";
+// import Dropdown from "./components/old/Dropdown";
 // import Heading from "./components/Heading";
 import LoginForm from "./components/LoginForm";
+import Sidebar from "./components/Sidebar";
 
 type Data = {
   [key: string]: string | number | Data | null;
@@ -19,9 +20,7 @@ type Data = {
 
 
 function App() {
-  const [userData, setUserData] = useState<Data | null>(null);
   const [authToken, setAuthToken] = useState<string | null>(null);
-  const [dropdownData, setDropdownData] = useState<string | null>(null);
   const [data, setData] = useState<Data | null>(null);
 
   // handle state in APP ??
@@ -29,17 +28,12 @@ function App() {
   // const [username, setUsername] = useState<string | null>(null);
   // const [password, setPassword] = useState<string | null>(null);
 
-
-  useEffect(() => {
-    fetchDataAndSetData();
-  }, [authToken, dropdownData]);
-
   const handleLogin = async (username: string, password: string) => {
     if (!username || !password){
       return
     }
     try {
-      const token = await loginUser(username as string, password as string);
+      const token = await loginUser(username, password);
       // console.log('Token:', token);
       setAuthToken(token);
     } catch (error) {
@@ -47,29 +41,22 @@ function App() {
     }
   };
 
-  const fetchDataAndSetData = async () => {
+  const handleSidebar = async (sidebarData: string) => {
     try {
-      // const baseURL = import.meta.env.VITE_BE_URL
       const baseURL = import.meta.env.VITE_BE_URL || "http://localhost:8000";
       // const authToken = await handleLogin(userData);
-      if (!authToken || !dropdownData) {
+      if (!authToken || !sidebarData) {
         // console.warn('Auth token is not available. Skipping data fetch.');
         return;
       }
-      const responseData = await getData(authToken,baseURL+dropdownData);
+      const responseData = await getData(authToken,baseURL+sidebarData);
       setData(responseData);
     } catch (error) {
       console.error('Error in fetchDataAndSetData', error);
     }
   };
 
-
-  const handleDropdownSelect = (selectedOption: string) => {
-    setDropdownData(selectedOption);
-    // console.log('Dropdown option selected:', selectedOption);
-  };
-
-  const dropdownOptions = ['/search/companies', '/search/professionals', '/search/company_offers', '/search/professional_offers',
+  const sidebarOptions = ['/search/companies', '/search/professionals', '/search/company_offers', '/search/professional_offers',
   '/admin/companies', '/admin/professionals', '/admin/config', '/professionals/match_requests',
   '/search/professional_self_info', '/search/professional_self_offers', '/search/professional_company_offers',
   '/search/company_self_info', '/search/company_self_offers','/search/company_professional_offers',];
@@ -77,14 +64,18 @@ function App() {
 
   return (
     <>
-      {/* <Vitetemplate/> */}
-      {/* <RootTestGet/> */}
-      {/* <Post apiUrl='http://localhost:8000/login/admins"  />'/> */}
+    <table><tr>
       {/* <Heading title={"JobUtopia"} links={links}/> */}
       <LoginForm onSubmit={handleLogin}/>
-      {/* <LoginForm onSubmit={handleLogin} /> */}
-      <Dropdown options={dropdownOptions} onSelect={handleDropdownSelect} />
+      {/* <Dropdown options={dropdownOptions} onSelect={handleDropdown} /> */}
+      </tr><tr>
+      <th>
+      <Sidebar options={sidebarOptions} onSelect={handleSidebar}/>
+      </th>
+      <th>
       <DataDisplay data={data} />
+      </th>
+      </tr></table>
     </>
   )
 }
