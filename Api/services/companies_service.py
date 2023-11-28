@@ -1,5 +1,5 @@
 from data.database import update_query, insert_query, read_query, update_queries_transaction
-from fastapi import Header
+from fastapi import Header, HTTPException, status
 from data.models.company import Company
 from data.models.offer import CompanyOffer
 from psycopg2 import IntegrityError
@@ -105,7 +105,7 @@ def edit_company_offer(new_offer: CompanyOffer, old_offer: CompanyOffer):
     except IntegrityError as e:
         return e.__str__()
     except InvalidStatusError as e:
-        return str(e)
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
 
 
