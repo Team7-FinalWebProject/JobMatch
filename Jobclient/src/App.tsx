@@ -86,7 +86,7 @@ function App() {
       {/* <Vitetemplate/> */}
       {/* <RootTestGet/> */}
       {/* <Post apiUrl='http://localhost:8000/login/admins"  />'/> */}
-      <Heading title={"JobUtopia"} />
+      <Heading title={"JobUtopia"} links={links}/>
       <LoginTW/>
       <LoginForm onSubmit={handleLogin} />
       <Dropdown options={dropdownOptions} onSelect={handleDropdownSelect} />
