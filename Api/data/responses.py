@@ -51,3 +51,9 @@ class ExpiredException(BaseException):
     def __init__(self):
         super().__init__()
         self.message = ('Exception that determines if a token has expired.')
+
+
+class InvalidStatusError(Exception):
+    def __init__(self, message="Invalid status. New status must be 'active'."):
+        self.message = message
+        super().__init__(self.message)
