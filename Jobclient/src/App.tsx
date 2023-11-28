@@ -1,4 +1,4 @@
-import { useState, useEffect, } from "react";
+import { useState } from "react";
 
 // import RootTestGet from './services/old/getreqtest'
 // import Vitetemplate from './pages/template'
@@ -58,7 +58,7 @@ function App() {
       }
   };
 
-  const fetchDataAndSetData = async () => {
+  const handleSidebar = async (sidebarData) => {
     try {
       const baseURL = import.meta.env.VITE_BE_URL || "http://localhost:8000";
       // const authToken = await handleLogin(userData);
@@ -69,7 +69,7 @@ function App() {
       const responseData = await getData(authToken,baseURL+sidebarData);
       setData(responseData);
     } catch (error) {
-      console.error('Error in fetchDataAndSetData', error);
+      console.error('Error in handleSidebar', error);
     }
   };
 
