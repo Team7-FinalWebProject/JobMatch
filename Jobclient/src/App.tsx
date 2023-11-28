@@ -10,7 +10,8 @@ import { getData } from "./services/getData"
 import DataDisplay from "./pages/displayData";
 import LoginForm from "./components/LoginForm";
 import Dropdown from "./components/Dropdown";
-import Heading from "./components/Heading";
+// import Heading from "./components/Heading";
+import LoginTW from "./components/LoginForm_TW";
 
 type Data = {
   [key: string]: string | number | Data | null;
@@ -23,57 +24,46 @@ function App() {
   const [authToken, setAuthToken] = useState<string | null>(null);
   const [dropdownData, setDropdownData] = useState<string | null>(null);
   const [data, setData] = useState<Data | null>(null);
+
   // handle state in APP ??
   // const [selectedDropdown, setSelectedDropdown] = useState<string | null>(null);
   // const [username, setUsername] = useState<string | null>(null);
   // const [password, setPassword] = useState<string | null>(null);
 
 
-useEffect(() => {
-  const handleLogin = async (userData: Data | null) => {
-    if (!userData || !userData.username || !userData.password){
+  useEffect(() => {
+    fetchDataAndSetData();
+  }, [authToken, dropdownData]);
+
+  const handleLogin = async (username: string, password: string) => {
+    if (!username || !password){
       return
     }
     try {
-      const token = await loginUser(userData.username as string, userData.password as string);
+      const token = await loginUser(username as string, password as string);
       // console.log('Token:', token);
       setAuthToken(token);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
-  
-  // console.log('userData:', userData);
-  handleLogin(userData);
-}, [userData]);
 
-
-  useEffect(() => {
-    const fetchDataAndSetData = async () => {
-      try {
-        // const baseURL = import.meta.env.VITE_BE_URL
-        const baseURL = import.meta.env.VITE_BE_URL || "http://localhost:8000";
-        // const authToken = await handleLogin(userData);
-        if (!authToken || !dropdownData) {
-          // console.warn('Auth token is not available. Skipping data fetch.');
-          return;
-        }
-        const responseData = await getData(authToken,baseURL+dropdownData);
-        setData(responseData);
-      } catch (error) {
-        console.error('Error in fetchDataAndSetData', error);
+  const fetchDataAndSetData = async () => {
+    try {
+      // const baseURL = import.meta.env.VITE_BE_URL
+      const baseURL = import.meta.env.VITE_BE_URL || "http://localhost:8000";
+      // const authToken = await handleLogin(userData);
+      if (!authToken || !dropdownData) {
+        // console.warn('Auth token is not available. Skipping data fetch.');
+        return;
       }
-    };
-
-    fetchDataAndSetData();
-  }, [authToken, dropdownData]);
-
-
-  const handleLoginSubmit = (username: string, password: string) => {
-    setUserData({username, password});
-    // console.log('Login submitted with:', JSON.stringify({userData }));
-    // console.log('Login submitted with:', { username, password });
+      const responseData = await getData(authToken,baseURL+dropdownData);
+      setData(responseData);
+    } catch (error) {
+      console.error('Error in fetchDataAndSetData', error);
+    }
   };
+
 
   const handleDropdownSelect = (selectedOption: string) => {
     setDropdownData(selectedOption);
@@ -91,8 +81,9 @@ useEffect(() => {
       {/* <Vitetemplate/> */}
       {/* <RootTestGet/> */}
       {/* <Post apiUrl='http://localhost:8000/login/admins"  />'/> */}
-      <Heading title={"JobUtopia"} />
-      <LoginForm onSubmit={handleLoginSubmit} />
+      {/* <Heading title={"JobUtopia"} links={links}/> */}
+      <LoginTW/>
+      <LoginForm onSubmit={handleLogin} />
       <Dropdown options={dropdownOptions} onSelect={handleDropdownSelect} />
       <DataDisplay data={data} />
     </>
