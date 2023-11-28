@@ -10,7 +10,7 @@ import { getData } from "./services/getData"
 import DataDisplay from "./pages/displayData";
 import LoginForm from "./components/LoginForm";
 import Dropdown from "./components/Dropdown";
-
+import Heading from "./components/Heading";
 
 type Data = {
   [key: string]: string | number | Data | null;
@@ -91,6 +91,7 @@ useEffect(() => {
       {/* <Vitetemplate/> */}
       {/* <RootTestGet/> */}
       {/* <Post apiUrl='http://localhost:8000/login/admins"  />'/> */}
+      <Heading title={"JobUtopia"} />
       <LoginForm onSubmit={handleLoginSubmit} />
       <Dropdown options={dropdownOptions} onSelect={handleDropdownSelect} />
       <DataDisplay data={data} />
