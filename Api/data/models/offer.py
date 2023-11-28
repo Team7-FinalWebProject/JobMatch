@@ -46,22 +46,23 @@ class ProfessionalOffer_NoProfessionalId(BaseModel):
             max_salary=max_salary)
     
 
+
 class CompanyOffer(BaseModel):
     id: int | None = None
     company_id: int
     ###Add another model without professional Id and full professional instead?
-    chosen_professional_id: int | None = None
+    chosen_professional_offer_id: int | None = None
     status: str | None = None
     requirements: Skills | None = None
     min_salary: int | None = None
     max_salary: int | None = None
 
     @classmethod
-    def from_query_result(cls, id, company_id, chosen_professional_id, status, requirements, min_salary,max_salary):
+    def from_query_result(cls, id, company_id, chosen_professional_offer_id, status, requirements, min_salary,max_salary):
         return cls(
             id = id,
             company_id = company_id,
-            chosen_professional_id = chosen_professional_id,
+            chosen_professional_offer_id = chosen_professional_offer_id,
             status=status,
             requirements=requirements,
             min_salary=min_salary,
@@ -103,7 +104,7 @@ class ProfessionalOfferEdit(BaseModel):
     max_salary: int | None = None
 
 class CompanyOfferCreate(BaseModel):
-    chosen_professional_id: int | None = None
+    chosen_professional_offer_id: int | None = None
     status: str | None = None
     requirements: Skills | None = None
     min_salary: int | None = None
