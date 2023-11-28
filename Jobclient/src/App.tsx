@@ -6,11 +6,13 @@ import { useState, useEffect, } from "react";
 // import Get from './services/old/getreq'
 
 import { loginUser } from "./services/login";
+import { registerProfessional } from "./services/registerProfessional";
 import { getData } from "./services/getData"
 import DataDisplay from "./pages/displayData";
 import Dropdown from "./components/Dropdown";
 // import Heading from "./components/Heading";
 import LoginForm from "./components/LoginForm";
+import SignupForm from "./components/SignupForm";
 
 type Data = {
   [key: string]: string | number | Data | null;
@@ -45,6 +47,21 @@ function App() {
     } catch (error) {
       console.error('Error fetching data:', error);
     }
+  };
+
+  const handleSignup = async (
+    username: string, password: string, 
+    firstName: string, lastName: string,
+    address: string, summary: string, photo: File) => {
+      if (!username || !password || !firstName || !lastName || !address || !summary){
+        return
+      }
+      try {
+        const result = await registerProfessional(username, password, firstName, lastName, address, summary, photo);  
+      } 
+      catch (error) {
+        console.error('Error fetching data:', error);
+      }
   };
 
   const fetchDataAndSetData = async () => {
@@ -82,6 +99,7 @@ function App() {
       {/* <Post apiUrl='http://localhost:8000/login/admins"  />'/> */}
       {/* <Heading title={"JobUtopia"} links={links}/> */}
       <LoginForm onSubmit={handleLogin}/>
+      <SignupForm onSubmit={handleSignup} />
       {/* <LoginForm onSubmit={handleLogin} /> */}
       <Dropdown options={dropdownOptions} onSelect={handleDropdownSelect} />
       <DataDisplay data={data} />
