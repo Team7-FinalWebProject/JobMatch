@@ -10,7 +10,7 @@ import { getData } from "./services/getData"
 import DataDisplay from "./pages/displayData";
 import LoginForm from "./components/LoginForm";
 import Dropdown from "./components/Dropdown";
-import Heading from "./components/Heading";
+// import Heading from "./components/Heading";
 
 type Data = {
   [key: string]: string | number | Data | null;
@@ -23,12 +23,7 @@ function App() {
   const [authToken, setAuthToken] = useState<string | null>(null);
   const [dropdownData, setDropdownData] = useState<string | null>(null);
   const [data, setData] = useState<Data | null>(null);
-  const links = [
-    {text: "Home", url: "/"},
-    {text: "Message", url: "/messages"},
-    {text: "Login", url: "/login"},
-    {text: "Sign Up", url: "/register"}
-  ]
+
   // handle state in APP ??
   // const [selectedDropdown, setSelectedDropdown] = useState<string | null>(null);
   // const [username, setUsername] = useState<string | null>(null);
@@ -97,7 +92,6 @@ useEffect(() => {
       {/* <Vitetemplate/> */}
       {/* <RootTestGet/> */}
       {/* <Post apiUrl='http://localhost:8000/login/admins"  />'/> */}
-      <Heading title="JobUtopia" links={links} />
       <LoginForm onSubmit={handleLoginSubmit} />
       <Dropdown options={dropdownOptions} onSelect={handleDropdownSelect} />
       <DataDisplay data={data} />
