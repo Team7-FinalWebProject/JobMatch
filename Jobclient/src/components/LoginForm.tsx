@@ -17,12 +17,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
 
   return (
     <form onSubmit={handleSubmit} className='custom-login-form'>
-      <label>
+      <label className='mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8" aria-label="Global'>
         Username:
         <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} className='custom-input'/>
       </label>
       <br />
-      <label>
+      <label className='mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8" aria-label="Global'>
         Password:
         <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className='custom-input'/>
       </label>

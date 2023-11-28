@@ -24,6 +24,12 @@ function App() {
   const [authToken, setAuthToken] = useState<string | null>(null);
   const [dropdownData, setDropdownData] = useState<string | null>(null);
   const [data, setData] = useState<Data | null>(null);
+  const links = [
+    {text: "Home", url: "/"},
+    {text: "Message", url: "/messages"},
+    {text: "Login", url: "/login"},
+    {text: "Sign Up", url: "/register"}
+  ]
   // handle state in APP ??
   // const [selectedDropdown, setSelectedDropdown] = useState<string | null>(null);
   // const [username, setUsername] = useState<string | null>(null);
