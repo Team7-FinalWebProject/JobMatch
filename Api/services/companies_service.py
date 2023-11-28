@@ -1,10 +1,10 @@
 from data.database import update_query, insert_query, read_query, update_queries_transaction
-from fastapi import Header
+from fastapi import Header, HTTPException, status
 from data.models.company import Company
 from data.models.offer import CompanyOffer
 from psycopg2 import IntegrityError
 from psycopg2.extras import Json
-
+from data.responses import InvalidStatusError
 
 
 
@@ -67,7 +67,14 @@ def get_company_offer(offer_id: int, company_id: int):
 
 def edit_company_offer(new_offer: CompanyOffer, old_offer: CompanyOffer):
     try:
-        chosen_professional_offer_id = new_offer.chosen_professional_offer_id if new_offer.chosen_professional_offer_id != 0 else old_offer.chosen_professional_offer_id
+        if new_offer.status != "active":
+            raise InvalidStatusError("New status must be 'active'.")
+
+        chosen_professional_offer_id = (
+            new_offer.chosen_professional_offer_id
+            if new_offer.chosen_professional_offer_id != 0
+            else old_offer.chosen_professional_offer_id
+        )
 
         merged = CompanyOffer(
             id=old_offer.id,
@@ -76,18 +83,29 @@ def edit_company_offer(new_offer: CompanyOffer, old_offer: CompanyOffer):
             chosen_professional_offer_id=chosen_professional_offer_id,
             requirements=new_offer.requirements or old_offer.requirements,
             min_salary=new_offer.min_salary or old_offer.min_salary,
-            max_salary=new_offer.max_salary or old_offer.max_salary)
+            max_salary=new_offer.max_salary or old_offer.max_salary,
+        )
 
         update_query(
             '''UPDATE company_offers SET company_id = %s, status = %s, chosen_professional_offer_id = %s,
                requirements = %s, min_salary = %s, max_salary = %s WHERE id = %s''',
-            (merged.company_id, merged.status, merged.chosen_professional_offer_id,
-            Json(merged.requirements), merged.min_salary, merged.max_salary, merged.id))
-        
+            (
+                merged.company_id,
+                merged.status,
+                merged.chosen_professional_offer_id,
+                Json(merged.requirements),
+                merged.min_salary,
+                merged.max_salary,
+                merged.id,
+            ),
+        )
+
         return merged
-    
+
     except IntegrityError as e:
         return e.__str__()
+    except InvalidStatusError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
 
 
