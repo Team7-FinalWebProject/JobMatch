@@ -89,6 +89,32 @@ def send_match_request_to_prof_offer(company_offer_id: int, prof_offer_id: int, 
 
 
 
+@companies_router.post('/match', tags=['Companies'])
+def match(offer_id: int, prof_offer_id: int, private_or_hidden = 'hidden', x_token: str = Header(default=None)):
+    company = company_or_401(x_token) if x_token else None
+    if private_or_hidden not in ('hidden', 'private'):
+        private_or_hidden = 'hidden'
+    if not company:
+        return Unauthorized(content=_ERROR_MESSAGE)
+    # if company.status == 'busy':
+    #     return Forbidden(content='You have already matched an offer!')
+    prof_offer = professionals_service.check_prof_offer_exists(prof_offer_id)
+    if not prof_offer:
+        return NotFound(content=f'No professional offer with id: {prof_offer}')
+    if not companies_service.is_author(company.id, offer_id):
+        return Forbidden(content=f'You are not the owner of offer {offer_id}')
+    prof_id = companies_service.get_prof_id_from_prof_offer_id(prof_offer_id)
+    
+    match = companies_service.match_prof_offer(offer_id, prof_id, prof_offer_id, private_or_hidden)
+    
+    
+    
+    # if match is True:
+    #     mail_data = data_input(os.getenv('sender_email'), prof.username, 'usermail@mailsac.com')
+    #     result = mailjet.send.create(mail_data)
+    #     print(result.status_code)
+    #     print(result.json())
+    return f'Matched with company offer: {prof_offer_id}'
 
 
 

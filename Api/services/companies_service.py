@@ -147,23 +147,30 @@ def is_author(company_id: int, offer_id: int):
         (company_id, offer_id)))
 
 
-def match_prof_offer(prof_offer_id: int, prof_id: int, comp_offer_id: int, private_or_hidden: str):
-    # queries = [
-        # '''UPDATE company_offers SET status = %s,
-        #    WHERE professional_id = %s AND status = %s''',
-           
-    update_query('''UPDATE company_offers SET status = %s, chosen_professional_id = %s
+def match_prof_offer(offer_id: int, prof_id: int, prof_offer_id: int, private_or_hidden: str):
+    queries = (
+        '''UPDATE professional_offers SET status = %s
+           WHERE professional_id = %s AND status = %s''',
+
+        '''UPDATE professional_offers SET status = %s, chosen_company_offer_id = %s
            WHERE id = %s''',
-           ("matched", prof_id))
 
-        # '''UPDATE professionals SET status = %s
-        #    WHERE id = %s'''
-    # ]
-    # params = ((private_or_hidden, prof_id, 'active'), ('matched', comp_offer_id, offer_id), ('busy', prof_id))
-    # rowcount = update_queries_transaction(queries, params)
-    # return f'Match with company offer {comp_offer_id} | {rowcount}'
+        '''UPDATE professionals SET status = %s
+           WHERE id = %s''',
+        
+        '''UPDATE company_offers SET status = %s
+           WHERE id = %s'''
+    )
+    params = ((private_or_hidden, prof_id, 'active'), ('matched', offer_id, prof_offer_id), 
+              ('busy', prof_id), ('archived', offer_id))
+    rowcount = update_queries_transaction(queries, params)
+    return rowcount
 
-    return f'Match with professional offer {prof_offer_id}'
+
+
+
+
+
 
 
 def upload_img(comp: Company, image):
