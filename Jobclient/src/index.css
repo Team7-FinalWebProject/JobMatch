@@ -2,12 +2,24 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+/* JUST TESTING CSS  */
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
 
 .custom-login-form {
   max-width: 400px;
+  top: 150px;
   margin: auto;
   justify-content: center;
+  align-items: center;
   flex: auto;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
 .custom-input {
@@ -15,6 +27,7 @@
   padding: 0.5rem;
   border: 1px solid #ccc;
   border-radius: 0.25rem;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
 .custom-button {
@@ -37,6 +50,11 @@
   justify-content: space-between;
   align-items: center;
   z-index: 99;
+  font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.custom-label {
+  background: fixed;
 }
 
 
