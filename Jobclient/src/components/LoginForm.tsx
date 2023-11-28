@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import '../index.css';
 
 interface LoginFormProps {
   onSubmit: (username: string, password: string) => void;
@@ -15,18 +16,18 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className='custom-login-form'>
       <label>
         Username:
-        <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
+        <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} className='custom-input'/>
       </label>
       <br />
       <label>
         Password:
-        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className='custom-input'/>
       </label>
       <br />
-      <button type="submit">Submit</button>
+      <button type="submit" className='custom-button'>Submit</button>
     </form>
   );
 };
