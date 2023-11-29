@@ -9,7 +9,7 @@ import { loginUser } from "./services/login";
 import { registerProfessional } from "./services/registerProfessional";
 import { registerCompany } from "./services/registerCompany";
 import { getData } from "./services/getData"
-import DataDisplay from "./pages/displayData";
+import DataDisplay from "./services/displayData";
 // import Dropdown from "./components/old/Dropdown";
 import Heading from "./components/Heading";
 import LoginForm from "./components/LoginForm";
@@ -21,16 +21,9 @@ type Data = {
   [key: string]: string | number | Data | null;
 };
 
-
-
 function App() {
   const [authToken, setAuthToken] = useState<string | null>(null);
   const [data, setData] = useState<Data | null>(null);
-
-  // handle state in APP ??
-  // const [selectedDropdown, setSelectedDropdown] = useState<string | null>(null);
-  // const [username, setUsername] = useState<string | null>(null);
-  // const [password, setPassword] = useState<string | null>(null);
 
   const handleLogin = async (username: string, password: string) => {
     if (!username || !password){
@@ -76,7 +69,7 @@ function App() {
       }
   };
 
-  const handleSidebar = async (sidebarData) => {
+  const handleSidebar = async (sidebarData: string) => {
     try {
       const baseURL = import.meta.env.VITE_BE_URL || "http://localhost:8000";
       // const authToken = await handleLogin(userData);
