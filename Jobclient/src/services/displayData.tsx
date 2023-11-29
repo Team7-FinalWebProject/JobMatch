@@ -25,7 +25,7 @@ const DataDisplay: React.FC<{ data: Data | null }> = ({ data }) => {
   );
 };
 
-const renderValue = (value: string | Data): React.ReactNode => {
+const renderValue = (value: string | Data | null | number): React.ReactNode => {
   if (typeof value === 'string' || typeof value == 'number') {
     return value;
   } else if (typeof value === 'object' && value !== null) {

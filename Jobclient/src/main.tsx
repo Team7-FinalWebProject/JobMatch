@@ -38,7 +38,7 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <>
     <Route path="/" element={<Home/>} loader={tokenLoader} children={
-      <Route path="/" element={<><LeftNav /><div className="flex-1 p-4 max-w-full basis-full"><TopNav /></div></>}></Route>}></Route>
+      <Route path="/" element={<LeftNav />} children={<Route path="/" element={<TopNav />}></Route>}></Route>}></Route>
     {/* <Route element={<LeftNav />}></Route> */}
     <Route path="/login" element={<Login />}></Route>
     {/* <Route path="/register" element={<App />}></Route> */}

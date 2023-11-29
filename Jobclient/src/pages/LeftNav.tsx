@@ -1,5 +1,6 @@
 import Sidebar from "../components/Sidebar";
 import { useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 
 function LeftNav() {
 
@@ -13,7 +14,12 @@ function LeftNav() {
   '/search/company_self_info', '/search/company_self_offers','/search/company_professional_offers',];
 
   return(
+    <>
+    <div>
     <Sidebar options={sidebarOptions} onSelect={handleSidebar} />
+    <Outlet />
+    </div>
+    </>
   );
 }
 
