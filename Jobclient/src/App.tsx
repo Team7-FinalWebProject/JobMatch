@@ -11,7 +11,7 @@ import { registerCompany } from "./services/registerCompany";
 import { getData } from "./services/getData"
 import DataDisplay from "./pages/displayData";
 // import Dropdown from "./components/old/Dropdown";
-// import Heading from "./components/Heading";
+import Heading from "./components/Heading";
 import LoginForm from "./components/LoginForm";
 import Sidebar from "./components/Sidebar";
 import SignupProfessionalForm from "./components/SignupProfessionalForm";
@@ -100,7 +100,7 @@ function App() {
   return (
     <>
     <table><tr>
-      {/* <Heading title={"JobUtopia"} links={links}/> */}
+      <Heading/>
       <LoginForm onSubmit={handleLogin}/>
       <SignupProfessionalForm onSubmit={handleProfessionalSignup} />
       <SignupCompanyForm onSubmit={handleCompanySignup} />
