@@ -46,12 +46,13 @@ function App() {
   const handleSignup = async (
     username: string, password: string, 
     firstName: string, lastName: string,
-    address: string, summary: string, photo: File) => {
+    address: string, summary: string) => {
       if (!username || !password || !firstName || !lastName || !address || !summary){
         return
       }
       try {
-        const result = await registerProfessional(username, password, firstName, lastName, address, summary, photo);  
+        const result = await registerProfessional(username, password, firstName, lastName, address, summary);
+        setData(result);  
       } 
       catch (error) {
         console.error('Error fetching data:', error);

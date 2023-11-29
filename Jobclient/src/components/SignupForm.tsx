@@ -7,8 +7,7 @@ interface SignupFormProps {
         firstName: string,
         lastName: string,
         address: string,
-        summary: string,
-        photo: File
+        summary: string
     ) => void;
 }
 
@@ -22,7 +21,6 @@ const SignupForm: React.FC<SignupFormProps> = ({onSubmit}) => {
             registerlastname: { value: string };
             registeraddress: { value: string };
             registersummary: { value: string };
-            registerphoto: { value: File};
         };
         const registerusername = target.registerusername.value;
         const registerpassword = target.registerpassword.value;
@@ -30,7 +28,6 @@ const SignupForm: React.FC<SignupFormProps> = ({onSubmit}) => {
         const registerlastname = target.registerlastname.value;
         const registeraddress = target.registeraddress.value;
         const registersummary = target.registersummary.value;
-        const registerphoto = target.registerphoto.value;
 
         onSubmit(
             registerusername, 
@@ -38,8 +35,7 @@ const SignupForm: React.FC<SignupFormProps> = ({onSubmit}) => {
             registerfirstname,
             registerlastname,
             registeraddress,
-            registersummary,
-            registerphoto);
+            registersummary);
         };
         
     return (
@@ -166,28 +162,6 @@ const SignupForm: React.FC<SignupFormProps> = ({onSubmit}) => {
                   />
                 </div>
               </div>
-
-              <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                <label className="block text-sm font-medium text-gray-700">
-                    Upload Photo
-                </label>
-                <div className="mt-1 flex items-center">
-                    <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleSubmit}
-                    className="hidden"
-                    />
-                    <label
-                    htmlFor="upload-photo"
-                    className="cursor-pointer text-sm text-blue-600 hover:underline ml-2 justify-right"
-                    >
-                    Choose a file
-                    </label>
-                </div>
-                </div>
-            
-
   
               <div>
                 <button

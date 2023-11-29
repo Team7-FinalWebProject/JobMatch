@@ -1,8 +1,7 @@
-export const registerProfessional = async (username, password, firstName, lastName, address, summary, photo) => {
+export const registerProfessional = async (username, password, firstName, lastName, address, summary) => {
     const baseURL = import.meta.env.VITE_BE_URL
 
     try {
-        const base64Photo = photo instanceof File ? await convertFileToBase64(photo) : null;
         const response = await fetch(baseURL + '/register/professionals', {
             method: 'POST',
             headers: {
@@ -11,7 +10,7 @@ export const registerProfessional = async (username, password, firstName, lastNa
             body: JSON.stringify({ 
                 username, password, 
                 firstName, lastName, 
-                address, summary, photo: base64Photo }),
+                address, summary }),
         });
 
         if (!response.ok) {
@@ -25,12 +24,3 @@ export const registerProfessional = async (username, password, firstName, lastNa
         console.error('Error fetching data:', error);
     }
 }   
-
-const convertFileToBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result.split(',')[1]);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-    });
-};
