@@ -1,5 +1,7 @@
 import '../index.css';
 import jobutopia_logo from '../assets/images/jobutopia-logo-black.png'
+import backgroundSVG from '../assets/endless-constellation.svg'
+import jobutopiaLogo from '../assets/jobutipiaLogo.svg'
 interface LoginForm_Props {
   onSubmit: (username: string, password: string) => void;
 }
@@ -26,14 +28,16 @@ const LoginForm: React.FC<LoginForm_Props> = ({ onSubmit }) => {
           <body class="h-full">
           ```
         */}
-        <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+        <div className="flex min-h-screen flex-1 flex-col justify-center px-6 py-12 lg:px-8" style={{ backgroundImage: `url(${backgroundSVG})` }}>
           <div className="sm:mx-auto sm:w-full sm:max-w-sm">
             <img
               className="mx-auto h-15 w-auto"
-              src={ jobutopia_logo }
-              alt="Your Company"
+              src={ jobutopiaLogo }
+              alt="JobUtopia"
             />
-            <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+          </div>
+          <div>
+            <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-white">
               Sign in to your account
             </h2>
           </div>
