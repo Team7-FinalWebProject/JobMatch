@@ -43,7 +43,7 @@ function App() {
     }
   };
 
-  const handleSignup = async (
+  const handleProfessionalSignup = async (
     username: string, password: string, 
     firstName: string, lastName: string,
     address: string, summary: string) => {
@@ -85,7 +85,7 @@ function App() {
     <table><tr>
       {/* <Heading title={"JobUtopia"} links={links}/> */}
       <LoginForm onSubmit={handleLogin}/>
-      <SignupForm onSubmit={handleSignup} />
+      <SignupForm onSubmit={handleProfessionalSignup} />
       {/* <Dropdown options={dropdownOptions} onSelect={handleDropdown} /> */}
       </tr><tr>
       <th>

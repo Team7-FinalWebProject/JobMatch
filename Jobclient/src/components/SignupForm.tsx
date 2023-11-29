@@ -85,8 +85,8 @@ const SignupForm: React.FC<SignupFormProps> = ({onSubmit}) => {
                 </div>
                 <div className="mt-2">
                   <input
-                    id="password"
-                    name="password"
+                    id="registerpassword"
+                    name="registerpassword"
                     type="password"
                     autoComplete="current-password"
                     required
@@ -103,8 +103,8 @@ const SignupForm: React.FC<SignupFormProps> = ({onSubmit}) => {
                 </div>
                 <div className="mt-2">
                   <input
-                    id="firstname"
-                    name="firstname"
+                    id="registerfirstname"
+                    name="registerfirstname"
                     type="firstname"
                     required
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -120,8 +120,8 @@ const SignupForm: React.FC<SignupFormProps> = ({onSubmit}) => {
                 </div>
                 <div className="mt-2">
                   <input
-                    id="lastname"
-                    name="lastname"
+                    id="registerlastname"
+                    name="registerlastname"
                     type="lastname"
                     required
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -137,8 +137,8 @@ const SignupForm: React.FC<SignupFormProps> = ({onSubmit}) => {
                 </div>
                 <div className="mt-2">
                   <input
-                    id="address"
-                    name="address"
+                    id="registeraddress"
+                    name="registeraddress"
                     type="address"
                     required
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -154,8 +154,8 @@ const SignupForm: React.FC<SignupFormProps> = ({onSubmit}) => {
                 </div>
                 <div className="mt-2">
                   <input
-                    id="summary"
-                    name="summary"
+                    id="registersummary"
+                    name="registersummary"
                     type="summary"
                     required
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
