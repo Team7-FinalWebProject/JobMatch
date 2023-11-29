@@ -7,14 +7,15 @@ import { useState } from "react";
 
 import { loginUser } from "./services/login";
 import { registerProfessional } from "./services/registerProfessional";
+import { registerCompany } from "./services/registerCompany";
 import { getData } from "./services/getData"
 import DataDisplay from "./services/displayData";
 // import Dropdown from "./components/old/Dropdown";
-// import Heading from "./components/Heading";
+import Heading from "./components/Heading";
 import LoginForm from "./components/LoginForm";
 import Sidebar from "./components/Sidebar";
-import SignupForm from "./components/SignupForm";
-// import Modal from "./components/Modal";
+import SignupProfessionalForm from "./components/SignupProfessionalForm";
+import SignupCompanyForm from "./components/SignupCompanyForm";
 
 type Data = {
   [key: string]: string | number | Data | null;
@@ -37,16 +38,32 @@ function App() {
     }
   };
 
-  const handleSignup = async (
+  const handleProfessionalSignup = async (
     username: string, password: string, 
     firstName: string, lastName: string,
-    address: string, summary: string, photo: File) => {
+    address: string, summary: string) => {
       if (!username || !password || !firstName || !lastName || !address || !summary){
         return
       }
       try {
-        const result = await registerProfessional(username, password, firstName, lastName, address, summary, photo);  
+        const result = await registerProfessional(username, password, firstName, lastName, address, summary);
+        setData(result);  
       } 
+      catch (error) {
+        console.error('Error fetching data:', error);
+      }
+  };
+
+  const handleCompanySignup = async (
+    username: string, password: string,
+    companyName: string, description: string, address: string) => {
+      if (!username || !password || !companyName || !description || !address){
+        return
+      }
+      try {
+        const result = await registerCompany(username, password, companyName, description, address);
+        setData(result);
+      }
       catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -74,23 +91,40 @@ function App() {
 
 
   return (
-    <>
-    <table><tr>
-      {/* <Heading title={"JobUtopia"} links={links}/> */}
-      <LoginForm onSubmit={handleLogin}/>
-      <SignupForm onSubmit={handleSignup} />
-      {/* <Dropdown options={dropdownOptions} onSelect={handleDropdown} /> */}
-      </tr><tr>
-      <th>
-      <Sidebar options={sidebarOptions} onSelect={handleSidebar}/>
-      </th>
-      <th>
-      <DataDisplay data={data} />
-      </th>
-      </tr></table>
-    </>
-  )
+    <div className="flex">
+      <Sidebar options={sidebarOptions} onSelect={handleSidebar} />
+      <div className="flex-1 p-4">
+        <Heading />
+        <LoginForm onSubmit={handleLogin} />
+        <SignupProfessionalForm onSubmit={handleProfessionalSignup} />
+        <SignupCompanyForm onSubmit={handleCompanySignup} />
+        <div className="mt-4">
+          <DataDisplay data={data} />
+        </div>
+      </div>
+    </div>
+
+  );
 }
+//   return (
+//     <>
+//     <table><tr>
+//       <Heading/>
+//       <LoginForm onSubmit={handleLogin}/>
+//       <SignupProfessionalForm onSubmit={handleProfessionalSignup} />
+//       <SignupCompanyForm onSubmit={handleCompanySignup} />
+//       {/* <Dropdown options={dropdownOptions} onSelect={handleDropdown} /> */}
+//       </tr><tr>
+//       <th>
+//       <Sidebar options={sidebarOptions} onSelect={handleSidebar}/>
+//       </th>
+//       <th>
+//       <DataDisplay data={data} />
+//       </th>
+//       </tr></table>
+//     </>
+//   )
+// }
 
 export default App
 

@@ -4,6 +4,5 @@ declare function registerProfessional(
     firstName: string, 
     lastName: string, 
     address: string, 
-    summary: string, 
-    photo: File): Promise<string | null>;
+    summary: string): Promise<Data | null>;
 export { registerProfessional };

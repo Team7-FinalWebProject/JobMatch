@@ -1,4 +1,5 @@
 import '../index.css'
+import jobutopia_logo from '../assets/images/jobutopia-logo-black.png'
 
 interface SignupFormProps {
     onSubmit: (
@@ -7,12 +8,11 @@ interface SignupFormProps {
         firstName: string,
         lastName: string,
         address: string,
-        summary: string,
-        photo: File
+        summary: string
     ) => void;
 }
 
-const SignupForm: React.FC<SignupFormProps> = ({onSubmit}) => {
+const SignupProfessionalForm: React.FC<SignupFormProps> = ({onSubmit}) => {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         const target = e.target as typeof e.target & {
@@ -22,7 +22,6 @@ const SignupForm: React.FC<SignupFormProps> = ({onSubmit}) => {
             registerlastname: { value: string };
             registeraddress: { value: string };
             registersummary: { value: string };
-            registerphoto: { value: File};
         };
         const registerusername = target.registerusername.value;
         const registerpassword = target.registerpassword.value;
@@ -30,7 +29,6 @@ const SignupForm: React.FC<SignupFormProps> = ({onSubmit}) => {
         const registerlastname = target.registerlastname.value;
         const registeraddress = target.registeraddress.value;
         const registersummary = target.registersummary.value;
-        const registerphoto = target.registerphoto.value;
 
         onSubmit(
             registerusername, 
@@ -38,8 +36,7 @@ const SignupForm: React.FC<SignupFormProps> = ({onSubmit}) => {
             registerfirstname,
             registerlastname,
             registeraddress,
-            registersummary,
-            registerphoto);
+            registersummary);
         };
         
     return (
@@ -54,11 +51,11 @@ const SignupForm: React.FC<SignupFormProps> = ({onSubmit}) => {
         */}
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
           <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-            {/* <img
-              className="mx-auto h-10 w-auto"
-              src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-              alt="Your Company"
-            /> */}
+            <img
+              className="mx-auto h-15 w-auto"
+              src={ jobutopia_logo }
+              alt="JobUtopia"
+            />
             <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
               Sign Up As Professional
             </h2>
@@ -76,7 +73,7 @@ const SignupForm: React.FC<SignupFormProps> = ({onSubmit}) => {
                     name="registerusername"
                     type="registerusername"
                     required
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className="block w-full rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
@@ -89,12 +86,12 @@ const SignupForm: React.FC<SignupFormProps> = ({onSubmit}) => {
                 </div>
                 <div className="mt-2">
                   <input
-                    id="password"
-                    name="password"
+                    id="registerpassword"
+                    name="registerpassword"
                     type="password"
                     autoComplete="current-password"
                     required
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className="block w-full rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
@@ -107,11 +104,11 @@ const SignupForm: React.FC<SignupFormProps> = ({onSubmit}) => {
                 </div>
                 <div className="mt-2">
                   <input
-                    id="firstname"
-                    name="firstname"
+                    id="registerfirstname"
+                    name="registerfirstname"
                     type="firstname"
                     required
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className="block w-full rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
@@ -124,11 +121,11 @@ const SignupForm: React.FC<SignupFormProps> = ({onSubmit}) => {
                 </div>
                 <div className="mt-2">
                   <input
-                    id="lastname"
-                    name="lastname"
+                    id="registerlastname"
+                    name="registerlastname"
                     type="lastname"
                     required
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className="block w-full rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
@@ -141,11 +138,11 @@ const SignupForm: React.FC<SignupFormProps> = ({onSubmit}) => {
                 </div>
                 <div className="mt-2">
                   <input
-                    id="address"
-                    name="address"
+                    id="registeraddress"
+                    name="registeraddress"
                     type="address"
                     required
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className="block w-full rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
@@ -158,36 +155,14 @@ const SignupForm: React.FC<SignupFormProps> = ({onSubmit}) => {
                 </div>
                 <div className="mt-2">
                   <input
-                    id="summary"
-                    name="summary"
+                    id="registersummary"
+                    name="registersummary"
                     type="summary"
                     required
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className="block w-full rounded-md border-0 py-1.5 pl-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
                 </div>
               </div>
-
-              <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                <label className="block text-sm font-medium text-gray-700">
-                    Upload Photo
-                </label>
-                <div className="mt-1 flex items-center">
-                    <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleSubmit}
-                    className="hidden"
-                    />
-                    <label
-                    htmlFor="upload-photo"
-                    className="cursor-pointer text-sm text-blue-600 hover:underline ml-2 justify-right"
-                    >
-                    Choose a file
-                    </label>
-                </div>
-                </div>
-            
-
   
               <div>
                 <button
@@ -205,5 +180,5 @@ const SignupForm: React.FC<SignupFormProps> = ({onSubmit}) => {
     )
 }
 
-export default SignupForm;
+export default SignupProfessionalForm;
   

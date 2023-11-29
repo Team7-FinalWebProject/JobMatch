@@ -25,7 +25,7 @@ const Sidebar = ({ options, onSelect }) => {
   };
 
   return (
-    <div className="flex">
+    <div className="flex border-r border-black">
       <div
         className={` ${
           open ? "w-72" : "w-20 "
