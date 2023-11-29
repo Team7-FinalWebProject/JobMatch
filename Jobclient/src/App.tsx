@@ -89,23 +89,48 @@ function App() {
   '/search/professional_self_info', '/search/professional_self_offers', '/search/professional_company_offers',
   '/search/company_self_info', '/search/company_self_offers','/search/company_professional_offers',];
 
-
   return (
     <div className="flex">
       <Sidebar options={sidebarOptions} onSelect={handleSidebar} />
-      <div className="flex-1 p-4">
+      <div className="flex-1">
         <Heading />
-        <LoginForm onSubmit={handleLogin} />
-        <SignupProfessionalForm onSubmit={handleProfessionalSignup} />
-        <SignupCompanyForm onSubmit={handleCompanySignup} />
+        <div className="p-4">
+          <LoginForm onSubmit={handleLogin} />
+          <SignupProfessionalForm onSubmit={handleProfessionalSignup} />
+          <SignupCompanyForm onSubmit={handleCompanySignup} />
+        </div>
         <div className="mt-4">
           <DataDisplay data={data} />
         </div>
       </div>
     </div>
-
   );
 }
+
+export default App
+
+
+
+
+
+
+
+//   return (
+//     <div className="flex">
+//       <Sidebar options={sidebarOptions} onSelect={handleSidebar} />
+//       <div className="flex-1 p-4">
+//         <Heading />
+//         <LoginForm onSubmit={handleLogin} />
+//         <SignupProfessionalForm onSubmit={handleProfessionalSignup} />
+//         <SignupCompanyForm onSubmit={handleCompanySignup} />
+//         <div className="mt-4">
+//           <DataDisplay data={data} />
+//         </div>
+//       </div>
+//     </div>
+
+//   );
+// }
 //   return (
 //     <>
 //     <table><tr>
@@ -126,6 +151,6 @@ function App() {
 //   )
 // }
 
-export default App
+
 
 
