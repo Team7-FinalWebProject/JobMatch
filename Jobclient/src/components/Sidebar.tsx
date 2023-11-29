@@ -31,7 +31,7 @@ const Sidebar = ({ options, onSelect }) => {
           open ? "w-72" : "w-20 "
         } bg-dark-purple h-screen p-5  pt-8 relative duration-300`}
       >
-        <ChevronDoubleLeftIcon className={`absolute cursor-pointer -right-3 top-9 w-7 border-dark-purple
+        <ChevronDoubleLeftIcon className={`absolute cursor-pointer -right-6 top-20 w-6 border-dark-purple
            border-2 rounded-full  ${!open && "rotate-180"}`} aria-hidden="true" onClick={() => setOpen(!open)} />
         <div className="flex gap-x-4 items-center">
             <BookOpenIcon className={`h-5 w-5 cursor-pointer duration-500 ${
