@@ -98,24 +98,40 @@ function App() {
 
 
   return (
-    <>
-    <table><tr>
-      <Heading/>
-      <LoginForm onSubmit={handleLogin}/>
-      <SignupProfessionalForm onSubmit={handleProfessionalSignup} />
-      <SignupCompanyForm onSubmit={handleCompanySignup} />
-      {/* <Dropdown options={dropdownOptions} onSelect={handleDropdown} /> */}
-      </tr><tr>
-      <th>
-      <Sidebar options={sidebarOptions} onSelect={handleSidebar}/>
-      </th>
-      <th>
-      <DataDisplay data={data} />
-      </th>
-      </tr></table>
-    </>
-  )
+    <div className="flex">
+      <Sidebar options={sidebarOptions} onSelect={handleSidebar} />
+      <div className="flex-1 p-4">
+        <Heading />
+        <LoginForm onSubmit={handleLogin} />
+        <SignupProfessionalForm onSubmit={handleProfessionalSignup} />
+        <SignupCompanyForm onSubmit={handleCompanySignup} />
+        <div className="mt-4">
+          <DataDisplay data={data} />
+        </div>
+      </div>
+    </div>
+
+  );
 }
+//   return (
+//     <>
+//     <table><tr>
+//       <Heading/>
+//       <LoginForm onSubmit={handleLogin}/>
+//       <SignupProfessionalForm onSubmit={handleProfessionalSignup} />
+//       <SignupCompanyForm onSubmit={handleCompanySignup} />
+//       {/* <Dropdown options={dropdownOptions} onSelect={handleDropdown} /> */}
+//       </tr><tr>
+//       <th>
+//       <Sidebar options={sidebarOptions} onSelect={handleSidebar}/>
+//       </th>
+//       <th>
+//       <DataDisplay data={data} />
+//       </th>
+//       </tr></table>
+//     </>
+//   )
+// }
 
 export default App
 

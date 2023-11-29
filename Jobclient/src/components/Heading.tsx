@@ -1,4 +1,3 @@
-import jobutopia_logo from '../assets/images/jobutopia-logo-black.png'
 import { Fragment, useState } from 'react'
 import { Dialog, Disclosure, Popover, Transition } from '@headlessui/react'
 import {
@@ -28,12 +27,11 @@ export default function Example() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <header className="bg-white">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8" aria-label="Global">
+    <header className="bg-white border-b border-black">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8 mt-2" aria-label="Global">
         <div className="flex lg:flex-1">
           <a href="#" className="-m-1.5 p-1.5">
             <span className="sr-only">JobUtopia</span>
-            <img className="h-15 w-auto" src={ jobutopia_logo } alt="" />
           </a>
         </div>
         <div className="flex lg:hidden">
