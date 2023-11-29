@@ -7,13 +7,15 @@ import { useState } from "react";
 
 import { loginUser } from "./services/login";
 import { registerProfessional } from "./services/registerProfessional";
+import { registerCompany } from "./services/registerCompany";
 import { getData } from "./services/getData"
 import DataDisplay from "./pages/displayData";
 // import Dropdown from "./components/old/Dropdown";
 // import Heading from "./components/Heading";
 import LoginForm from "./components/LoginForm";
 import Sidebar from "./components/Sidebar";
-import SignupForm from "./components/SignupForm";
+import SignupProfessionalForm from "./components/SignupProfessionalForm";
+import SignupCompanyForm from "./components/SignupCompanyForm";
 
 type Data = {
   [key: string]: string | number | Data | null;
@@ -59,6 +61,21 @@ function App() {
       }
   };
 
+  const handleCompanySignup = async (
+    username: string, password: string,
+    companyName: string, description: string, address: string) => {
+      if (!username || !password || !companyName || !description || !address){
+        return
+      }
+      try {
+        const result = await registerCompany(username, password, companyName, description, address);
+        setData(result);
+      }
+      catch (error) {
+        console.error('Error fetching data:', error);
+      }
+  };
+
   const handleSidebar = async (sidebarData) => {
     try {
       const baseURL = import.meta.env.VITE_BE_URL || "http://localhost:8000";
@@ -85,7 +102,8 @@ function App() {
     <table><tr>
       {/* <Heading title={"JobUtopia"} links={links}/> */}
       <LoginForm onSubmit={handleLogin}/>
-      <SignupForm onSubmit={handleProfessionalSignup} />
+      <SignupProfessionalForm onSubmit={handleProfessionalSignup} />
+      <SignupCompanyForm onSubmit={handleCompanySignup} />
       {/* <Dropdown options={dropdownOptions} onSelect={handleDropdown} /> */}
       </tr><tr>
       <th>

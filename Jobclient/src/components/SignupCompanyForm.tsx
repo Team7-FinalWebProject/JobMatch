@@ -1,41 +1,39 @@
 import '../index.css'
 
+
 interface SignupFormProps {
     onSubmit: (
         username: string,
         password: string,
-        firstName: string,
-        lastName: string,
+        companyName: string,
+        description: string,
         address: string,
-        summary: string
     ) => void;
 }
 
-const SignupForm: React.FC<SignupFormProps> = ({onSubmit}) => {
+const SignupCompanyForm: React.FC<SignupFormProps> = ({onSubmit}) => {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         const target = e.target as typeof e.target & {
-            registerusername: { value: string };
-            registerpassword: { value: string };
-            registerfirstname: { value: string };
-            registerlastname: { value: string };
-            registeraddress: { value: string };
-            registersummary: { value: string };
+            registerUsername: { value: string };
+            registerPassword: { value: string };
+            registerCompanyName: { value: string };
+            registerDescription: { value: string };
+            registerAddress: { value: string };
         };
-        const registerusername = target.registerusername.value;
-        const registerpassword = target.registerpassword.value;
-        const registerfirstname = target.registerfirstname.value;
-        const registerlastname = target.registerlastname.value;
-        const registeraddress = target.registeraddress.value;
-        const registersummary = target.registersummary.value;
+        const registerUsername = target.registerUsername.value;
+        const registerPassword = target.registerPassword.value;
+        const registerCompanyName = target.registerCompanyName.value;
+        const registerDescription = target.registerDescription.value;
+        const registerAddress = target.registerAddress.value;
 
         onSubmit(
-            registerusername, 
-            registerpassword, 
-            registerfirstname,
-            registerlastname,
-            registeraddress,
-            registersummary);
+            registerUsername, 
+            registerPassword, 
+            registerCompanyName,
+            registerDescription,
+            registerAddress
+            );
         };
         
     return (
@@ -56,7 +54,7 @@ const SignupForm: React.FC<SignupFormProps> = ({onSubmit}) => {
               alt="Your Company"
             /> */}
             <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-              Sign Up As Professional
+              Sign Up As Company
             </h2>
           </div>
   
@@ -68,9 +66,9 @@ const SignupForm: React.FC<SignupFormProps> = ({onSubmit}) => {
                 </label>
                 <div className="mt-2">
                   <input
-                    id="registerusername"
-                    name="registerusername"
-                    type="registerusername"
+                    id="registerUsername"
+                    name="registerUsername"
+                    type="username"
                     required
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
@@ -85,8 +83,8 @@ const SignupForm: React.FC<SignupFormProps> = ({onSubmit}) => {
                 </div>
                 <div className="mt-2">
                   <input
-                    id="registerpassword"
-                    name="registerpassword"
+                    id="registerPassword"
+                    name="registerPassword"
                     type="password"
                     autoComplete="current-password"
                     required
@@ -98,14 +96,14 @@ const SignupForm: React.FC<SignupFormProps> = ({onSubmit}) => {
               <div>
                 <div className="flex items-center justify-between">
                   <label htmlFor="firstname" className="block text-sm font-medium leading-6 text-gray-900">
-                    First Name
+                    Company Name
                   </label>
                 </div>
                 <div className="mt-2">
                   <input
-                    id="registerfirstname"
-                    name="registerfirstname"
-                    type="firstname"
+                    id="registerCompanyName"
+                    name="registerCompanyName"
+                    type="companyname"
                     required
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
@@ -115,14 +113,14 @@ const SignupForm: React.FC<SignupFormProps> = ({onSubmit}) => {
               <div>
                 <div className="flex items-center justify-between">
                   <label htmlFor="lastname" className="block text-sm font-medium leading-6 text-gray-900">
-                    Last Name
+                    Description
                   </label>
                 </div>
                 <div className="mt-2">
                   <input
-                    id="registerlastname"
-                    name="registerlastname"
-                    type="lastname"
+                    id="registerDescription"
+                    name="registerDescription"
+                    type="description"
                     required
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
@@ -137,26 +135,9 @@ const SignupForm: React.FC<SignupFormProps> = ({onSubmit}) => {
                 </div>
                 <div className="mt-2">
                   <input
-                    id="registeraddress"
-                    name="registeraddress"
+                    id="registerAddress"
+                    name="registerAddress"
                     type="address"
-                    required
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <div className="flex items-center justify-between">
-                  <label htmlFor="summary" className="block text-sm font-medium leading-6 text-gray-900">
-                    Summary
-                  </label>
-                </div>
-                <div className="mt-2">
-                  <input
-                    id="registersummary"
-                    name="registersummary"
-                    type="summary"
                     required
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   />
@@ -179,5 +160,5 @@ const SignupForm: React.FC<SignupFormProps> = ({onSubmit}) => {
     )
 }
 
-export default SignupForm;
+export default SignupCompanyForm;
   
