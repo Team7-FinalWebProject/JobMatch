@@ -2,7 +2,7 @@ export const submitMessage = async(authToken, username, content) => {
     const baseURL = import.meta.env.VITE_BE_URL || 'http://localhost:8000'
 
     try {
-        const response = await fetch(baseURL + `/${username}/messages`, {
+        const response = await fetch(baseURL + `/messages/${username}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
