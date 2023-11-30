@@ -9,6 +9,7 @@ import { loginUser } from "./services/login";
 import { registerProfessional } from "./services/registerProfessional";
 import { registerCompany } from "./services/registerCompany";
 import { getData } from "./services/getData"
+import { submitMessage } from "./services/submitMessage";
 import DataDisplay from "./services/displayData";
 // import Dropdown from "./components/old/Dropdown";
 import Heading from "./components/Heading";
@@ -16,6 +17,7 @@ import LoginForm from "./components/LoginForm";
 import Sidebar from "./components/Sidebar";
 import SignupProfessionalForm from "./components/SignupProfessionalForm";
 import SignupCompanyForm from "./components/SignupCompanyForm";
+import MessagesForm from "./components/MessageForm";
 
 type Data = {
   [key: string]: string | number | Data | null;
@@ -69,6 +71,20 @@ function App() {
       }
   };
 
+  const handleMessageSubmit = async (
+    username: string, content: string) => {
+      if (!username || !content){
+        return 
+      }
+      try {
+        const result = await submitMessage(authToken, username, content);
+        setData(result);
+      }
+      catch (error) {
+        console.error('Error fetching data:', error);
+      }
+  };
+
   const handleSidebar = async (sidebarData: string) => {
     try {
       const baseURL = import.meta.env.VITE_BE_URL || "http://localhost:8000";
@@ -94,6 +110,7 @@ function App() {
       <Sidebar options={sidebarOptions} onSelect={handleSidebar} />
       <div className="flex-1">
         <Heading />
+        <MessagesForm onSubmit={handleMessageSubmit}/>
         <div className="p-4">
           <LoginForm onSubmit={handleLogin} />
           <SignupProfessionalForm onSubmit={handleProfessionalSignup} />

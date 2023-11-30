@@ -39,7 +39,7 @@ const handleQueryParam = async (sidebarData: string) => {
   return(
     <div className="flex">
     <Outlet />
-    <div className="mt-4 clear-both">
+    <div className="mt-4 clear-both text-white">
     <DataDisplay data={data} />
     </div>
     </div>

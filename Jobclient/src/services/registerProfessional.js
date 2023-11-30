@@ -1,8 +1,8 @@
 export const registerProfessional = async (username, password, firstName, lastName, address, summary) => {
-    const baseURL = import.meta.env.VITE_BE_URL
+    const baseURL = import.meta.env.VITE_BE_URL || 'http://localhost:8000'
 
     try {
-        const response = await fetch('http://localhost:8000' + '/register/professionals', {
+        const response = await fetch(baseURL + '/register/professionals', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
