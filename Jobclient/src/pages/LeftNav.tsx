@@ -15,10 +15,8 @@ function LeftNav() {
 
   return(
     <>
-    <div>
     <Sidebar options={sidebarOptions} onSelect={handleSidebar} />
-    <Outlet />
-    </div>
+    {/* <Outlet /> */}
     </>
   );
 }

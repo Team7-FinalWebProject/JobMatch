@@ -37,8 +37,7 @@ const children = {path: "/leftnav",element: <LeftNav />,}
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
-    <Route path="/" element={<Home/>} loader={tokenLoader} children={
-      <Route path="/" element={<LeftNav />} children={<Route path="/" element={<TopNav />}></Route>}></Route>}></Route>
+    <Route path="/" element={<Home/>} loader={tokenLoader}></Route>
     {/* <Route element={<LeftNav />}></Route> */}
     <Route path="/login" element={<Login />}></Route>
     {/* <Route path="/register" element={<App />}></Route> */}
