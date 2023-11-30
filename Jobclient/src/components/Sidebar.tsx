@@ -1,4 +1,5 @@
 import { useState } from "react";
+import backgroundSVG from '../assets/endless-constellation.svg';
 // import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon } from '@heroicons/react/20/solid'
 import { BookOpenIcon } from "@heroicons/react/24/outline";
 import { ChevronDoubleLeftIcon } from "@heroicons/react/20/solid";
@@ -25,7 +26,7 @@ const Sidebar = ({ options, onSelect }) => {
   };
 
   return (
-    <div className="flex border-r border-black">
+    <div className="flex border-r border-white" style={{ backgroundImage: `url(${backgroundSVG})` }}>
       <div
         className={` ${
           open ? "w-72" : "w-20 "
@@ -38,7 +39,7 @@ const Sidebar = ({ options, onSelect }) => {
               open && "rotate-[360deg]"
             }`} aria-hidden="true" />
           <h1
-            className={`text-black origin-left font-medium text-xl duration-200 ${
+            className={`text-white origin-left font-medium text-xl duration-200 ${
               !open && "scale-0"
             }`}
           >
@@ -49,15 +50,15 @@ const Sidebar = ({ options, onSelect }) => {
           {options.map((option, index) => (
             <li
               key={index}
-              className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-gray-300 text-sm items-center gap-x-4 
+              className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-white text-sm items-center gap-x-4 
               ${option.gap ? "mt-9" : "mt-2"} ${
                 index === 0 && "bg-light-white"
               } `}
             >
-              <DocumentIcon className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-900 group-hover:text-black"
+              <DocumentIcon className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-white group-hover:text-white"
                       aria-hidden="true"/>
                       {/* <h1 className="text-2xl font-semibold ">${Menu.src}</h1> */}
-              <button onClick={handleSelect} className={`${!open && "hidden"} origin-left duration-200 text-black`} value={option}>
+              <button onClick={handleSelect} className={`${!open && "hidden"} origin-left duration-200 text-white`} value={option}>
                 {option}
               </button>
             </li>
