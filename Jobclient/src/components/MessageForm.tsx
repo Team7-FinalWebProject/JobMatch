@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { Switch } from '@headlessui/react'
+import backgroundSVG from '../assets/endless-constellation.svg'
 
 interface MessagesForm_Props {
     onSubmit: (username: string, content: string) => void;
@@ -21,7 +22,7 @@ const MessagesForm: React.FC<MessagesForm_Props> = ({ onSubmit }) => {
   };
 
   return (
-    <div className="isolate bg-white px-6 py-24 sm:py-32 lg:px-8">
+    <div className="isolate bg-white px-6 py-24 sm:py-32 lg:px-8" style={{ backgroundImage: `url(${backgroundSVG})` }} >
       <div
         className="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]"
         aria-hidden="true"
@@ -35,16 +36,16 @@ const MessagesForm: React.FC<MessagesForm_Props> = ({ onSubmit }) => {
         />
       </div>
       <div className="mx-auto max-w-2xl text-center">
-        <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Message</h2>
-        <p className="mt-2 text-lg leading-8 text-gray-600">
+        <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">Message</h2>
+        <p className="mt-2 text-lg leading-8 text-white">
           Contact a company or professional.
         </p>
       </div>
       <form className="mx-auto mt-16 max-w-xl sm:mt-20" onSubmit={ handleSubmit }>
         <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2">
           <div>
-            <label htmlFor="first-name" className="block text-sm font-semibold leading-6 text-gray-900">
-              First name
+            <label htmlFor="first-name" className="block text-sm font-semibold leading-6 text-white">
+              Receiver Username
             </label>
             <div className="mt-2.5">
               <input
@@ -58,7 +59,7 @@ const MessagesForm: React.FC<MessagesForm_Props> = ({ onSubmit }) => {
           </div>
          
           <div className="sm:col-span-2">
-            <label htmlFor="message" className="block text-sm font-semibold leading-6 text-gray-900">
+            <label htmlFor="message" className="block text-sm font-semibold leading-6 text-white">
               Message
             </label>
             <div className="mt-2.5">
