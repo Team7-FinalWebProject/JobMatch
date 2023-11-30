@@ -168,6 +168,13 @@ def match_prof_offer(offer_id: int, prof_id: int, prof_offer_id: int, private_or
 
 
 
+def set_status(comp_id: int, comp_offer_id: int, status):
+    rowcount = update_query(
+        '''UPDATE company_offers SET status = %s
+           WHERE id = %s AND company_id = %s''',
+        (status, comp_offer_id, comp_id))
+
+    return f'Changed status | {rowcount}'
 
 
 

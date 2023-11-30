@@ -105,9 +105,9 @@ def match(offer_id: int, prof_offer_id: int, private_or_hidden = 'hidden', x_tok
         return Forbidden(content=f'You are not the owner of offer {offer_id}')
     prof_id = companies_service.get_prof_id_from_prof_offer_id(prof_offer_id)
     
-    match = companies_service.match_prof_offer(offer_id, prof_id, prof_offer_id, private_or_hidden)
+    # match = companies_service.match_prof_offer(offer_id, prof_id, prof_offer_id, private_or_hidden)
     
-    
+    companies_service.match_prof_offer(offer_id, prof_id, prof_offer_id, private_or_hidden)
     
     # if match is True:
     #     mail_data = data_input(os.getenv('sender_email'), prof.username, 'usermail@mailsac.com')
@@ -122,9 +122,19 @@ def match(offer_id: int, prof_offer_id: int, private_or_hidden = 'hidden', x_tok
 
 
 
+# eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwidXNlcl9pZCI6MTAsIm5hbWUiOiJHb3Nob0tvbSIsImRlc2NyaXB0aW9uIjoic3RyaW5nIiwiYWRkcmVzcyI6InN0cmluZyIsInBpY3R1cmUiOm51bGwsInVzZXJuYW1lIjoiR29zaG8iLCJhcHByb3ZlZCI6ZmFsc2UsImlzc3VlZCI6IjIwMjMtMTEtMzAgMTY6MTg6MjkuODQ0NjIwIn0.YAsEcCv3fCCPTGmLgXqqmodupqJpSNW1Zz_8OXDyHiI
 
 
 
+@companies_router.put('/offer_status', tags=['Companies'])
+def set_offer_status(offer_id: int, status: str, x_token: str = Header(default=None)):
+    company = company_or_401(x_token) if x_token else None
+    if not company:
+        return Unauthorized(content=_ERROR_MESSAGE)
+    offer = companies_service.get_company_offer(offer_id, company.id)
+    if not offer:
+        return NotFound(content=f'No offer with id: {offer_id}')
+    return companies_service.set_status(company.id, offer.id, status)
 
 
 
