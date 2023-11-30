@@ -1,6 +1,6 @@
 from data.database import update_query, insert_query, read_query, update_queries_transaction
 from fastapi import Header, HTTPException, status
-from data.models.company import Company
+from data.models.company import Company, CompanyRequest
 from data.models.offer import CompanyOffer
 from psycopg2 import IntegrityError
 from psycopg2.extras import Json
@@ -175,6 +175,17 @@ def set_status(comp_id: int, comp_offer_id: int, status):
         (status, comp_offer_id, comp_id))
 
     return f'Changed status | {rowcount}'
+
+
+
+def get_match_requests(company: Company):
+    data = read_query(
+        '''SELECT r.professional_offer_id, r.company_offer_id, r.request_from
+           FROM requests AS r
+           JOIN professional_offers AS p ON r.professional_offer_id = p.id
+           WHERE p.professional_id = %s''', (company.id,))
+
+    return (CompanyRequest.from_query_result(*row) for row in data)
 
 
 

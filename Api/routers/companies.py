@@ -137,6 +137,13 @@ def set_offer_status(offer_id: int, status: str, x_token: str = Header(default=N
     return companies_service.set_status(company.id, offer.id, status)
 
 
+@companies_router.get('/match_requests', tags=['Companies'])
+def get_match_requests(x_token: str = Header(default=None)):
+    company = company_or_401(x_token) if x_token else None
+    if not company:
+        return Unauthorized(content=_ERROR_MESSAGE)
+    return companies_service.get_match_requests(company)
+
 
 
 
