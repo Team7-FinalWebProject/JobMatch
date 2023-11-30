@@ -123,5 +123,5 @@ def create_upload_prof_photo(myfile: UploadFile = File(...), x_token: str = Head
     prof = professional_or_401(x_token) if x_token else None
     if not prof:
         return Unauthorized(content=_ERROR_MESSAGE)
-    image_bytes = create_upload_file(myfile)
-    return professionals_service.upload_img(prof, image_bytes)
+    image_path = create_upload_file(myfile)
+    return professionals_service.upload_img(prof, image_path)
