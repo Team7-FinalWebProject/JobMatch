@@ -2,6 +2,8 @@ import '../index.css';
 import jobutopia_logo from '../assets/images/jobutopia-logo-black.png'
 import backgroundSVG from '../assets/endless-constellation.svg'
 import jobutopiaLogo from '../assets/jobutipiaLogo.svg'
+import { Link } from 'react-router-dom';
+
 interface LoginForm_Props {
   onSubmit: (username: string, password: string) => void;
 }
@@ -65,11 +67,9 @@ const LoginForm: React.FC<LoginForm_Props> = ({ onSubmit }) => {
                   <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
                     Password
                   </label>
-                  {/* <div className="text-sm">
-                    <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
-                      Forgot password?
-                    </a>
-                  </div> */}
+                  <div className="text-sm">
+                    Register as: <Link to="/signup/company" className="font-semibold text-indigo-600 hover:text-indigo-500">Company</Link> or <Link to="/signup/professional" className="font-semibold text-indigo-600 hover:text-indigo-500">Professional</Link>
+                  </div>
                 </div>
                 <div className="mt-2">
                   <input

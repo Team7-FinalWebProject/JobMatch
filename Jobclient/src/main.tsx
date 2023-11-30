@@ -14,10 +14,12 @@ import {
 import { redirect } from "react-router-dom";
 import { Switch } from '@headlessui/react';
 import MessagesForm from './components/MessageForm.tsx';
+import SignupCompany from './pages/SignupCompany';
+import SignupProfessional from './pages/SingupProfessional.tsx';
 
 
 const cookies = new Cookies();
-// const setAuthToken = (authToken: string) => {cookies.set('authToken', authToken, { path: '/' });};
+const setAuthToken = (authToken: string) => {cookies.set('authToken', authToken, { path: '/' });};
 const getAuthToken = () => {return cookies.get('authToken')};
 const tokenLoader = () => {
   const authToken = getAuthToken();
@@ -27,12 +29,20 @@ const tokenLoader = () => {
   return null;
 };
 
+const tokenUnloader = () => {
+  setAuthToken(null);
+  return redirect("/login");
+};
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
     <Route path="/" element={<Home/>} loader={tokenLoader}></Route>
     <Route path='/messages' element={<SendMessage/>}></Route>
     <Route path="/login" element={<Login />}></Route>
+    <Route path="/signout" element={<Login />} loader={tokenUnloader}></Route>
+    <Route path="/signup/company" element={<SignupCompany />}></Route>
+    <Route path="/signup/professional" element={<SignupProfessional />}></Route>
     {/* <Route path="/register" element={<App />}></Route> */}
       {/* <Route path="dashboard" element={<Dashboard />} /> */}
       {/* ... etc. */}

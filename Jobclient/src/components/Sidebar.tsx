@@ -5,6 +5,7 @@ import { BookOpenIcon } from "@heroicons/react/24/outline";
 import { ChevronDoubleLeftIcon } from "@heroicons/react/20/solid";
 // import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { DocumentIcon } from "@heroicons/react/24/solid";
+import Profile from "./Profile";
 
 const Sidebar = ({ options, onSelect }) => {
   const [open, setOpen] = useState(true);
@@ -43,7 +44,7 @@ const Sidebar = ({ options, onSelect }) => {
               !open && "scale-0"
             }`}
           >
-            List
+            <Profile />
           </h1>
         </div>
         <ul className="pt-6">
