@@ -11,11 +11,12 @@ type Data = {
 function Content() {
 const [data, setData] = useState<Data | null>(null);
 const [searchParams, setSearchParams] = useSearchParams();
+const [prevSearchParams, setPrevSearchParams] = useState<string>(null);
 
 const cookies = new Cookies();
 // const navigate = useNavigate();
 const getAuthToken = () => {return cookies.get('authToken')};
-let authToken = getAuthToken();
+const authToken = getAuthToken();
 
 const handleQueryParam = async (sidebarData: string) => {
     try {
@@ -32,14 +33,14 @@ const handleQueryParam = async (sidebarData: string) => {
     }
   };
 
-  let sidebarParam = searchParams.get("get")
-  if (sidebarParam){handleQueryParam(sidebarParam);}
+  const sidebarParam = searchParams.get("get")
+
+  if (sidebarParam && sidebarParam !== prevSearchParams
+    ){setPrevSearchParams(sidebarParam);handleQueryParam(sidebarParam);}
 
   return(
-    <div className="flex">
-    <div className="mt-4 clear-both text-white">
+    <div className="text-white">
     <DataDisplay data={data} />
-    </div>
     </div>
   );
 }
