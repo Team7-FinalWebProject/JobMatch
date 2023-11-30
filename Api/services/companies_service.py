@@ -182,8 +182,8 @@ def get_match_requests(company: Company):
     data = read_query(
         '''SELECT r.professional_offer_id, r.company_offer_id, r.request_from
            FROM requests AS r
-           JOIN professional_offers AS p ON r.professional_offer_id = p.id
-           WHERE p.professional_id = %s''', (company.id,))
+           JOIN company_offers AS p ON r.company_offer_id = p.id
+           WHERE p.company_id = %s''', (company.id,))
 
     return (CompanyRequest.from_query_result(*row) for row in data)
 
