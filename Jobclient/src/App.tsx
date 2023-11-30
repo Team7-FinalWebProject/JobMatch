@@ -77,7 +77,7 @@ function App() {
         return 
       }
       try {
-        const result = await submitMessage(username, content);
+        const result = await submitMessage(authToken, username, content);
         setData(result);
       }
       catch (error) {

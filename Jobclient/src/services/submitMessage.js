@@ -1,4 +1,4 @@
-export const submitMessage = async(username, content) => {
+export const submitMessage = async(authToken, username, content) => {
     const baseURL = import.meta.env.VITE_BE_URL || 'http://localhost:8000'
 
     try {
@@ -6,8 +6,9 @@ export const submitMessage = async(username, content) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'x-token': authToken
             },
-            body: JSON.stringify({ username, content }),
+            body: JSON.stringify({ content }),
         });
         
         if (!response.ok) {
@@ -15,7 +16,7 @@ export const submitMessage = async(username, content) => {
         }
 
         const data = await response.json();
-        return data.token;
+        return data;
         }
         catch (error) {
             console.error('Error fetching data:', error);

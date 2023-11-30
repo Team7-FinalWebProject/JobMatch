@@ -1,2 +1,5 @@
-declare function submitMessage(username: string, content: string): Promise<Data | null>;
+declare function submitMessage(
+    authToken: string | null, 
+    username: string, 
+    content: string): Promise<Data | null>;
 export { submitMessage };
