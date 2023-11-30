@@ -2,6 +2,8 @@ from pydantic import BaseModel
 from data.models.offer import CompanyOffer_NoCompanyId
 from datetime import datetime
 
+
+
 class Company(BaseModel):
     id: int | None = None
     user_id: int | None = None
@@ -95,3 +97,19 @@ class CompanyRequest(BaseModel):
             prof_offer_id=prof_offer_id,
             comp_offer_id=comp_offer_id,
             request_from=request_from)
+
+
+
+class CompanyInfoEdit(BaseModel):
+    name: str | None = None
+    description: str | None = None
+    address: str | None = None
+    picture: str | None = None
+
+    @classmethod
+    def from_query_result(cls, name, description, address, picture):
+        return cls(
+            name=name,
+            description=description,
+            address=address,
+            picture=picture)
