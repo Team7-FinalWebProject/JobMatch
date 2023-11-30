@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import Layout from './pages/Layout.tsx'
 import Login from './pages/Login.tsx'
+import SendMessage from './pages/Message.tsx';
 import Home from './pages/Home.tsx'
 import LeftNav from './pages/LeftNav.tsx';
 import TopNav from './pages/TopNav.tsx';
@@ -18,6 +19,7 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import { redirect } from "react-router-dom";
+import MessagesForm from './components/MessageForm.tsx';
 
 
 const cookies = new Cookies();
@@ -39,6 +41,7 @@ const router = createBrowserRouter(
     <>
     <Route path="/" element={<Home/>} loader={tokenLoader}></Route>
     {/* <Route element={<LeftNav />}></Route> */}
+    <Route path='/messages' element={<SendMessage/>}></Route>
     <Route path="/login" element={<Login />}></Route>
     {/* <Route path="/register" element={<App />}></Route> */}
       {/* <Route path="dashboard" element={<Dashboard />} /> */}
