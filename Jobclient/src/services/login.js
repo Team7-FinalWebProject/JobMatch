@@ -1,5 +1,5 @@
 export const loginUser = async (username, password) => {
-    const baseURL = import.meta.env.VITE_BE_URL
+    const baseURL = import.meta.env.VITE_BE_URL || 'http://localhost:8000'
     // Perform login API call and get the token
     try {
         const response = await fetch(baseURL +'/login/admins', {
