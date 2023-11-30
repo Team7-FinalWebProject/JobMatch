@@ -1,6 +1,5 @@
 import Heading from "../components/Heading";
 import { useNavigate } from "react-router-dom";
-import { Outlet } from "react-router-dom";
 
 function TopNav() {
     // const navigate = useNavigate();
@@ -13,10 +12,7 @@ function TopNav() {
 //   '/search/company_self_info', '/search/company_self_offers','/search/company_professional_offers',];
 
   return(
-    <>
     <Heading></Heading>
-    <Outlet />
-    </>
   );
 }
 
