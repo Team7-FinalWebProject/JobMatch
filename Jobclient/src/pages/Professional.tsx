@@ -28,6 +28,7 @@ function UserList() {
     fetchProfessionals();
   }, []);
 
+  // ADD MORE ELEMENTS TO SHOW MORE DATA FOR THE PROFESSIONAL && SHOULD FIX THE PHOTO 
   return (
     <div style={styles.container}>
       <h2 style={styles.heading}>Professional List</h2>
