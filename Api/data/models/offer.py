@@ -104,8 +104,8 @@ class ProfessionalOfferEdit(BaseModel):
     max_salary: int | None = None
 
 class CompanyOfferCreate(BaseModel):
-    chosen_professional_offer_id: int | None = None
-    status: str | None = None
+    # chosen_professional_offer_id: int | None = None
+    # status: str | None = None
     requirements: Skills | None = None
     min_salary: int | None = None
     max_salary: int | None = None
