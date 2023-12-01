@@ -18,7 +18,7 @@ import SignupCompany from './pages/SignupCompany';
 import SignupProfessional from './pages/SingupProfessional.tsx';
 import AccountProfessional from './pages/AccountProfessional.tsx';
 import UserList from './pages/Professional.tsx';
-
+import CompanyList from './pages/Company.tsx'
 
 
 const cookies = new Cookies();
@@ -48,6 +48,8 @@ const router = createBrowserRouter(
     <Route path="/signup/professional" element={<SignupProfessional />}></Route>
     <Route path="/account/professional" element={<AccountProfessional />} loader={tokenLoader}></Route>
     <Route path="/professionals" element={<UserList />} loader={tokenLoader}></Route>
+    <Route path="/companies" element={<CompanyList />} loader={tokenLoader}></Route>
+
     {/* <Route path="/register" element={<App />}></Route> */}
       {/* <Route path="dashboard" element={<Dashboard />} /> */}
       {/* ... etc. */}
