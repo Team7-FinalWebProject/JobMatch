@@ -40,6 +40,7 @@ function UserList() {
             </p>
             <p style={styles.status}>Status: {professional.status}</p>
             <p style={styles.summary}>{professional.summary}</p>
+            {/* <p style={styles.image}>{professional.image}</p> */}
           </div>
         ))}
       </div>
