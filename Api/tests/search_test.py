@@ -45,10 +45,8 @@ def test_get_company_by_id_valid_200(id,value,valid_tokens):
         assert response.json()["name"] == value
 
 @pytest.mark.parametrize("id", [
-    "Pepsi",
     99999,
     -10,
-    0.5,
     0,
     '?',
     '/////',
@@ -56,10 +54,21 @@ def test_get_company_by_id_valid_200(id,value,valid_tokens):
     '${jndi:ldap://google.com/}',
     '0/1/2/3/4/5',
 ])
-def test_get_company_by_id_invalid_id_404(id,valid_tokens):
+def test_get_company_by_id_invalid_path_404(id,valid_tokens):
     for token in valid_tokens:
         response = client.get(f"/search/company/{id}", headers={"X-Token": token})
         assert response.status_code == 404
+
+
+@pytest.mark.parametrize("id", [
+    "Pepsi",
+    0.5,
+])
+def test_get_company_by_id_invalid_id_422(id,valid_tokens):
+    for token in valid_tokens:
+        response = client.get(f"/search/company/{id}", headers={"X-Token": token})
+        assert response.status_code == 422
+
 
 
 
@@ -148,7 +157,6 @@ def test_get_professional_by_id_invalid__token_401(invalid_tokens):
 @pytest.mark.parametrize("id,value", [
     (1,"John"),
     (2,"Michael"),
-    (3,"William"),
 ])
 def test_get_professional_by_id_valid_200(id,value,valid_tokens):
     for token in valid_tokens:
@@ -156,11 +164,19 @@ def test_get_professional_by_id_valid_200(id,value,valid_tokens):
         assert response.status_code == 200
         assert response.json()["first_name"] == value
 
+@pytest.mark.parametrize("id,value", [
+    (3,"William"),
+])
+def test_get_professional_by_id_unapproved_404(id,value,valid_tokens):
+    for token in valid_tokens:
+        response = client.get(f"/search/professional/{id}", headers={"X-Token": token})
+        assert response.status_code == 404
+
+
+
 @pytest.mark.parametrize("id", [
-    "Pepsi",
     99999,
     -10,
-    0.5,
     0,
     '?',
     '/////',
@@ -168,11 +184,22 @@ def test_get_professional_by_id_valid_200(id,value,valid_tokens):
     '${jndi:ldap://google.com/}',
     '0/1/2/3/4/5',
 ])
-def test_get_professional_by_id_invalid_id_404(id,valid_tokens):
+def test_get_professional_by_id_invalid_path_404(id,valid_tokens):
     for token in valid_tokens:
         response = client.get(f"/search/professional/{id}", headers={"X-Token": token})
         assert response.status_code == 404
 
+
+
+
+@pytest.mark.parametrize("id", [
+    "Pepsi",
+    0.5,
+])
+def test_get_professional_by_id_invalid_id_422(id,valid_tokens):
+    for token in valid_tokens:
+        response = client.get(f"/search/professional/{id}", headers={"X-Token": token})
+        assert response.status_code == 422
 
 
 
@@ -276,10 +303,8 @@ def test_get_company_offer_by_id_valid_200(id,value,valid_tokens):
         assert response.json()["min_salary"] == value
 
 @pytest.mark.parametrize("id", [
-    "Pepsi",
     99999,
     -10,
-    0.5,
     0,
     '?',
     '/////',
@@ -287,10 +312,20 @@ def test_get_company_offer_by_id_valid_200(id,value,valid_tokens):
     '${jndi:ldap://google.com/}',
     '0/1/2/3/4/5',
 ])
-def test_get_company_offer_by_id_invalid_id_404(id,valid_tokens):
+def test_get_company_offer_by_id_invalid_path_404(id,valid_tokens):
     for token in valid_tokens:
         response = client.get(f"/search/company_offer/{id}", headers={"X-Token": token})
         assert response.status_code == 404
+
+
+@pytest.mark.parametrize("id", [
+    "Pepsi",
+    0.5,
+])
+def test_get_company_offer_by_id_invalid_id_422(id,valid_tokens):
+    for token in valid_tokens:
+        response = client.get(f"/search/company_offer/{id}", headers={"X-Token": token})
+        assert response.status_code == 422
 
 
 
@@ -387,7 +422,6 @@ def test_get_professional_offer_by_id_invalid__token_401(invalid_tokens):
 @pytest.mark.parametrize("id,value", [
     (1,3000),
     (2,2000),
-    (3,1300),
 ])
 def test_get_professional_offer_by_id_valid_200(id,value,valid_tokens):
     for token in valid_tokens:
@@ -395,11 +429,18 @@ def test_get_professional_offer_by_id_valid_200(id,value,valid_tokens):
         assert response.status_code == 200
         assert response.json()["min_salary"] == value
 
+
+@pytest.mark.parametrize("id,value", [
+    (3,1300),
+])
+def test_get_professional_offer_by_id_unapproved_404(id,value,valid_tokens):
+    for token in valid_tokens:
+        response = client.get(f"/search/professional_offer/{id}", headers={"X-Token": token})
+        assert response.status_code == 404
+
 @pytest.mark.parametrize("id", [
-    "Pepsi",
     99999,
     -10,
-    0.5,
     0,
     '?',
     '/////',
@@ -407,7 +448,17 @@ def test_get_professional_offer_by_id_valid_200(id,value,valid_tokens):
     '${jndi:ldap://google.com/}',
     '0/1/2/3/4/5',
 ])
-def ttest_get_professional_offer_by_id_invalid_id_404(id,valid_tokens):
+def test_get_professional_offer_by_id_invalid_path_404(id,valid_tokens):
+    for token in valid_tokens:
+        response = client.get(f"/search/professional_offer/{id}", headers={"X-Token": token})
+        assert response.status_code == 404
+
+
+@pytest.mark.parametrize("id", [
+    "Pepsi",
+    0.5,
+])
+def test_get_professional_offer_by_id_invalid_id_422(id,valid_tokens):
     for token in valid_tokens:
         response = client.get(f"/search/professional_offer/{id}", headers={"X-Token": token})
         assert response.status_code == 404
@@ -450,7 +501,6 @@ def test_get_professional_offers_invalid__token_401(invalid_tokens):
 @pytest.mark.parametrize("id,value", [
     (1,3000),
     (2,2000),
-    (3,1300),
 ])
 def test_get_professional_offers_valid_200(id,value,valid_tokens):
     for token in valid_tokens:
