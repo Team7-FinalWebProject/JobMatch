@@ -154,5 +154,5 @@ def create_upload_company_photo(myfile: UploadFile = File(...), x_token: str = H
     company = company_or_401(x_token) if x_token else None
     if not company:
         return Unauthorized(content=_ERROR_MESSAGE)
-    image_path = create_upload_file(myfile)
-    return companies_service.upload_img(company, image_path)
+    return create_upload_file(myfile, company)
+    

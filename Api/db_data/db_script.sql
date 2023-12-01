@@ -188,7 +188,6 @@ CREATE TABLE jobmatch.companies (
     name character varying(100) NOT NULL,
     description text DEFAULT ''::text NOT NULL,
     address character varying(100) NOT NULL,
-    picture character varying(100),
     approved boolean DEFAULT false NOT NULL,
     user_id integer NOT NULL
 );
@@ -242,7 +241,6 @@ CREATE VIEW jobmatch.companies_view AS
     c.name AS company_name,
     c.description AS company_description,
     c.address AS company_address,
-    c.picture AS company_picture,
     c.approved AS company_approved,
     u.username AS company_username,
     u.password AS company_password
@@ -399,7 +397,6 @@ CREATE TABLE jobmatch.professionals (
     user_id integer NOT NULL,
     summary text DEFAULT ''::text NOT NULL,
     default_offer_id integer,
-    picture character varying(100),
     approved boolean DEFAULT false NOT NULL,
     status character varying DEFAULT 'active'::character varying NOT NULL,
     CONSTRAINT cns_professionals CHECK (((status)::text = ANY (ARRAY[('active'::character varying)::text, ('busy'::character varying)::text])))
@@ -570,10 +567,10 @@ ALTER TABLE ONLY jobmatch.web_filters ALTER COLUMN id SET DEFAULT nextval('jobma
 -- Data for Name: companies; Type: TABLE DATA; Schema: jobmatch; Owner: postgres
 --
 
-COPY jobmatch.companies (id, name, description, address, picture, approved, user_id) FROM stdin;
-1	Pepsi	We make the fizzy drink	Los Angeles, California	\N	t	5
-2	Steam	We provide video games	Los Angeles, California	\N	t	6
-3	Avid	We provide high tech gear	New York, USA	\N	t	7
+COPY jobmatch.companies (id, name, description, address, approved, user_id) FROM stdin;
+1	Pepsi	We make the fizzy drink	Los Angeles, California	 t	5
+2	Steam	We provide video games	Los Angeles, California	 t	6
+3	Avid	We provide audio grear	New York, USA	 t	7
 \.
 
 
@@ -620,10 +617,10 @@ COPY jobmatch.professional_offers (id, professional_id, description, chosen_comp
 -- Data for Name: professionals; Type: TABLE DATA; Schema: jobmatch; Owner: postgres
 --
 
-COPY jobmatch.professionals (id, first_name, last_name, address, user_id, summary, default_offer_id, picture, approved, status) FROM stdin;
-1	John	Ivanov	bul.Skobelev, 24, Sofia, BG	2	10 years of experience in C# ASP.NET development	1	\N	t	active
-2	Michael	Livingston	Ubbo-Emmunslaan str., Amsterdam, NE	3	Experienced Python developer	2	\N	t	active
-3	William	Pique	Buterpark str., London, GBT	4	Junior Java developer	3	\N	f	active
+COPY jobmatch.professionals (id, first_name, last_name, address, user_id, summary, default_offer_id, approved, status) FROM stdin;
+1	John	Ivanov	bul.Skobelev, 24, Sofia, BG	2	10 years of experience in C# ASP.NET development	1	t	active
+2	Michael	Livingston	Ubbo-Emmunslaan str., Amsterdam, NE	3	Experienced Python developer	2	t	active
+3	William	Pique	Buterpark str., London, GBT	4	Junior Java developer	3	f	active
 \.
 
 
