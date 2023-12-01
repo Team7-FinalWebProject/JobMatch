@@ -173,10 +173,10 @@ def get_match_requests(prof: Professional):
     return (ProfessionalRequest.from_query_result(*row) for row in data)
 
 
-def upload_img(prof: Professional, image):
+def upload_img(prof: Professional, image_path):
     rowcount = update_query(
         '''UPDATE professionals SET picture = %s
-           WHERE id = %s''', (image, prof.id))
+           WHERE id = %s''', (image_path, prof.id))
     
     return f'Updated photo [{rowcount}]'
 

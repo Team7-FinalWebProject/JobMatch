@@ -3,14 +3,13 @@ from data.models.offer import CompanyOffer_NoCompanyId
 from datetime import datetime
 
 
-
 class Company(BaseModel):
     id: int | None = None
     user_id: int | None = None
     name: str
     description: str | None = None
     address: str
-    picture: bytes | None = None
+    picture: str | None = None
     username: str | None = None
     approved: bool | None = None
     issued: datetime | None = None
@@ -34,7 +33,7 @@ class Company_Slim(BaseModel):
     name: str
     description: str
     address: str
-    picture: bytes | None = None
+    picture: str | None = None
 
     @classmethod
     def from_query_result(cls, id, username, name, description, address, picture):
@@ -52,7 +51,7 @@ class Company_W_Offers(BaseModel):
     name: str
     description: str
     address: str
-    picture: bytes | None = None
+    picture: str | None = None
     offers: list[CompanyOffer_NoCompanyId]
 
     @classmethod

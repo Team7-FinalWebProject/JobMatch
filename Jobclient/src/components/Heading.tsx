@@ -25,7 +25,7 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function Example() {
+export default function Heading() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
@@ -104,24 +104,24 @@ export default function Example() {
             </Transition>
           </Popover>
 
-          <a href="#" className="text-sm font-semibold leading-6 text-white">
+          <a href="/admins" className="text-sm font-semibold leading-6 text-white">
             Admin
           </a>
-          <a href="#" className="text-sm font-semibold leading-6 text-white">
+          <a href="/companies" className="text-sm font-semibold leading-6 text-white">
             Companies
           </a>
-          <a href="#" className="text-sm font-semibold leading-6 text-white">
+          <a href="/professionals" className="text-sm font-semibold leading-6 text-white">
             Professionals
           </a>
-          <a href="#" className="text-sm font-semibold leading-6 text-white">
+          <a href="/offers" className="text-sm font-semibold leading-6 text-white">
             Offers
           </a>
-          <a href="#" className="text-sm font-semibold leading-6 text-white">
+          <a href="/messages" className="text-sm font-semibold leading-6 text-white">
             Messages
           </a>
         </Popover.Group>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <a href="#" className="text-sm font-semibold leading-6 text-white">
+          <a href="/login" className="text-sm font-semibold leading-6 text-white">
             Log in <span aria-hidden="true">&rarr;</span>
           </a>
         </div>
