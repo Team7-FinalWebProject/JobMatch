@@ -57,15 +57,18 @@ valid_offer_edit_info = {
 
 
 invalid_offer_edit_info = {
-  "chosen_company_offer_id": '',
-  "skills": {
-  "English": [
-      0,
-      "Native"
+  "id": 0,
+  "company_id": 0,
+  "chosen_professional_offer_id": 0,
+  "status": "string",
+  "requirements": {
+    "Python": [
+      3,
+      "Expert"
     ]
   },
   "min_salary": 1000,
-  "max_salary": 2000
+  "max_salary": 4000
 }
 
 
@@ -106,23 +109,21 @@ def test_create_company_offer_no_token_401():
 
 
 
-
-
-def test_edit_prof_offer_valid_data_200(proftoken):
-    response = client.put("/professionals/1/edit_offer", json=valid_offer_edit_info, headers={"X-Token": proftoken})
+def test_edit_comp_offer_valid_data_200(companytoken):
+    response = client.put("/companies/1/edit_offer", json=valid_offer_edit_info, headers={"X-Token": companytoken})
     assert response.status_code == 200
-    assert response.json()["description"] == valid_offer_edit_info["description"]
-    assert response.json()["chosen_company_offer_id"] == valid_offer_edit_info["chosen_company_offer_id"]
-    assert response.json()["skills"] == valid_offer_edit_info["skills"]
+    assert response.json()["status"] == valid_offer_edit_info["status"]
+    assert response.json()["requirements"] == valid_offer_edit_info["requirements"]
     assert response.json()["min_salary"] == valid_offer_edit_info["min_salary"]
     assert response.json()["max_salary"] == valid_offer_edit_info["max_salary"]
 
 
-def test_edit_prof_offer_invalid_data_422(proftoken):
-    response = client.put("/professionals/1/edit_offer", json=invalid_offer_edit_info, headers={"X-Token": proftoken})
-    assert response.status_code == 422
+def test_edit_comp_offer_wrong_status_400(companytoken):
+    response = client.put("/companies/1/edit_offer", json=invalid_offer_edit_info, headers={"X-Token": companytoken})
+    assert response.status_code == 400
 
 
-def test_edit_prof_offer_401():
-    response = client.put("/professionals/1/edit_offer", json=valid_offer_edit_info)
+def test_edit_comp_offer_401():
+    response = client.put("/companies/1/edit_offer", json=valid_offer_edit_info)
     assert response.status_code == 401
+    
