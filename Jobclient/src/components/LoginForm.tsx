@@ -47,7 +47,7 @@ const LoginForm: React.FC<LoginForm_Props> = ({ onSubmit }) => {
           <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
             <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
-                <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
+                <label htmlFor="email" className="block text-sm font-medium leading-6 text-white">
                   Username
                 </label>
                 <div className="mt-2">
@@ -64,10 +64,10 @@ const LoginForm: React.FC<LoginForm_Props> = ({ onSubmit }) => {
   
               <div>
                 <div className="flex items-center justify-between">
-                  <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
+                  <label htmlFor="password" className="block text-sm font-medium leading-6 text-white">
                     Password
                   </label>
-                  <div className="text-sm">
+                  <div className="text-white">
                     Register as: <Link to="/signup/company" className="font-semibold text-indigo-600 hover:text-indigo-500">Company</Link> or <Link to="/signup/professional" className="font-semibold text-indigo-600 hover:text-indigo-500">Professional</Link>
                   </div>
                 </div>
