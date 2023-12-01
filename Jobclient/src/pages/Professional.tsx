@@ -7,6 +7,7 @@ interface Professional {
   first_name: string;
   last_name: string;
   status: string;
+  image: string;
 }
 
 function UserList() {
@@ -35,6 +36,11 @@ function UserList() {
       <div style={styles.professionalsContainer}>
         {professionals.map((professional) => (
           <div key={professional.id} style={styles.professionalCard}>
+             <img
+            src={`Api/data/logos/${professional.username}.jpg`} // Update the path and extension accordingly
+            alt={`${professional.first_name} ${professional.last_name}`}
+            style={styles.image}
+          />
             <p style={styles.name}>
               {professional.first_name} {professional.last_name}
             </p>
