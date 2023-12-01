@@ -66,6 +66,17 @@ def get_company_offer(offer_id: int, company_id: int):
 
 
 
+# {
+#   "requirements": {
+#     "Python": [
+#       3,
+#       "Expert"
+#     ]
+#   },
+#   "min_salary": 1000,
+#   "max_salary": 4000
+# }
+
 
 def edit_company_offer(new_offer: CompanyOffer, old_offer: CompanyOffer):
     try:

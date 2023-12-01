@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Header, UploadFile, File
 from data.models.company import Company, CompanyInfoEdit
-from data.models.offer import CompanyOfferCreate
+from data.models.offer import CompanyOfferCreate, CompanyOffer
 from services import companies_service, professionals_service
 from common.auth import company_or_401
 from data.responses import BadRequest, Unauthorized, NotFound, Forbidden
@@ -51,7 +51,7 @@ def create_offer(new_offer: CompanyOfferCreate, x_token: str = Header(default=No
 
 
 @companies_router.put('/{company_offer_id}/edit_offer', tags=['Companies'])
-def edit_comp_offer(new_offer: CompanyOfferCreate, 
+def edit_comp_offer(new_offer: CompanyOffer, 
                     company_offer_id: int,
                     x_token: str = Header(default=None)):
     company = company_or_401(x_token) if x_token else None

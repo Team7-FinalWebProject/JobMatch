@@ -16,6 +16,59 @@ valid_comp_info = {
 }
 
 
+valid_comp_offer_info = {
+  "requirements": {
+    "English": [
+      9,
+      "Beginner"
+    ]
+  },
+  "min_salary": 1000,
+  "max_salary": 25000
+}
+
+invalid_comp_offer_info = {
+  "requirements": {
+    "English": [
+      9,
+      "Beginner"
+    ]
+  },
+  "min_salary": "",
+  "max_salary": ""
+}
+
+
+
+valid_offer_edit_info = {
+  "id": 0,
+  "company_id": 0,
+  "chosen_professional_offer_id": 0,
+  "status": "active",
+  "requirements": {
+    "Python": [
+      3,
+      "Expert"
+    ]
+  },
+  "min_salary": 1000,
+  "max_salary": 4000
+}
+
+
+invalid_offer_edit_info = {
+  "chosen_company_offer_id": '',
+  "skills": {
+  "English": [
+      0,
+      "Native"
+    ]
+  },
+  "min_salary": 1000,
+  "max_salary": 2000
+}
+
+
 
 def test_edit_company_info_valid_info_200(companytoken):
     response = client.put("/companies/info", json=valid_comp_info, headers={"X-Token": companytoken})
@@ -27,9 +80,49 @@ def test_edit_company_info_valid_info_200(companytoken):
 
 
 
-def test_edit_company_info__no_token_401(companytoken):
-    response = client.put("/companies/info", json=valid_comp_info)
+def test_edit_company_info_no_token_401(companytoken):
+    response = client.put("/companies/info", json=valid_comp_info, headers={})
     assert response.status_code == 401
 
 
 
+
+def test_create_company_offer_valid_info_200(companytoken):
+    response = client.post("/companies/create_offer", json=valid_comp_offer_info, headers={"X-Token": companytoken})
+    assert response.status_code == 200
+    assert response.json()["requirements"] == valid_comp_offer_info["requirements"]
+    assert response.json()["min_salary"] == valid_comp_offer_info["min_salary"]
+    assert response.json()["max_salary"] == valid_comp_offer_info["max_salary"]
+
+
+def test_create_company_offer_invalid_data_422(companytoken):
+    response = client.post("/companies/create_offer", json=invalid_comp_offer_info, headers={"X-Token": companytoken})
+    assert response.status_code == 422
+
+
+def test_create_company_offer_no_token_401():
+    response = client.post("/companies/create_offer", json=invalid_comp_offer_info, headers={})
+    assert response.status_code == 401
+
+
+
+
+
+def test_edit_prof_offer_valid_data_200(proftoken):
+    response = client.put("/professionals/1/edit_offer", json=valid_offer_edit_info, headers={"X-Token": proftoken})
+    assert response.status_code == 200
+    assert response.json()["description"] == valid_offer_edit_info["description"]
+    assert response.json()["chosen_company_offer_id"] == valid_offer_edit_info["chosen_company_offer_id"]
+    assert response.json()["skills"] == valid_offer_edit_info["skills"]
+    assert response.json()["min_salary"] == valid_offer_edit_info["min_salary"]
+    assert response.json()["max_salary"] == valid_offer_edit_info["max_salary"]
+
+
+def test_edit_prof_offer_invalid_data_422(proftoken):
+    response = client.put("/professionals/1/edit_offer", json=invalid_offer_edit_info, headers={"X-Token": proftoken})
+    assert response.status_code == 422
+
+
+def test_edit_prof_offer_401():
+    response = client.put("/professionals/1/edit_offer", json=valid_offer_edit_info)
+    assert response.status_code == 401
