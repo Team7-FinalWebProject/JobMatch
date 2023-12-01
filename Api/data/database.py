@@ -71,15 +71,18 @@ def insert_queries_trasnaction(sql_queries: tuple[str], sql_params: tuple[tuple]
             return False
         
 
-def multi_read_query_trasnaction(sql_queries: tuple[str], sql_params: tuple[tuple]) -> list:
+def multi_read_query_transaction(sql_queries: tuple[str], sql_params: tuple[tuple]) -> list:
     with _get_connection() as conn:
         try:
             cursor = conn.cursor()
             for i in range(len(sql_queries)):
                 cursor.execute(sql_queries[i], sql_params[i])
-        
-            return list(cursor)
+
+            conn.commit()
+            last_row_id = cursor.fetchone()
+            
+            return last_row_id[0] if last_row_id else None
         except psycopg2.Error as error:
             print(f"Database update failed: {error}")
             conn.rollback()
-            return False
+            return None
