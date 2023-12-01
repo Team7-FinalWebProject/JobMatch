@@ -6,84 +6,8 @@ from data.readers import reader_one, reader_many
 from psycopg2.extras import Json
 from common.utils.calc import apply_salary_threshold
 
-##TODO: SELF functionality (id filter)
-
-#########Interface:
-# ####Professional:
-def professional_get_self_info(professional_id):
-    return _get_professional_by_id(professional_id)
-
-def professional_get_self_offer_by_id(id, professional_id):
-    return _get_professional_offer_by_id(id=id, professional_id=professional_id, active=False)#id from token)
-
-def professional_get_self_offers(professional_id, *filters):
-    return _get_professional_offers(*filters, professional_id=professional_id, active=False)#id from token
-
-def professional_get_company_offer_by_id(id: int):
-    return _get_company_offer_by_id(id=id)
-
-def professional_get_company_offers(*filters):
-    return _get_company_offers(*filters)
-
-
-# ####Company:
-def company_get_self_info(company_id):
-    return _get_company_by_id(company_id)
-
-def company_get_self_offer_by_id(id, company_id):
-    return _get_company_offer_by_id(id=id, company_id=company_id, active=False) #id from token
-
-def company_get_self_offers(company_id, *filters):
-    return _get_company_offers(*filters, company_id=company_id, active=False) #id from token
-
-def company_get_professional_offer_by_id(id: int):
-    return _get_professional_offer_by_id(id=id)
-
-def company_get_professional_offers(*filters):
-    return _get_professional_offers(*filters)
-
-
-# ####ADMIN:
-def admin_get_unapproved_company_by_id(id: int):
-    return _get_company_by_id(id=id, approved=False)
-
-def admin_get_unapproved_companies():
-    return _get_companies(approved=False)
-
-def admin_get_unapproved_professional_by_id(id: int):
-    return _get_professional_by_id(id=id, approved=False)
-
-def admin_get_unapproved_professionals():
-    return _get_professionals(approved=False)
-
-# ####SEARCH:
-def search_get_company_by_id(id: int):
-    return _get_company_by_id(id=id)
-
-def search_get_companies():
-    return _get_companies(approved=True)
-
-def search_get_professional_by_id(id: int):
-    return _get_professional_by_id(id=id)
-
-def search_get_professionals():
-    return _get_professionals()
-
-def search_get_company_offer_by_id(id: int):
-    return _get_company_offer_by_id(id=id)
-
-def search_get_company_offers(*filters):
-    return _get_company_offers(*filters)
-
-def search_get_professional_offer_by_id(id: int):
-    return _get_professional_offer_by_id(id=id)
-
-def search_get_professional_offers(*filters):
-    return _get_professional_offers(*filters)
-
-
 # --view company
-def _get_company_by_id(id: int, approved=True):
+def get_company_by_id(id: int, approved=True):
     data = read_query(
         '''SELECT c.id, u.username, c.name, c.description, c.address, c.picture
             FROM companies c
@@ -95,7 +19,7 @@ def _get_company_by_id(id: int, approved=True):
     return reader_one(Company_Slim, data)
 
 # --view all companies (+filters)
-def _get_companies(approved=True):
+def get_companies(approved=True):
     data = read_query(
         '''SELECT c.id, u.username, c.name, c.description, c.address, c.picture
             FROM companies c
@@ -106,7 +30,7 @@ def _get_companies(approved=True):
     return reader_many(Company_Slim, data)
 
 # --view professional
-def _get_professional_by_id(id: int, approved=True):
+def get_professional_by_id(id: int, approved=True):
     data = read_query(
         '''SELECT p.id, u.username, p.default_offer_id, p.first_name, p.last_name, p.summary, p.address, p.picture, p.status 
             FROM professionals p
@@ -118,7 +42,7 @@ def _get_professional_by_id(id: int, approved=True):
     return reader_one(Professional_Slim, data)
 
 # --view all professionals (+filters)
-def _get_professionals(approved=True):
+def get_professionals(approved=True):
     data = read_query(
         '''SELECT p.id, u.username, p.default_offer_id, p.first_name, p.last_name, p.summary, p.address, p.picture, p.status 
             FROM professionals p
@@ -130,7 +54,7 @@ def _get_professionals(approved=True):
 
 
 # --view company offer
-def _get_company_offer_by_id(id: int, company_id: int | None = None, approved=True, active=True):
+def get_company_offer_by_id(id: int, company_id: int | None = None, approved=True, active=True):
     status = 'active' if active else None
     data = read_query(
         '''SELECT co.id, co.company_id, co.chosen_professional_id, co.status, co.requirements, co.min_salary, co.max_salary 
@@ -145,7 +69,7 @@ def _get_company_offer_by_id(id: int, company_id: int | None = None, approved=Tr
     return reader_one(CompanyOffer, data)
 
 # --view all company offers (+filters, filters: active/inactive, salary, requirements, ++)
-def _get_company_offers(
+def get_company_offers(
         min_salary: int = 0,
         max_salary: int = 2147483647,
         filter_distance_from_latest: int | None = None,
@@ -187,7 +111,7 @@ def _get_company_offers(
     return reader_many(CompanyOffer, data)
 
 # --view professional offer (hide hidden)
-def _get_professional_offer_by_id(id: int, professional_id: int | None = None, approved=True, active=True):
+def get_professional_offer_by_id(id: int, professional_id: int | None = None, approved=True, active=True):
     status1 = 'active' if active else None
     status2 = 'private' if active else None
     data = read_query(
@@ -204,7 +128,7 @@ def _get_professional_offer_by_id(id: int, professional_id: int | None = None, a
 
 # --view all professional offers (self, self=professional, filters: active/inactive)
 # --view all professional offers (hide inactive, private and hidden) (+filters salary, requirements, ++)
-def _get_professional_offers(
+def get_professional_offers(
         min_salary: int = 0,
         max_salary: int = 2147483647,
         filter_distance_from_latest: int | None = None,

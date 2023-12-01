@@ -4,7 +4,6 @@ from data.models.offer import CompanyOfferCreate, CompanyOffer
 from services import companies_service, professionals_service
 from common.auth import company_or_401
 from data.responses import BadRequest, Unauthorized, NotFound, Forbidden
-from services.search_service import _get_professional_offer_by_id
 from common.utils.file_uploader import create_upload_file
 
 

@@ -11,8 +11,6 @@ from common.utils.emailing import data_input, mailjet
 import os
 from pathlib import Path
 
-
-
 professionals_router = APIRouter(prefix='/professionals')
 _ERROR_MESSAGE = 'You are not authorized [NOT LOGGED IN | TOKEN EXPIRED | NOT APPROVED]'
 

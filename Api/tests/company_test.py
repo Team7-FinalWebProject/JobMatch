@@ -168,3 +168,35 @@ def test_match_invalid_data_403(companytoken):
     assert response.status_code == 403
     
 
+
+
+
+
+def test_set_offer_status_valid_data_200(companytoken):
+    response = client.put("/companies/offer_status?offer_id=1&status=archived", headers={"X-Token": companytoken})
+    assert response.status_code == 200
+
+
+def test_set_offer_status_invalid_data_401(companytoken):
+    response = client.put("/companies/offer_status?offer_id=1&status=archived", headers={})
+    assert response.status_code == 401
+
+
+def test_set_offer_status_invalid_data_404(companytoken):
+    response = client.put("/companies/offer_status?offer_id=20&status=archived", headers={"X-Token": companytoken})
+    assert response.status_code == 404
+
+
+
+def test_get_match_requests_valid_data_200(companytoken):
+    response = client.get("/companies/match_requests", headers={"X-Token": companytoken})
+    assert response.status_code == 200
+    response = response.json()
+    assert "prof_offer_id" in response[0]
+    assert "comp_offer_id" in response[0]
+    assert "request_from" in response[0]
+
+
+def test_get_match_requests_no_token_401(companytoken):
+    response = client.get("/professionals/match_requests", headers={})
+    assert response.status_code == 401

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { Switch } from '@headlessui/react'
-import backgroundSVG from '../assets/endless-constellation.svg'
+// import backgroundSVG from '../assets/endless-constellation.svg'
 
 interface MessagesForm_Props {
     onSubmit: (username: string, content: string) => void;
@@ -22,7 +22,8 @@ const MessagesForm: React.FC<MessagesForm_Props> = ({ onSubmit }) => {
   };
 
   return (
-    <div className="isolate bg-white px-6 py-24 sm:py-32 lg:px-8" style={{ backgroundImage: `url(${backgroundSVG})` }} >
+    <div className="isolate bg-white px-6 py-24 sm:py-32 lg:px-8" >
+    {/* <div className="isolate bg-white px-6 py-24 sm:py-32 lg:px-8" style={{ backgroundImage: `url(${backgroundSVG})` }} > */}
       <div
         className="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]"
         aria-hidden="true"

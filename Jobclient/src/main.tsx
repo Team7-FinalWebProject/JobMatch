@@ -16,6 +16,7 @@ import { Switch } from '@headlessui/react';
 import MessagesForm from './components/MessageForm.tsx';
 import SignupCompany from './pages/SignupCompany';
 import SignupProfessional from './pages/SingupProfessional.tsx';
+import AccountProfessional from './pages/AccountProfessional.tsx';
 
 
 const cookies = new Cookies();
@@ -43,6 +44,7 @@ const router = createBrowserRouter(
     <Route path="/signout" element={<Login />} loader={tokenUnloader}></Route>
     <Route path="/signup/company" element={<SignupCompany />}></Route>
     <Route path="/signup/professional" element={<SignupProfessional />}></Route>
+    <Route path="/account/professional" element={<AccountProfessional />}></Route>
     {/* <Route path="/register" element={<App />}></Route> */}
       {/* <Route path="dashboard" element={<Dashboard />} /> */}
       {/* ... etc. */}
