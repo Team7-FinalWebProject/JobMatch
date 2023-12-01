@@ -9,7 +9,7 @@ class Company(BaseModel):
     name: str
     description: str | None = None
     address: str
-    picture: bytes | None = None
+    picture: str | None = None
     username: str | None = None
     approved: bool | None = None
     issued: datetime | None = None
@@ -33,7 +33,7 @@ class Company_Slim(BaseModel):
     name: str
     description: str
     address: str
-    picture: bytes | None = None
+    picture: str | None = None
 
     @classmethod
     def from_query_result(cls, id, username, name, description, address, picture):
@@ -51,7 +51,7 @@ class Company_W_Offers(BaseModel):
     name: str
     description: str
     address: str
-    picture: bytes | None = None
+    picture: str | None = None
     offers: list[CompanyOffer_NoCompanyId]
 
     @classmethod
@@ -103,7 +103,7 @@ class CompanyInfoEdit(BaseModel):
     name: str | None = None
     description: str | None = None
     address: str | None = None
-    picture: bytes | None = None
+    picture: str | None = None
 
     @classmethod
     def from_query_result(cls, name, description, address, picture):

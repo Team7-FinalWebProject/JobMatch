@@ -12,7 +12,7 @@ class Professional(BaseModel):
     last_name: str
     summary: str | None = None
     address: str
-    picture: bytes | None = None
+    picture: str | None = None
     status: str | None = None
     username: str | None = None
     approved: bool | None = None
@@ -42,7 +42,7 @@ class Professional_Slim(BaseModel):
     last_name: str
     summary: str
     address: str
-    picture: bytes | None = None
+    picture: str | None = None
     status: str = None
 
     @classmethod
@@ -67,7 +67,7 @@ class Professional_W_Offers(BaseModel):
     last_name: str
     summary: str
     address: str
-    picture: bytes | None = None
+    picture: str | None = None
     offers: list[ProfessionalOffer_NoProfessionalId]
 
     @classmethod
@@ -100,7 +100,7 @@ class ProfessionalInfoEdit(BaseModel):
     last_name: str | None = None
     summary: str | None = None
     address: str | None = None
-    picture: bytes | None = None
+    picture: str | None = None
 
     @classmethod
     def from_query_result(cls, first_name, last_name, summary, address, picture):
