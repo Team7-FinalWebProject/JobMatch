@@ -1,6 +1,6 @@
 import { Fragment, useState } from 'react'
 import jobutopiaLogo from '../assets/jobutipiaLogo.svg'
-import backgroundSVG from '../assets/endless-constellation.svg'
+// import backgroundSVG from '../assets/endless-constellation.svg'
 import { Dialog, Disclosure, Popover, Transition } from '@headlessui/react'
 import {
   Bars3Icon,
@@ -29,7 +29,8 @@ export default function Example() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <header className="bg-gray-200 border-b border-white" style={{ backgroundImage: `url(${backgroundSVG})` }}>
+    <header className="bg-gray-200 border-b border-white" >
+      {/* <header className="bg-gray-200 border-b border-white" style={{ backgroundImage: `url(${backgroundSVG})` }}> */}
       <nav className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8 mt-2" aria-label="Global">
       <img
               className="mx-auto h-6 w-auto"

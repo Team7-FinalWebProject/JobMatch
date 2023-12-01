@@ -14,19 +14,9 @@ import { Link } from 'react-router-dom';
 const Profile = () => {
 //   let [isOpen, setIsOpen] = useState(true)
 
-  const products = [
-    { name: 'Features', description: 'Something', href: '#', icon: ChartPieIcon },
-    { name: 'Sign Out', href: '#', icon: CursorArrowRaysIcon },
-    { name: 'About us', description: 'Info', href: '#', icon: CursorArrowRippleIcon },
-  ]
-  const callsToAction = [
-    { name: 'Watch demo', href: '#', icon: PlayCircleIcon },
-    { name: 'Contact sales', href: '#', icon: PhoneIcon },
-  ]
-
   return (
     <Popover className="relative">
-    <Popover.Button className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-white">
+    <Popover.Button className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-black">
         Profile
         <ChevronDownIcon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />
     </Popover.Button>
@@ -43,6 +33,21 @@ const Profile = () => {
         <Popover.Panel className="absolute -left-8 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5">
         <div className="p-4">
             <div
+                key="Account Info"
+                className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-50"
+            >
+                <div className="flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white">
+                <CursorArrowRaysIcon className="h-6 w-6 text-gray-600 group-hover:text-indigo-600" aria-hidden="true" />
+                </div>
+                <div className="flex-auto">
+                <Link to="/account/professional" className="block font-semibold text-gray-900">
+                    Account Info
+                    <span className="absolute inset-0" />
+                </Link>
+                <p className="mt-1 text-gray-600">{"View/Edit Account"}</p>
+                </div>
+            </div>
+            <div
                 key="Sign Out"
                 className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-50"
             >
@@ -54,21 +59,27 @@ const Profile = () => {
                     Sign Out
                     <span className="absolute inset-0" />
                 </Link>
-                <p className="mt-1 text-gray-600">{"Also known in some circles as logoff"}</p>
+                <p className="mt-1 text-gray-600">{"Logout"}</p>
                 </div>
             </div>
         </div>
         <div className="grid grid-cols-2 divide-x divide-gray-900/5 bg-gray-50">
-            {callsToAction.map((item) => (
-            <a
-                key={item.name}
-                href={item.href}
+            <Link
+                key="Sign Out"
+                to="/signout"
                 className="flex items-center justify-center gap-x-2.5 p-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-100"
             >
-                <item.icon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />
-                {item.name}
-            </a>
-            ))}
+                <PlayCircleIcon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />
+                Sign Out
+            </Link>
+            <Link
+                key="Login"
+                to="/login"
+                className="flex items-center justify-center gap-x-2.5 p-3 text-sm font-semibold leading-6 text-gray-900 hover:bg-gray-100"
+            >
+                <PhoneIcon className="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />
+                Login
+            </Link>
         </div>
         </Popover.Panel>
     </Transition>
