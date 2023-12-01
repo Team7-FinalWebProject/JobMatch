@@ -9,20 +9,18 @@ class Company(BaseModel):
     name: str
     description: str | None = None
     address: str
-    picture: str | None = None
     username: str | None = None
     approved: bool | None = None
     issued: datetime | None = None
 
     @classmethod
-    def from_query_result(cls, id, user_id, name, description, address, picture, username, approved, issued=None):
+    def from_query_result(cls, id, user_id, name, description, address, username, approved, issued=None):
         return cls(
             id=id,
             user_id=user_id,
             name=name,
             description=description,
             address=address,
-            picture=picture,
             username=username,
             approved=approved)
 
@@ -33,17 +31,15 @@ class Company_Slim(BaseModel):
     name: str
     description: str
     address: str
-    picture: str | None = None
 
     @classmethod
-    def from_query_result(cls, id, username, name, description, address, picture):
+    def from_query_result(cls, id, username, name, description, address):
         return cls(
             id=id,
             username=username,
             name=name,
             description=description,
-            address=address,
-            picture=picture)
+            address=address)
     
 class Company_W_Offers(BaseModel):
     id: int | None = None
@@ -51,18 +47,16 @@ class Company_W_Offers(BaseModel):
     name: str
     description: str
     address: str
-    picture: str | None = None
     offers: list[CompanyOffer_NoCompanyId]
 
     @classmethod
-    def from_query_result(cls, id, username, name, description, address, picture, offers):
+    def from_query_result(cls, id, username, name, description, address, offers):
         return cls(
             id=id,
             username=username,
             name=name,
             description=description,
             address=address,
-            picture=picture,
             offers=offers)
 
 
@@ -103,12 +97,10 @@ class CompanyInfoEdit(BaseModel):
     name: str | None = None
     description: str | None = None
     address: str | None = None
-    picture: str | None = None
 
     @classmethod
-    def from_query_result(cls, name, description, address, picture):
+    def from_query_result(cls, name, description, address):
         return cls(
             name=name,
             description=description,
-            address=address,
-            picture=picture)
+            address=address)

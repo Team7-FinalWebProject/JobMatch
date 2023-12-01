@@ -47,3 +47,14 @@ def approve_professional_by_id(prof_id: int, x_token: str = Header()):
 def approve_company_by_id(comp_id: int, x_token: str = Header()):
     admin = admin_or_error(x_token)
     return admin_service.approve_company(comp_id) if admin.__class__.__name__ == 'Admin' else None
+
+@admin_router.get('/admin/{id}', tags=["Admin"])
+def get_admin_by_id(id: int, x_token: str = Header()):
+    admin = admin_or_error(x_token)
+    return admin_service.get_admin_by_id(id) if admin.__class__.__name__ == 'Admin' else None
+
+@admin_router.get('/admins', tags=["Admin"])
+def get_admins(x_token: str = Header()):
+    admin = admin_or_error(x_token)
+    return admin_service.get_admins() if admin.__class__.__name__ == 'Admin' else None
+    

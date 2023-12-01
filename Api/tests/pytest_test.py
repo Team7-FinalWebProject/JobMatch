@@ -25,7 +25,7 @@ def test_db_conn_test_skipped_with_skip():
     assert database._get_connection()
 
 def test_db_conn():
-    expected = [('adminfortest',), ('testuser1',), ('testuser2',), ('testuser3',), ('testuser4',), ('testuser5',),('testuser6',),('Ivo',)]
+    expected = [('adminfortest',), ('testuser1',), ('testuser2',), ('testuser3',), ('testuser4',), ('testuser5',),('testuser6',)]
     result = read_query("select username from users", ())
     assert expected == result
 

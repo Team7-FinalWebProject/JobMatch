@@ -17,15 +17,14 @@ def edit_company_info(new_data: Company, old_data: Company):
             user_id=old_data.user_id,
             name=new_data.name or old_data.name,
             description=new_data.description or old_data.description,
-            address=new_data.address or old_data.address,
-            picture=new_data.picture or old_data.picture
+            address=new_data.address or old_data.address
             )
 
         update_query(
             '''UPDATE companies SET name = %s, description = %s, address = %s,
-               picture = %s WHERE id = %s''',
+            WHERE id = %s''',
                (merged.name, merged.description, merged.address, 
-                merged.picture, merged.id))
+                merged.id))
         
         return merged
     

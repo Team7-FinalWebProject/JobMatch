@@ -12,14 +12,13 @@ class Professional(BaseModel):
     last_name: str
     summary: str | None = None
     address: str
-    picture: str | None = None
     status: str | None = None
     username: str | None = None
     approved: bool | None = None
     issued: datetime | None = None
 
     @classmethod
-    def from_query_result(cls, id, user_id, default_offer_id, first_name, last_name, summary, address, picture, status, username, approved, issued=None):
+    def from_query_result(cls, id, user_id, default_offer_id, first_name, last_name, summary, address, status, username, approved, issued=None):
         return cls(
             id=id,
             user_id=user_id,
@@ -28,7 +27,6 @@ class Professional(BaseModel):
             last_name=last_name,
             summary=summary,
             address=address,
-            picture=picture,
             status=status,
             username=username,
             approved=approved)
@@ -42,11 +40,10 @@ class Professional_Slim(BaseModel):
     last_name: str
     summary: str
     address: str
-    picture: str | None = None
     status: str = None
 
     @classmethod
-    def from_query_result(cls, id, username, default_offer_id, first_name, last_name, summary, address, picture, status):
+    def from_query_result(cls, id, username, default_offer_id, first_name, last_name, summary, address, status):
         return cls(
             id=id,
             username=username,
@@ -55,7 +52,6 @@ class Professional_Slim(BaseModel):
             last_name=last_name,
             summary=summary,
             address=address,
-            picture=picture,
             status=status)
     
 class Professional_W_Offers(BaseModel):
@@ -67,11 +63,10 @@ class Professional_W_Offers(BaseModel):
     last_name: str
     summary: str
     address: str
-    picture: str | None = None
     offers: list[ProfessionalOffer_NoProfessionalId]
 
     @classmethod
-    def from_query_result(cls, id, username, default_offer_id, first_name, last_name, summary, address, picture, offers):
+    def from_query_result(cls, id, username, default_offer_id, first_name, last_name, summary, address, offers):
         return cls(
             id=id,
             username=username,
@@ -80,7 +75,6 @@ class Professional_W_Offers(BaseModel):
             last_name=last_name,
             summary=summary,
             address=address,
-            picture=picture,
             offers=offers)
     
 class ProfessionalRequest(BaseModel):
@@ -100,13 +94,11 @@ class ProfessionalInfoEdit(BaseModel):
     last_name: str | None = None
     summary: str | None = None
     address: str | None = None
-    picture: str | None = None
 
     @classmethod
-    def from_query_result(cls, first_name, last_name, summary, address, picture):
+    def from_query_result(cls, first_name, last_name, summary, address):
         return cls(
             first_name=first_name,
             last_name=last_name,
             summary=summary,
-            address=address,
-            picture=picture)
+            address=address)

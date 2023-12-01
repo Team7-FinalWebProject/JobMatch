@@ -32,7 +32,7 @@ def find_user_by_username(username: str):
     prof = read_query(
         '''SELECT u.id, p.id,
            p.user_id, p.default_offer_id, p.first_name,
-           p.last_name, p.summary, p.address, 
+           p.last_name, p.summary, p.address,
            p.status, u.username, p.approved, u.password 
            FROM users AS u
            JOIN professionals AS p ON u.id = p.user_id

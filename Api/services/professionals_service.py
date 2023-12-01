@@ -18,14 +18,13 @@ def edit(new_data: ProfessionalInfoEdit, old_data: Professional):
             last_name=new_data.last_name or old_data.last_name,
             summary=new_data.summary or old_data.summary,
             address=new_data.address or old_data.address,
-            picture=new_data.picture or old_data.picture,
             status=old_data.status)
 
         update_query(
             '''UPDATE professionals SET first_name = %s, last_name = %s,
-               summary = %s, address = %s, picture = %s WHERE id = %s''',
+               summary = %s, address = %s WHERE id = %s''',
                (merged.first_name, merged.last_name, merged.summary, 
-                merged.address, merged.picture, merged.id))
+                merged.address, merged.id))
         
         return merged
     

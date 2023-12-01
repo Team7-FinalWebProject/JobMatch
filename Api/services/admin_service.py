@@ -2,7 +2,7 @@ from services.register_service import _hash_password
 from secrets import compare_digest
 from data.database import read_query, update_query
 from data.models.admin import Admin, ReadConfig, UpdateConfig
-from data.readers import reader_one
+from data.readers import reader_one, reader_many
 from psycopg2.extras import Json
 
 def try_login_as_admin(username: str, password: str):
@@ -86,3 +86,19 @@ def approve_company(id):
         '''UPDATE companies
         SET approved = %s
         WHERE id = %s''', ('t', id))
+    
+
+def get_admin_by_id(id: int):
+    data = read_query(
+        '''SELECT id, id, username from users
+            where admin = %s
+            and id = %s''',
+        (True, id))
+    return reader_one(Admin, data)
+
+def get_admins():
+    data = read_query(
+        '''SELECT id, id, username from users
+            where admin = %s''',
+        (True,))
+    return reader_many(Admin, data)

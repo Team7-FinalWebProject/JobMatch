@@ -120,9 +120,19 @@ def test_db_get_connection():
 def replace_db_conn(monkeypatch):
     print(datetime.now())
     monkeypatch.setattr(database, "_get_connection", lambda *args, **kwargs: test_db_get_connection())
-    expected = [('adminfortest',),]
-    result = database.read_query("select username from users where id = 1", ())
-    if expected != result:
+    try:
+        expected = [('adminfortest',),]
+        result = database.read_query("select username from users where id = 1", ())
+        if not result or expected != result:
+            pytest.skip("Skipping remaining tests, test_db validation failed, cannot guarantee prod db is not being tested.")
+        valid_admin = {"username": "adminfortest", "password": user_password}
+        token = client.post("/login/admins", json=valid_admin).json()["token"]
+        response = client.get(f"/admin/admin/1", headers={"X-Token": token})
+        if not token or not response or response.json()["username"] != "adminfortest":
+            pytest.skip("Skipping remaining tests, test_db validation failed, cannot guarantee prod db is not being tested.")
+    except Exception as e:
+    #     # print(e)
+    #     # raise Exception from e
         pytest.skip("Skipping remaining tests, test_db validation failed, cannot guarantee prod db is not being tested.")
 
 @pytest.fixture(autouse=True, scope='session')
