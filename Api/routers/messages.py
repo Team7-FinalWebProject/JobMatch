@@ -4,6 +4,7 @@ from fastapi import APIRouter, Header
 from data.responses import NotFound, Unauthorized, Forbidden
 from data.models.message import Message
 from common.auth import user_or_error, _ADMIN_MESSAGE
+from data.models.admin import Admin
 
 
 messages_router = APIRouter(prefix='/messages')
@@ -19,7 +20,7 @@ def view_user_messages(receiver_username: str, x_token: str = Header(default=Non
     user = user_or_error(x_token) if x_token else None
     receiver = check_user_exist(receiver_username)
     if user:
-        if user.approved == True:
+        if isinstance(user, Admin) or user.approved == True:
             if receiver:
                 messages = messages_service.get_messages(user.username, receiver_username)
                 if not messages:
@@ -38,7 +39,7 @@ def send_message(receiver_username: str, message: Message, x_token: str = Header
     user = user_or_error(x_token) if x_token else None
     receiver = check_user_exist(receiver_username)
     if user:
-        if user.approved == True:
+        if isinstance(user, Admin) or user.approved == True:
             if receiver:
                 return messages_service.create(user.username, receiver_username, message)
             else:
