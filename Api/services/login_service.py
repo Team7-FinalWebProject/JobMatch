@@ -7,20 +7,6 @@ from data.models.admin import Admin
 from data.readers import reader_one
 
 
-
-# def try_login_as_prof(username: str, password: str):
-#     password1, user = find_prof_by_username(username)
-#     if not user: return None
-#     password_check = _hash_password(password)
-#     return user if compare_digest(password1, password_check) else None
-
-
-# def try_login_as_company(username: str, password: str):
-#     password1, user = find_company_by_username(username)
-#     if not user: return None
-#     password_check = _hash_password(password)
-#     return user if compare_digest(password1, password_check) else None
-
 def try_login(username: str, password: str):
     password1, user = find_user_by_username(username)
     if not user: return None
@@ -71,6 +57,11 @@ def find_user_by_username(username: str):
         return None, None
 
 
+
+
+
+# DEPRECATED
+
 # def find_prof_by_username(username: str, fuser=False, fpassword=False):
 #     data = read_query(
 #         '''SELECT u.id, p.id,
@@ -106,3 +97,17 @@ def find_user_by_username(username: str):
 #             (Company.from_query_result(*row[1:-1]) for row in data), None)
 #     else:
 #         return None, None
+
+
+# def try_login_as_prof(username: str, password: str):
+#     password1, user = find_prof_by_username(username)
+#     if not user: return None
+#     password_check = _hash_password(password)
+#     return user if compare_digest(password1, password_check) else None
+
+
+# def try_login_as_company(username: str, password: str):
+#     password1, user = find_company_by_username(username)
+#     if not user: return None
+#     password_check = _hash_password(password)
+#     return user if compare_digest(password1, password_check) else None

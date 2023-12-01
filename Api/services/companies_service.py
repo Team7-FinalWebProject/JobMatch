@@ -1,5 +1,5 @@
 from data.database import update_query, insert_query, read_query, update_queries_transaction
-from fastapi import Header, HTTPException, status
+from fastapi import HTTPException, status
 from data.models.company import Company, CompanyRequest
 from data.models.offer import CompanyOffer
 from psycopg2 import IntegrityError
@@ -197,13 +197,3 @@ def get_match_requests(company: Company):
 
     return (CompanyRequest.from_query_result(*row) for row in data)
 
-
-
-
-
-# def upload_img(comp: Company, image):
-#     rowcount = update_query(
-#         '''UPDATE companies SET picture = %s
-#            WHERE id = %s''', (image, comp.id))
-    
-#     return f'Updated photo [{rowcount}]'
