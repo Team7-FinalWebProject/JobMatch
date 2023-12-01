@@ -188,7 +188,7 @@ CREATE TABLE jobmatch.companies (
     name character varying(100) NOT NULL,
     description text DEFAULT ''::text NOT NULL,
     address character varying(100) NOT NULL,
-    picture bytea,
+    picture character varying(100),
     approved boolean DEFAULT false NOT NULL,
     user_id integer NOT NULL
 );
@@ -399,7 +399,7 @@ CREATE TABLE jobmatch.professionals (
     user_id integer NOT NULL,
     summary text DEFAULT ''::text NOT NULL,
     default_offer_id integer,
-    picture bytea,
+    picture character varying(100),
     approved boolean DEFAULT false NOT NULL,
     status character varying DEFAULT 'active'::character varying NOT NULL,
     CONSTRAINT cns_professionals CHECK (((status)::text = ANY (ARRAY[('active'::character varying)::text, ('busy'::character varying)::text])))

@@ -3,7 +3,6 @@ from data.models.offer import CompanyOffer_NoCompanyId
 from datetime import datetime
 
 
-
 class Company(BaseModel):
     id: int | None = None
     user_id: int | None = None
@@ -104,7 +103,7 @@ class CompanyInfoEdit(BaseModel):
     name: str | None = None
     description: str | None = None
     address: str | None = None
-    picture: str | None = None
+    picture: bytes | None = None
 
     @classmethod
     def from_query_result(cls, name, description, address, picture):
