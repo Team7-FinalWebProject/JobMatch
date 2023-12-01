@@ -127,3 +127,44 @@ def test_edit_comp_offer_401():
     response = client.put("/companies/1/edit_offer", json=valid_offer_edit_info)
     assert response.status_code == 401
     
+
+
+
+def test_send_match_request_valid_data_200(companytoken):
+    response = client.post("/companies/1/1/request", headers={"X-Token": companytoken})
+    assert response.status_code == 200
+
+
+def test_send_match_request_invalid_data_500(companytoken):
+    response = client.post("/companies/2/1/request", headers={"X-Token": companytoken})
+    assert response.status_code == 500
+
+
+def test_send_match_request_invalid_data_401(companytoken):
+    response = client.post("/companies/1/1/request", headers={})
+    assert response.status_code == 401
+
+
+def test_send_match_request_invalid_data_404(companytoken):
+    response = client.post("/companies/1/-1/request", headers={"X-Token": companytoken})
+    assert response.status_code == 404
+
+
+
+
+
+def test_match_valid_data_200(companytoken):
+    response = client.post("/companies/match?offer_id=1&prof_offer_id=1", headers={"X-Token": companytoken})
+    assert response.status_code == 200
+
+
+def test_match_invalid_data_401(companytoken):
+    response = client.post("/companies/match?offer_id=1&prof_offer_id=1", headers={})
+    assert response.status_code == 401
+
+
+def test_match_invalid_data_403(companytoken):
+    response = client.post("/companies/match?offer_id=3&prof_offer_id=1", headers={"X-Token": companytoken})
+    assert response.status_code == 403
+    
+
