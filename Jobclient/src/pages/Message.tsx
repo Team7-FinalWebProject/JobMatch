@@ -27,8 +27,8 @@ function SendMessage() {
     };
   
     return (
-        <MessagesForm onSubmit={handleMessageSubmit}/>
+      <MessagesForm onSubmit={handleMessageSubmit}/>
     );
 }
-  
+
 export default SendMessage;
