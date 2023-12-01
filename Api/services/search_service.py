@@ -9,7 +9,7 @@ from common.utils.calc import apply_salary_threshold
 # --view company
 def get_company_by_id(id: int, approved=True):
     data = read_query(
-        '''SELECT c.id, u.username, c.name, c.description, c.address, c.picture
+        '''SELECT c.id, u.username, c.name, c.description, c.address
             FROM companies c
             LEFT JOIN users u
             ON c.user_id=u.id
@@ -21,7 +21,7 @@ def get_company_by_id(id: int, approved=True):
 # --view all companies (+filters)
 def get_companies(approved=True):
     data = read_query(
-        '''SELECT c.id, u.username, c.name, c.description, c.address, c.picture
+        '''SELECT c.id, u.username, c.name, c.description, c.address
             FROM companies c
             LEFT JOIN users u
             ON c.user_id=u.id
@@ -32,7 +32,7 @@ def get_companies(approved=True):
 # --view professional
 def get_professional_by_id(id: int, approved=True):
     data = read_query(
-        '''SELECT p.id, u.username, p.default_offer_id, p.first_name, p.last_name, p.summary, p.address, p.picture, p.status 
+        '''SELECT p.id, u.username, p.default_offer_id, p.first_name, p.last_name, p.summary, p.address, p.status 
             FROM professionals p
             LEFT JOIN users u
             ON p.user_id=u.id
@@ -44,7 +44,7 @@ def get_professional_by_id(id: int, approved=True):
 # --view all professionals (+filters)
 def get_professionals(approved=True):
     data = read_query(
-        '''SELECT p.id, u.username, p.default_offer_id, p.first_name, p.last_name, p.summary, p.address, p.picture, p.status 
+        '''SELECT p.id, u.username, p.default_offer_id, p.first_name, p.last_name, p.summary, p.address, p.status 
             FROM professionals p
             LEFT JOIN users u
             ON p.user_id=u.id

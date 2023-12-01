@@ -131,8 +131,8 @@ def replace_db_conn(monkeypatch):
         if not token or not response or response.json()["username"] != "adminfortest":
             pytest.skip("Skipping remaining tests, test_db validation failed, cannot guarantee prod db is not being tested.")
     except Exception as e:
-        # print(e)
-        # raise Exception from e
+    #     # print(e)
+    #     # raise Exception from e
         pytest.skip("Skipping remaining tests, test_db validation failed, cannot guarantee prod db is not being tested.")
 
 @pytest.fixture(autouse=True, scope='session')

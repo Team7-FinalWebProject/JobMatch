@@ -26,7 +26,7 @@ def create_professional(user: RegisterProfessionalData, password: str):
     return Professional(
         id=prof_id, user_id=user_id,
         first_name=user.first_name, last_name=user.last_name, 
-        address=user.address, summary=user.summary, picture=user.picture)
+        address=user.address, summary=user.summary)
     
 
 def create_company(company_data: RegisterCompanyData, password: str):
@@ -45,8 +45,7 @@ def create_company(company_data: RegisterCompanyData, password: str):
     
     return Company(
         id=company_id, user_id=user_id, name=company_data.company_name,
-        description=company_data.description, address=company_data.address,
-        picture=company_data.picture)
+        description=company_data.description, address=company_data.address)
     
 
 def check_user_exist(nickname:str) -> bool:

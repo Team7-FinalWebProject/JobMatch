@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 15.1 (Ubuntu 15.1-1.pgdg20.04+1)
+-- Dumped from database version 16.0
 -- Dumped by pg_dump version 16.0
 
 SET statement_timeout = 0;
@@ -35,31 +35,7 @@ CREATE FUNCTION test_schema.check_user_id_admin_not_in_professionals_or_companie
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 BEGIN
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -67,31 +43,7 @@ BEGIN
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
     EXISTS (SELECT 1 FROM test_schema.professionals WHERE test_schema.professionals.user_id = NEW.id) OR
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -99,31 +51,7 @@ BEGIN
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
   ) THEN
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -131,31 +59,7 @@ BEGIN
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
   END IF;
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -163,31 +67,7 @@ BEGIN
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 END;
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -206,31 +86,7 @@ CREATE FUNCTION test_schema.check_user_id_companies_not_in_professionals() RETUR
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 BEGIN
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -238,31 +94,7 @@ BEGIN
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
     RAISE EXCEPTION 'user_id in test_schema.companies cannot be the same as test_schema.professionals';
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -270,47 +102,11 @@ BEGIN
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
   RETURN NEW;
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 END;
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -329,31 +125,7 @@ CREATE FUNCTION test_schema.check_user_id_professionals_not_in_companies() RETUR
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 BEGIN
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -361,31 +133,7 @@ BEGIN
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
     RAISE EXCEPTION 'user_id in test_schema.professionals cannot be the same as test_schema.companies';
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -393,47 +141,11 @@ BEGIN
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
   RETURN NEW;
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 END;
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -450,43 +162,13 @@ CREATE PROCEDURE test_schema.insert_into_companies_and_users(IN new_username tex
     LANGUAGE plpgsql
     AS $_$
 
-
-
-
-
-
-
 BEGIN
-
-
-
-
-
-
 
   WITH new_user_id AS (INSERT INTO test_schema.users (username,password) VALUES ($1,$2) RETURNING id)
 
-
-
-
-
-
-
   INSERT INTO test_schema.companies (user_id,name,description,address) VALUES (new_user_id,$3,$4,$5) RETURNING id;
 
-
-
-
-
-
-
 END;
-
-
-
-
-
-
 
 $_$;
 
@@ -506,7 +188,6 @@ CREATE TABLE test_schema.companies (
     name character varying(100) NOT NULL,
     description text DEFAULT ''::text NOT NULL,
     address character varying(100) NOT NULL,
-    picture bytea,
     approved boolean DEFAULT false NOT NULL,
     user_id integer NOT NULL
 );
@@ -560,7 +241,6 @@ CREATE VIEW test_schema.companies_view AS
     c.name AS company_name,
     c.description AS company_description,
     c.address AS company_address,
-    c.picture AS company_picture,
     c.approved AS company_approved,
     u.username AS company_username,
     u.password AS company_password
@@ -717,7 +397,6 @@ CREATE TABLE test_schema.professionals (
     user_id integer NOT NULL,
     summary text DEFAULT ''::text NOT NULL,
     default_offer_id integer,
-    picture bytea,
     approved boolean DEFAULT false NOT NULL,
     status character varying DEFAULT 'active'::character varying NOT NULL,
     CONSTRAINT cns_professionals CHECK (((status)::text = ANY (ARRAY[('active'::character varying)::text, ('busy'::character varying)::text])))
@@ -888,10 +567,10 @@ ALTER TABLE ONLY test_schema.web_filters ALTER COLUMN id SET DEFAULT nextval('te
 -- Data for Name: companies; Type: TABLE DATA; Schema: test_schema; Owner: postgres
 --
 
-COPY test_schema.companies (id, name, description, address, picture, approved, user_id) FROM stdin;
-1	Pepsi	We make the fizzy drink	Los Angeles, California	\N	t	5
-2	Steam	We provide video games	Los Angeles, California	\N	t	6
-3	Avid	We provide high tech gear	New York, USA	\N	t	7
+COPY test_schema.companies (id, name, description, address, approved, user_id) FROM stdin;
+1	Pepsi	We make the fizzy drink	Los Angeles, California	 t	5
+2	Steam	We provide video games	Los Angeles, California	 t	6
+3	Avid	We provide audio grear	New York, USA	 t	7
 \.
 
 
@@ -938,11 +617,10 @@ COPY test_schema.professional_offers (id, professional_id, description, chosen_c
 -- Data for Name: professionals; Type: TABLE DATA; Schema: test_schema; Owner: postgres
 --
 
-COPY test_schema.professionals (id, first_name, last_name, address, user_id, summary, default_offer_id, picture, approved, status) FROM stdin;
-1	John	Ivanov	bul.Skobelev, 24, Sofia, BG	2	10 years of experience in C# ASP.NET development	1	\N	t	active
-2	Michael	Livingston	Ubbo-Emmunslaan str., Amsterdam, NE	3	Experienced Python developer	2	\N	t	active
-4	Ivailo	Ivanov	string	8	gotin	\N	\N	t	active
-3	William	Pique	Buterpark str., London, GBT	4	Junior Java developer	3	\N	t	active
+COPY test_schema.professionals (id, first_name, last_name, address, user_id, summary, default_offer_id, approved, status) FROM stdin;
+1	John	Ivanov	bul.Skobelev, 24, Sofia, BG	2	10 years of experience in C# ASP.NET development	1	t	active
+2	Michael	Livingston	Ubbo-Emmunslaan str., Amsterdam, NE	3	Experienced Python developer	2	t	active
+3	William	Pique	Buterpark str., London, GBT	4	Junior Java developer	3	f	active
 \.
 
 
@@ -969,7 +647,6 @@ COPY test_schema.users (id, username, admin, password) FROM stdin;
 5	testuser4	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
 6	testuser5	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
 7	testuser6	f	\\x74657374
-8	Ivo	f	\\x34393537636539633234313337353138633461623439323536346636666632313463623331613761633435346164653333653462346636633435343265303431
 \.
 
 
@@ -1013,7 +690,7 @@ SELECT pg_catalog.setval('test_schema.professional_offers_id_seq', 4, false);
 -- Name: professionals_id_seq; Type: SEQUENCE SET; Schema: test_schema; Owner: postgres
 --
 
-SELECT pg_catalog.setval('test_schema.professionals_id_seq', 4, true);
+SELECT pg_catalog.setval('test_schema.professionals_id_seq', 4, false);
 
 
 --
@@ -1027,7 +704,7 @@ SELECT pg_catalog.setval('test_schema.requests_id_seq', 4, false);
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: test_schema; Owner: postgres
 --
 
-SELECT pg_catalog.setval('test_schema.users_id_seq', 8, true);
+SELECT pg_catalog.setval('test_schema.users_id_seq', 8, false);
 
 
 --

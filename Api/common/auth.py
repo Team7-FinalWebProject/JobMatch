@@ -99,7 +99,6 @@ def create_prof_token(prof: Professional) -> str:
         "last_name": prof.last_name,
         "summary": prof.summary,
         "address": prof.address,
-        "picture": prof.picture,
         "status": prof.status,
         "username": prof.username,
         "approved": prof.approved,
@@ -116,7 +115,6 @@ def create_company_token(comp: Company) -> str:
         "name": comp.name,
         "description": comp.description,
         "address": comp.address,
-        "picture": comp.picture,
         "username": comp.username,
         "approved": comp.approved,
         "issued": str(datetime.now())
