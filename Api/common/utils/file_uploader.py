@@ -1,10 +1,10 @@
-import os
-import secrets
 from PIL import Image
 from fastapi import UploadFile, HTTPException
+from data.models.professional import Professional
+from data.models.company import Company
 
 
-def create_upload_file(myfile: UploadFile):
+def create_upload_file(myfile: UploadFile, user: Professional | Company):
     _IMAGE_DIR = "./data/logos/"
 
     filename = myfile.filename
@@ -12,7 +12,7 @@ def create_upload_file(myfile: UploadFile):
 
     if extention not in ('png', 'jpg', 'jpeg'):
         raise HTTPException(status_code=400, detail='File extention not allowed')
-    token_name = secrets.token_hex(10) + "." + extention
+    token_name = user.username + "." + extention
     generated_name = _IMAGE_DIR + token_name
     file_content = myfile.file.read()
     try:
@@ -23,7 +23,6 @@ def create_upload_file(myfile: UploadFile):
         img = img.resize(size = (200, 200))
         img.save(generated_name)
  
-        print(generated_name)
-        return generated_name
+        return 'Sucessfully uploaded image'
     except Exception as e:
         raise HTTPException(status_code=500, detail="Unexpected error occured.")
