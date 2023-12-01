@@ -202,9 +202,9 @@ def get_match_requests(company: Company):
 
 
 
-def upload_img(comp: Company, image):
-    rowcount = update_query(
-        '''UPDATE companies SET picture = %s
-           WHERE id = %s''', (image, comp.id))
+# def upload_img(comp: Company, image):
+#     rowcount = update_query(
+#         '''UPDATE companies SET picture = %s
+#            WHERE id = %s''', (image, comp.id))
     
-    return f'Updated photo [{rowcount}]'
+#     return f'Updated photo [{rowcount}]'

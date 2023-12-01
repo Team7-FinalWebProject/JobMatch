@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Header, UploadFile, File
+from fastapi.responses import FileResponse
 from common.auth import professional_or_401
 from data.responses import BadRequest, Unauthorized, NotFound, Forbidden
 from data.models.professional import ProfessionalInfoEdit
@@ -8,6 +9,7 @@ from services.companies_service import check_offer_exists
 from common.utils.file_uploader import create_upload_file
 from common.utils.emailing import data_input, mailjet
 import os
+from pathlib import Path
 
 
 
@@ -123,5 +125,15 @@ def create_upload_prof_photo(myfile: UploadFile = File(...), x_token: str = Head
     prof = professional_or_401(x_token) if x_token else None
     if not prof:
         return Unauthorized(content=_ERROR_MESSAGE)
-    image_path = create_upload_file(myfile)
-    return professionals_service.upload_img(prof, image_path)
+    return create_upload_file(myfile)
+
+
+@professionals_router.get('/image/{file_path}', tags=['Professional'])
+def get_prof_image(file_path: str, x_token: str = Header(default=None)):
+    prof = professional_or_401(x_token) if x_token else None
+    if not prof:
+        return Unauthorized(content=_ERROR_MESSAGE)
+    file = Path(file_path)
+    if not file.is_file():
+        return NotFound(status_code=404, detail="File not found")
+    return FileResponse(file)
