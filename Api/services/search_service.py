@@ -109,7 +109,7 @@ def get_company_offers(
 		        0) <=
             COALESCE(
                 (SELECT COUNT(*) FROM jsonb_object_keys(fs.skills) key
-                WHERE (co.requirements->key->>0)::int >= (fs.skills->key)::int),
+                WHERE (co.requirements->key->>0)::int <= (fs.skills->key)::int),
                 0)
             AND c.id = COALESCE(%s, c.id)
          ;''',
@@ -179,16 +179,25 @@ def get_professional_offers(
 
 
 def propose_new_skills(skills):
-    result = update_query(
-        '''UPDATE config
-        SET pending_approval_skills = pending_approval_skills || %s
-        WHERE lock = %s''', (Json(skills),'X',))
-    ##TODO: check result and remodel
+    try:
+        if not skills:
+            return Response(status_code=400)    
+        skills = {s.capitalize():user.username for s in skills}
+        result = update_query(
+            '''UPDATE config
+            SET pending_approval_skills = pending_approval_skills || %s
+            WHERE lock = %s''', (Json(skills),'X',))
+        return Response(status_code=200)
+    except:
+        return Response(status_code=500)
     return result
 
 def add_webfilter(id, filters):
-    result = insert_query(
-        '''INSERT INTO web_filters (filter, user_id) VALUES (%s, %s) RETURNING id''',
-        (Json(filters), id))
-    ##TODO: check result and remodel
+    try:
+        result = insert_query(
+            '''INSERT INTO web_filters (filter, user_id) VALUES (%s, %s) RETURNING id''',
+            (Json(filters), id))
+        return Response(status_code=200)
+    except:
+        return Response(status_code=500)
     return result

@@ -461,7 +461,7 @@ def test_get_professional_offer_by_id_invalid_path_404(id,valid_tokens):
 def test_get_professional_offer_by_id_invalid_id_422(id,valid_tokens):
     for token in valid_tokens:
         response = client.get(f"/search/professional_offer/{id}", headers={"X-Token": token})
-        assert response.status_code == 404
+        assert response.status_code == 422
 
 
 
