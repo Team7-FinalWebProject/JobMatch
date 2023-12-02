@@ -11,10 +11,14 @@ from openai import OpenAI
 from dotenv import load_dotenv
 load_dotenv()
 client = OpenAI()
+from hashlib import sha256
+
+def _hash_password(password: str):
+    return sha256(password.encode('utf-8')).hexdigest()
 
 def generate_company(prompt = "Please suggest a json for a company user account!"):
     try:
-        password = os.getenv('userpassword')
+        password = _hash_password(os.getenv('userpassword'))
         response = client.chat.completions.create(
             model="gpt-3.5-turbo-1106",
             response_format={ "type": "json_object" },
@@ -46,7 +50,7 @@ def generate_company(prompt = "Please suggest a json for a company user account!
 
 def generate_professional(prompt = "Please suggest a json for a professional user account!"):
     try:
-        password = os.getenv('userpassword')
+        password = _hash_password(os.getenv('userpassword'))
         response = client.chat.completions.create(
             model="gpt-3.5-turbo-1106",
             response_format={ "type": "json_object" },
@@ -81,7 +85,6 @@ def generate_professional(prompt = "Please suggest a json for a professional use
 ##TODO: row for artificial entities, in order to disable generation of offers to non-artificial entities
 def generate_company_offer(id, prompt = "Please suggest a json for a company job offer!"):
     try:
-        password = os.getenv('userpassword')
         response = client.chat.completions.create(
             model="gpt-3.5-turbo-1106",
             response_format={ "type": "json_object" },
@@ -115,7 +118,6 @@ def generate_company_offer(id, prompt = "Please suggest a json for a company job
 ##TODO: row for artificial entities, in order to disable generation of offers to non-artificial entities
 def generate_professional_offer(id, prompt = "Please suggest a json for a professional bio!"):
     try:
-        password = os.getenv('userpassword')
         response = client.chat.completions.create(
             model="gpt-3.5-turbo-1106",
             response_format={ "type": "json_object" },
