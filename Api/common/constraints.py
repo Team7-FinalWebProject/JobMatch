@@ -1,3 +1,4 @@
+import annotated_types
 from typing import Annotated, Optional
 from pydantic import StringConstraints
 
