@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getApprovedProfessionals } from '../services/getAllProfessionals.js';
+import { getApprovedCompanies } from '../services/getAllCompanies.js';
 import Cookies from 'universal-cookie';
 
 interface Professional {
@@ -7,46 +7,39 @@ interface Professional {
   first_name: string;
   last_name: string;
   status: string;
-  image: string;
 }
 
-function UserList() {
-  const [professionals, setProfessionals] = useState<Professional[]>([]);
+function CompaniesList() {
+  const [companies, setCompanies] = useState<Professional[]>([]);
   const cookies = new Cookies();
   const getAuthToken = () => cookies.get('authToken');
   let authToken = getAuthToken();
 
   useEffect(() => {
-    async function fetchProfessionals() {
+    async function fetchCompanies() {
       try {
-        const data = await getApprovedProfessionals(authToken);
-        setProfessionals(data);
+        const data = await getApprovedCompanies(authToken);
+        setCompanies(data);
       } catch (error) {
-        console.error('Error fetching professionals', error);
+        console.error('Error fetching companies', error);
       }
     }
 
-    fetchProfessionals();
+    fetchCompanies();
   }, []);
 
   // ADD MORE ELEMENTS TO SHOW MORE DATA FOR THE PROFESSIONAL && SHOULD FIX THE PHOTO 
   return (
     <div style={styles.container}>
-      <h2 style={styles.heading}>Professional List</h2>
+      <h2 style={styles.heading}>Companies List</h2>
       <div style={styles.professionalsContainer}>
-        {professionals.map((professional) => (
-          <div key={professional.id} style={styles.professionalCard}>
-             <img
-            src={`Api/data/logos/${professional.username}.jpg`} // Update the path and extension accordingly
-            alt={`${professional.first_name} ${professional.last_name}`}
-            style={styles.image}
-          />
+        {companies.map((company) => (
+          <div key={company.id} style={styles.professionalCard}>
             <p style={styles.name}>
-              {professional.first_name} {professional.last_name}
+              {company.name}
             </p>
-            <p style={styles.status}>Status: {professional.status}</p>
-            <p style={styles.summary}>{professional.summary}</p>
-            {/* <p style={styles.image}>{professional.image}</p> */}
+            {/* <p style={styles.status}>Status: {professional.status}</p> */}
+            <p style={styles.description}>{company.description}</p>
           </div>
         ))}
       </div>
@@ -96,4 +89,4 @@ const styles: { [key: string]: CSSProperties } = {
   },
 };
 
-export default UserList;
+export default CompaniesList;

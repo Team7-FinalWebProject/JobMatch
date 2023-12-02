@@ -17,6 +17,8 @@ import MessagesForm from './components/MessageForm.tsx';
 import SignupCompany from './pages/SignupCompany';
 import SignupProfessional from './pages/SingupProfessional.tsx';
 import AccountProfessional from './pages/AccountProfessional.tsx';
+import UserList from './pages/Professional.tsx';
+import CompanyList from './pages/Company.tsx'
 
 
 const cookies = new Cookies();
@@ -39,12 +41,15 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <>
     <Route path="/" element={<Home/>} loader={tokenLoader}></Route>
-    <Route path='/messages' element={<SendMessage/>}></Route>
+    <Route path='/messages' element={<SendMessage/>} loader={tokenLoader}></Route>
     <Route path="/login" element={<Login />}></Route>
     <Route path="/signout" element={<Login />} loader={tokenUnloader}></Route>
     <Route path="/signup/company" element={<SignupCompany />}></Route>
     <Route path="/signup/professional" element={<SignupProfessional />}></Route>
-    <Route path="/account/professional" element={<AccountProfessional />}></Route>
+    <Route path="/account/professional" element={<AccountProfessional />} loader={tokenLoader}></Route>
+    <Route path="/professionals" element={<UserList />} loader={tokenLoader}></Route>
+    <Route path="/companies" element={<CompanyList />} loader={tokenLoader}></Route>
+
     {/* <Route path="/register" element={<App />}></Route> */}
       {/* <Route path="dashboard" element={<Dashboard />} /> */}
       {/* ... etc. */}

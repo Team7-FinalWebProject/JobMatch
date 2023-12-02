@@ -123,15 +123,19 @@ def create_upload_prof_photo(myfile: UploadFile = File(...), x_token: str = Head
     prof = professional_or_401(x_token) if x_token else None
     if not prof:
         return Unauthorized(content=_ERROR_MESSAGE)
-    return create_upload_file(myfile)
+    return create_upload_file(myfile, prof)
 
 
-@professionals_router.get('/image/{file_path}', tags=['Professional'])
-def get_prof_image(file_path: str, x_token: str = Header(default=None)):
+@professionals_router.get('/image', tags=['Professional'])
+def get_prof_image(x_token: str = Header(default=None)):
     prof = professional_or_401(x_token) if x_token else None
     if not prof:
         return Unauthorized(content=_ERROR_MESSAGE)
-    file = Path(file_path)
-    if not file.is_file():
-        return NotFound(status_code=404, detail="File not found")
-    return FileResponse(file)
+    base_path = Path(f"./data/logos/{prof.username}")
+    extensions = ('.png', '.jpg', '.jpeg')
+    file_path = next(
+        (base_path.with_suffix(ext) for ext in extensions if (
+            base_path.with_suffix(ext)).is_file()), None)
+    if not file_path:
+        return NotFound(content="File not found")
+    return FileResponse(file_path)
