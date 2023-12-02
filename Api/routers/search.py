@@ -62,13 +62,22 @@ def view_approved_professional_offers(min_salary: int = 0, max_salary: int = 100
 @search_router.put('/propose_skills', tags=["Search Extra"])
 def propose_skills(skills: list = Body(default=["Skill1", "Skill2"]), x_token: str = Header()):
     user = user_or_error(x_token)
+    if not skills:
+        return Response(status_code=400)    
+    skills = {s.capitalize():user.username for s in skills}
     return search_service.propose_new_skills(skills)
 
 
-@search_router.post('/add_filter', tags=["Search Global"])
+@search_router.post('/filter', tags=["Search Global"])
 def save_filter(skill_filters:dict = Body(default={"Computers" : 1, "English": 1}), x_token: str = Header()):
     user = user_or_error(x_token)
     return search_service.add_webfilter(user.user_id, skill_filters)
+
+
+@search_router.get('/filter', tags=["Search Global"])
+def get_filters(x_token: str = Header()):
+    user = user_or_error(x_token)
+    return search_service.get_webfilters(user.user_id)
 
 
 

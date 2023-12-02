@@ -14,13 +14,19 @@ def valid_tokens(companytoken,proftoken,admintoken):
 def invalid_tokens():
     return ("hailhydra",b"hailhydra")
 
+@pytest.fixture
+def ensure_dynamic(admintoken):
+    static = client.get("/admin/config", headers={"X-Token": admintoken}).json()["static_skills"]
+    client.patch("/admin/config", json={"static_skills": False}, headers={"X-Token": admintoken})
+    yield
+    client.patch("/admin/config", json={"static_skills": static}, headers={"X-Token": admintoken})
 
-
-
-
-
-
-
+@pytest.fixture
+def ensure_static(admintoken):
+    static = client.get("/admin/config", headers={"X-Token": admintoken}).json()["static_skills"]
+    client.patch("/admin/config", json={"static_skills": True}, headers={"X-Token": admintoken})
+    yield
+    client.patch("/admin/config", json={"static_skills": static}, headers={"X-Token": admintoken})
 
 
 
@@ -239,13 +245,21 @@ def test_get_professionals_invalid_str_token_401(invalid_tokens):
 @pytest.mark.parametrize("id,value", [
     (1,"John"),
     (2,"Michael"),
-    (3,"William"),
 ])
 def test_get_professionals_no_filter_valid_200(id,value,valid_tokens):
     for token in valid_tokens:
         response = client.get(f"/search/professionals", headers={"X-Token": token})
         assert response.status_code == 200
         assert response.json()[id-1]["first_name"] == value
+
+@pytest.mark.parametrize("id,value", [
+    (3,"William"),
+])
+def test_get_professionals_no_filter_unapproved_exception(id,value,valid_tokens):
+    for token in valid_tokens:
+        response = client.get(f"/search/professionals", headers={"X-Token": token})
+        with pytest.raises(Exception):
+            first_name = response.json()[id-1]["first_name"]
 
 
 def test_get_professionals_valid_filter_valid_200(id,value,valid_tokens):
@@ -553,6 +567,7 @@ def test_propose_skills_no_skills_returns_200(valid_tokens):
         response = client.put(f"/search/propose_skills", headers={"X-Token": token})
         assert response.status_code == 200
 
+@pytest.mark.usefixtures("ensure_dynamic")
 def test_propose_skills_no_skills_returns_200_2nd(valid_tokens):
     for token in valid_tokens:
         response = client.put(f"/search/propose_skills", headers={"X-Token": token}, json=[])
@@ -690,25 +705,26 @@ def small_filter():
 
 def test_add_filter_no_filter_returns_200(valid_tokens):
     for token in valid_tokens:
-        response = client.post(f"/search/add_filter", headers={"X-Token": token})
+        response = client.post(f"/search/filter", headers={"X-Token": token})
         assert response.status_code == 200
 
 def test_add_filter_no_filter_returns_200_2nd(valid_tokens):
     for token in valid_tokens:
-        response = client.post(f"/search/add_filter", headers={"X-Token": token}, json=[])
+        response = client.post(f"/search/filter", headers={"X-Token": token}, json=[])
         assert response.status_code == 200
 
-        
-def test_add_filter_adds_filter(valid_tokens, dummy_filter):
+@pytest.mark.usefixtures("ensure_dynamic")
+def test_add_dynamic_filter_adds_filter(valid_tokens, dummy_filter):
     for token in valid_tokens:
-        response = client.post(f"/search/add_filter", headers={"X-Token": token}, json=dummy_filter)
+        response = client.post(f"/search/filter", headers={"X-Token": token}, json=dummy_filter)
         assert response.status_code == 200
         saved_filters = client.get(f"/search/filter", headers={"X-Token": token})
         assert dummy_filter == saved_filters[0]
 
-def test_add_filter_capitalizes_filter(valid_tokens, small_filter):
+@pytest.mark.usefixtures("ensure_dynamic")
+def test_add_dynamic_filter_capitalizes_filter(valid_tokens, small_filter):
     for token in valid_tokens:
-        client.post(f"/search/add_filter", headers={"X-Token": token}, json=small_filter)
+        client.post(f"/search/filter", headers={"X-Token": token}, json=small_filter)
         saved_filters = client.get(f"/search/filter", headers={"X-Token": token})
         for key in small_filter:
             small_filter[key.capitalize()] = small_filter[key]
@@ -716,14 +732,15 @@ def test_add_filter_capitalizes_filter(valid_tokens, small_filter):
         assert small_filter == saved_filters[0]
 
 
+@pytest.mark.usefixtures("ensure_dynamic")
 @pytest.mark.parametrize("filter", [
     "Pepsi",
     99999,
     '${jndi:ldap://google.com/}',
 ])
-def test_add_filter_invalid_skills_422(valid_tokens, filter):
+def test_add_dynamic_filter_invalid_skills_422(valid_tokens, filter):
     for token in valid_tokens:
-        response = client.post(f"/search/add_filter", headers={"X-Token": token}, json=filter)
+        response = client.post(f"/search/filter", headers={"X-Token": token}, json=filter)
     assert response.status_code == 422
     
 
@@ -744,39 +761,41 @@ class invalid_filters:
         return self.filters[id]
 
 
-def test_add_filter_invalid_filters_422_2nd(valid_tokens):
+@pytest.mark.usefixtures("ensure_dynamic")
+def test_add_dynamic_filter_invalid_filters_422_2nd(valid_tokens):
     for token in valid_tokens:
-        response = client.post(f"/search/add_filter", headers={"X-Token": token}, json=("-10",))
+        response = client.post(f"/search/filter", headers={"X-Token": token}, json=("-10",))
+    assert response.status_code == 422
+    
+@pytest.mark.usefixtures("ensure_dynamic")
+def test_add_dynamic_filter_invalid_filters_422_3rd(valid_tokens):
+    for token in valid_tokens:
+        response = client.post(f"/search/filter", headers={"X-Token": token}, json=(-10,))
+    assert response.status_code == 422
+    
+@pytest.mark.usefixtures("ensure_dynamic")
+def test_add_dynamic_filter_invalid_filters_422_4th(valid_tokens):
+    for token in valid_tokens:
+        response = client.post(f"/search/filter", headers={"X-Token": token}, json=(1,))
+    assert response.status_code == 422
+    
+@pytest.mark.usefixtures("ensure_dynamic")
+def test_add_dynamic_filter_invalid_filters_422_5th(valid_tokens):
+    for token in valid_tokens:
+        response = client.post(f"/search/filter", headers={"X-Token": token}, json=("$",))
+    assert response.status_code == 422
+    
+@pytest.mark.usefixtures("ensure_dynamic")
+def test_add_dynamic_filter_invalid_filters_422_6th(valid_tokens):
+    for token in valid_tokens:
+        response = client.post(f"/search/filter", headers={"X-Token": token}, json=("English", "French"))
     assert response.status_code == 422
     
 
-def test_add_filter_invalid_filters_422_3rd(valid_tokens):
+@pytest.mark.usefixtures("ensure_dynamic")
+def test_add_dynamic_filter_invalid_filters_422_7th(valid_tokens):
     for token in valid_tokens:
-        response = client.post(f"/search/add_filter", headers={"X-Token": token}, json=(-10,))
-    assert response.status_code == 422
-    
-def test_add_filter_invalid_filters_422_4th(valid_tokens):
-    for token in valid_tokens:
-        response = client.post(f"/search/add_filter", headers={"X-Token": token}, json=(1,))
-    assert response.status_code == 422
-    
-
-def test_add_filter_invalid_filters_422_5th(valid_tokens):
-    for token in valid_tokens:
-        response = client.post(f"/search/add_filter", headers={"X-Token": token}, json=("$",))
-    assert response.status_code == 422
-    
-
-def test_add_filter_invalid_filters_422_6th(valid_tokens):
-    for token in valid_tokens:
-        response = client.post(f"/search/add_filter", headers={"X-Token": token}, json=("English", "French"))
-    assert response.status_code == 422
-    
-
-
-def test_add_filter_invalid_filters_422_7th(valid_tokens):
-    for token in valid_tokens:
-        response = client.post(f"/search/add_filter", headers={"X-Token": token}, json={"English" : "English", "French" : "French"})
+        response = client.post(f"/search/filter", headers={"X-Token": token}, json={"English" : "English", "French" : "French"})
     assert response.status_code == 422
     
 

@@ -3,6 +3,7 @@ from services import search_service, admin_service
 from common.auth import user_or_error
 from common.auth import admin_or_error
 from data.models.admin import ReadConfig, UpdateConfig
+from common.skill_config import Config
 
 
 admin_router = APIRouter(prefix='/admin')

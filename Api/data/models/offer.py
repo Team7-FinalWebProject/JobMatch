@@ -1,5 +1,7 @@
 from pydantic import BaseModel
-from common.constraints import Skills
+from common.skill_config import Config
+
+Skills = Config.ALLOWED_SKILLS()
 
 class ProfessionalOffer(BaseModel):
     id: int | None = None

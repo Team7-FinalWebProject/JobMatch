@@ -4,6 +4,7 @@ from data.database import read_query, update_query
 from data.models.admin import Admin, ReadConfig, UpdateConfig
 from data.readers import reader_one, reader_many
 from psycopg2.extras import Json
+from common.skill_config import Config
 
 def try_login_as_admin(username: str, password: str):
     password1, user = find_admin_by_username(username)
@@ -36,6 +37,7 @@ def set_config(data: UpdateConfig):
         max_level = COALESCE(%s, max_level)
         WHERE lock = %s''',
         (data.static_skills, data.min_level, data.max_level, 'X',))
+    Config.refresh_config()
     ##TODO: check result and remodel
     return result
     

@@ -180,9 +180,6 @@ def get_professional_offers(
 
 def propose_new_skills(skills):
     try:
-        if not skills:
-            return Response(status_code=400)    
-        skills = {s.capitalize():user.username for s in skills}
         result = update_query(
             '''UPDATE config
             SET pending_approval_skills = pending_approval_skills || %s
@@ -200,4 +197,10 @@ def add_webfilter(id, filters):
         return Response(status_code=200)
     except:
         return Response(status_code=500)
+    return result
+
+def get_webfilters(id):
+    result = read_query(
+        '''select * from web_filters where user_id = %s ORDER BY id desc''',
+        (id))
     return result
