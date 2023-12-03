@@ -44,8 +44,7 @@ def create_bot_conv(text: str):
             model="gpt-3.5-turbo-1106",
             response_format={ "type": "json_object" },
             messages=[
-                {"role": "system", "content": """You are a helpful tech support specialist 
-                 tasked with creating output JSON in the flat schema: content."""},
+                {"role": "system", "content": """You are a helpful tech support specialist."""},
                 {"role": "user", "content": text}
             ])
         
