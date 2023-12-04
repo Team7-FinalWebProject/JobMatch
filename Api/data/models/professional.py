@@ -6,7 +6,7 @@ from datetime import datetime
 
 class Professional(BaseModel):
     id: int | None = None
-    user_id: int
+    user_id: int | None = None
     default_offer_id: int | None = None
     first_name: str
     last_name: str

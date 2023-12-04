@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 16.0
+-- Dumped from database version 15.1 (Ubuntu 15.1-1.pgdg20.04+1)
 -- Dumped by pg_dump version 16.0
 
 SET statement_timeout = 0;
@@ -35,7 +35,15 @@ CREATE FUNCTION jobmatch.check_user_id_admin_not_in_professionals_or_companies()
 
 
 
+
+
+
+
 BEGIN
+
+
+
+
 
 
 
@@ -43,7 +51,15 @@ BEGIN
 
 
 
+
+
+
+
     EXISTS (SELECT 1 FROM jobmatch.professionals WHERE jobmatch.professionals.user_id = NEW.id) OR
+
+
+
+
 
 
 
@@ -51,7 +67,15 @@ BEGIN
 
 
 
+
+
+
+
   ) THEN
+
+
+
+
 
 
 
@@ -59,7 +83,15 @@ BEGIN
 
 
 
+
+
+
+
   END IF;
+
+
+
+
 
 
 
@@ -67,7 +99,15 @@ BEGIN
 
 
 
+
+
+
+
 END;
+
+
+
+
 
 
 
@@ -86,7 +126,15 @@ CREATE FUNCTION jobmatch.check_user_id_companies_not_in_professionals() RETURNS 
 
 
 
+
+
+
+
 BEGIN
+
+
+
+
 
 
 
@@ -94,7 +142,15 @@ BEGIN
 
 
 
+
+
+
+
     RAISE EXCEPTION 'user_id in jobmatch.companies cannot be the same as jobmatch.professionals';
+
+
+
+
 
 
 
@@ -102,11 +158,23 @@ BEGIN
 
 
 
+
+
+
+
   RETURN NEW;
 
 
 
+
+
+
+
 END;
+
+
+
+
 
 
 
@@ -125,7 +193,15 @@ CREATE FUNCTION jobmatch.check_user_id_professionals_not_in_companies() RETURNS 
 
 
 
+
+
+
+
 BEGIN
+
+
+
+
 
 
 
@@ -133,7 +209,15 @@ BEGIN
 
 
 
+
+
+
+
     RAISE EXCEPTION 'user_id in jobmatch.professionals cannot be the same as jobmatch.companies';
+
+
+
+
 
 
 
@@ -141,11 +225,23 @@ BEGIN
 
 
 
+
+
+
+
   RETURN NEW;
 
 
 
+
+
+
+
 END;
+
+
+
+
 
 
 
@@ -162,13 +258,23 @@ CREATE PROCEDURE jobmatch.insert_into_companies_and_users(IN new_username text, 
     LANGUAGE plpgsql
     AS $_$
 
+
+
 BEGIN
+
+
 
   WITH new_user_id AS (INSERT INTO jobmatch.users (username,password) VALUES ($1,$2) RETURNING id)
 
+
+
   INSERT INTO jobmatch.companies (user_id,name,description,address) VALUES (new_user_id,$3,$4,$5) RETURNING id;
 
+
+
 END;
+
+
 
 $_$;
 
@@ -568,9 +674,47 @@ ALTER TABLE ONLY jobmatch.web_filters ALTER COLUMN id SET DEFAULT nextval('jobma
 --
 
 COPY jobmatch.companies (id, name, description, address, approved, user_id) FROM stdin;
-1	Pepsi	We make the fizzy drink	Los Angeles, California	 t	5
-2	Steam	We provide video games	Los Angeles, California	 t	6
-3	Avid	We provide audio grear	New York, USA	 t	7
+1	Pepsi	We make the fizzy drink	Los Angeles, California	t	5
+2	Steam	We provide video games	Los Angeles, California	t	6
+3	Avid	We provide audio grear	New York, USA	t	7
+4	LinguaTech	Language solutions for global communication	Bucharest, Romania	f	8
+5	LinguaTech	We specialize in language solutions and linguistic expertise.	Bucharest, Romania	f	9
+6	LinguaExpert	Hello! I'm a helpful linguistic expert.	Bucharest, Romania	f	10
+7	AceTech Solutions	Providing innovative tech solutions for businesses worldwide.	Lviv, Ukraine	t	11
+8	Swift Globe	Empowering global logistics	Sofia, Bulgaria	t	12
+9	AgroAlba	Empowering agricultural growth	Tirana, Albania	t	18
+10	DatalakeUS	We are a leading data storage company, providing secure and scalable solutions for businesses of all sizes.	Miami, USA	t	19
+11	GlobalTech Solutions	Providing innovative technology solutions for businesses worldwide.	Eastern Europe, address upon request	f	22
+12	InnovativeStorm	Pioneering solutions for businesses worldwide.	Bucharest, Romania	f	27
+13	GlobalTech Solutions	Innovative technology company providing cutting-edge solutions for businesses worldwide	Bucharest, Romania	f	28
+14	Globit	We provide innovative solutions for global logistics.	Bucharest, Romania	f	31
+15	Brightstar Solutions	Innovative IT solutions for businesses worldwide	Kyiv, Ukraine	f	32
+16	TechDyno	Empowering digital transformations	Krakow, Poland	f	33
+17	AgileGenius Consulting	Driving agility and innovation in organizations	Bucharest, Romania	f	34
+18	TechGenix	Leading provider of innovative tech solutions	Bucharest, Romania	f	35
+19	VitaSolutions	Revolutionizing health and wellness industry	Krakow, Poland	f	36
+20	StyleMerge	Bringing fashion trends together	Kyiv, Ukraine	f	37
+21	TradeGenius	Empowering global trade	Sofia, Bulgaria	f	38
+22	YiSangCo	We blend modern architecture with traditional design principles, creating spaces that inspire and endure.	Seoul, South Korea	f	43
+23	SangWorks	Innovative architectural solutions fueled by creativity and a passion for sustainable design.	Warsaw, Poland	f	44
+24	YiSangDesign	Crafting spaces that harmonize with nature, embodying simplicity and elegance.	Bucharest, Romania	f	45
+25	SangiTech	Pioneering the integration of technology and architecture to shape the cities of tomorrow.	Tbilisi, Georgia	f	46
+26	YiSangConstruct	Building the future through precision engineering and timeless design.	Kyiv, Ukraine	f	47
+27	SangArch	Elevating urban landscapes through avant-garde architectural concepts and practical solutions.	Moscow, Russia	f	48
+28	YiSangInnovate	Where innovation meets aesthetics, redefining architectural excellence one project at a time.	Sofia, Bulgaria	f	49
+29	SangDesignLab	A laboratory of creativity and functionality, shaping architectural marvels with a human touch.	Belgrade, Serbia	f	50
+30	YiSangStudio	A fusion of artistry and engineering, producing architectural masterpieces that stand the test of time.	Minsk, Belarus	f	51
+31	SangVision	Envisioning architectural wonders that celebrate culture, sustainability, and community.	Riga, Latvia	f	52
+32	YiSangEnvision	Empowering communities through visionary architectural solutions that honor heritage and progress.	Vilnius, Lithuania	f	53
+33	SangCraft	Crafting architectural excellence with a blend of tradition, innovation, and unwavering dedication.	Prague, Czech Republic	f	54
+34	YiSangForge	Forging a new era of architectural design, where creativity and functionality intertwine seamlessly.	Budapest, Hungary	f	55
+35	SangForm	Sculpting architectural forms that resonate with the soul and transform skylines into poetry.	Tallinn, Estonia	f	56
+36	YiSangVista	Offering a panoramic view of architectural mastery, where every detail reflects elegance and purpose.	Bratislava, Slovakia	f	57
+37	SangHarmony	Harmonizing architecture with the pulse of nature and the rhythm of urban life, creating balanced environments.	Ljubljana, Slovenia	f	58
+38	YiSangFormulate	Formulating architectural visions that blend functionality, sustainability, and cultural inspiration.	Murmansk, Russia	f	59
+39	SangCraftsmen	A guild of architectural craftsmen dedicated to preserving heritage while embracing modernity.	Lviv, Ukraine	f	60
+40	YiSangSculpt	Sculpting architectural spaces that mold seamlessly with the environment, transcending mere structures.	Cluj-Napoca, Romania	f	61
+41	SangCanvas	Painting architectural canvases that resonate with the spirit of the past and the promise of the future.	Bucharest, Romania	f	62
 \.
 
 
@@ -582,6 +726,19 @@ COPY jobmatch.company_offers (id, company_id, status, chosen_professional_offer_
 1	1	active	\N	{"English": [7, "Native"], "Computers": [10, "Master"]}	3000	8000
 2	2	active	\N	{"English": [5, "Advanced"], "Computers": [5, "Advanced"]}	2500	5500
 3	3	active	\N	{"English": [4, "Advanced"], "Computers": [3, "Entry"]}	1500	2500
+4	8	active	\N	{"SQL": [6, "Database management skill"], "Java": [7, "Experienced developer"], "Spring Framework": [5, "Intermediate level"], "Team Collaboration": [8, "Excellent team player"]}	3000	5000
+5	7	active	\N	{"Java": [7, "Experienced developer"], "Communication": [8, "Effective communicator"], "Problem-solving": [9, "Analytical thinker"], "Spring Framework": [6, "Skilled user"]}	2500	3500
+6	6	active	\N	{"Java": [7, "Intermediate developer"], "HTML/CSS": [5, "Experienced"], "JavaScript": [8, "Senior developer"], "Communication": [9, "Excellent communicator"]}	2500	3500
+7	9	active	\N	{"Java": [7, "Experienced developer"], "Spring Framework": [6, "Intermediate level"], "Agile Methodology": [5, "Familiar with Agile practices"], "Communication Skills": [8, "Excellent verbal and written communication"]}	3000	4500
+8	9	active	\N	{"AWS": [4, "Familiar with cloud services"], "React": [6, "Proficient in building UI components"], "Node.js": [5, "Ability to work on server-side applications"], "JavaScript": [7, "Experienced front-end developer"], "Agile Methodology": [6, "Experience working in Agile teams"]}	4000	6000
+9	9	active	\N	{"Microsoft Excel": [4, "Proficiency in basic Excel functions"], "Time Management": [2, "Ability to prioritize tasks effectively"], "Customer Service": [3, "Basic customer interaction skills"]}	1800	2500
+10	11	active	\N	{"SQL": [5, "Skilled in database management"], "Java": [7, "Experienced developer"], "Teamwork": [8, "Collaborative team player"], "Spring Boot": [6, "Proficient"]}	2500	3500
+11	9	active	\N	{"CSS": [2, "Basic understanding of CSS"], "HTML": [3, "Proficient in HTML"], "English": [5, "Good communication skills in English"], "JavaScript": [4, "Experienced in JavaScript"]}	1800	2500
+12	12	active	\N	{"SQL": [5, "Intermediate"], "Java": [7, "Experienced developer"], "HTML/CSS": [4, "Familiar"], "Team Player": [9, "Collaborative and communicative"], "Problem-Solving": [8, "Analytical and creative"], "Spring Framework": [6, "Proficient"]}	2500	3500
+13	17	active	\N	{"React": [6, "Proficient in building user interfaces"], "Node.js": [5, "Familiar with backend development"], "JavaScript": [7, "Experienced frontend developer"]}	2500	3500
+14	17	active	\N	{"Java": [8, "Senior software engineer"], "Spring Boot": [7, "Expert in building scalable applications"], "Microservices": [6, "Experience in developing microservices architecture"]}	3000	4500
+15	17	active	\N	{"Python": [9, "Lead data scientist"], "TensorFlow": [7, "Proficient in building ML models"], "Machine Learning": [8, "Strong background in ML algorithms"]}	4000	6000
+16	17	active	\N	{"AWS": [5, "Experience with cloud services"], "Java": [7, "Experienced in backend development"], "React": [6, "Proficient in building interactive user interfaces"], "Communication": [8, "Excellent verbal and written communication skills"]}	2500	3500
 \.
 
 
@@ -590,7 +747,7 @@ COPY jobmatch.company_offers (id, company_id, status, chosen_professional_offer_
 --
 
 COPY jobmatch.config (lock, static_skills, min_level, max_level, baseline_skills, approved_skills, pending_approval_skills) FROM stdin;
-X	f	0	10	{"French": null, "English": null, "Computers": null}	{}	{}
+X	f	0	10	{"R": null, "Go": null, "AWS": null, "Ada": null, "C++": null, "COq": null, "CSS": null, "IOT": null, "PHP": null, "SEO": null, "SQL": null, "HTML": null, "Java": null, "LISP": null, "Perl": null, "Ruby": null, "SaaS": null, "COBOL": null, "Julia": null, "Scala": null, "Scrum": null, "Swift": null, "DevOps": null, "Docker": null, "Elixir": null, "Erlang": null, "French": null, "Kotlin": null, "MATLAB": null, "Prolog": null, "Python": null, "Scheme": null, "Vue.js": null, "Angular": null, "Clojure": null, "English": null, "MongoDB": null, "Node.js": null, "Tax Law": null, "Robotics": null, "Teamwork": null, "Computers": null, "Hydrology": null, "UX Design": null, "Aquaponics": null, "Blockchain": null, "Creativity": null, "E-commerce": null, "JavaScript": null, "Kubernetes": null, "Leadership": null, "Resilience": null, "TypeScript": null, "UI Testing": null, "3D Printing": null, "A/B Testing": null, "Agritourism": null, "Aquaculture": null, "Bookkeeping": null, "Copywriting": null, "Data Mining": null, "Hydroponics": null, "Negotiation": null, "Objective-C": null, "Photography": null, "UX Research": null, "Adaptability": null, "Agroforestry": null, "Food Science": null, "React Native": null, "UI/UX Design": null, "UX/UI Design": null, "Web Security": null, "Agrochemicals": null, "Biostatistics": null, "Culinary Arts": null, "Cybersecurity": null, "Data Analysis": null, "Field Mapping": null, "Legal Writing": null, "Multi-tasking": null, "Python Django": null, "Ruby on Rails": null, "Soil Analysis": null, "User Research": null, "Video Editing": null, "Web Analytics": null, "Bioinformatics": null, "Cloud Security": null, "Event Planning": null, "Graphic Design": null, "Legal Research": null, "Medical Coding": null, "Plant Breeding": null, "RF Engineering": null, "Salesforce CRM": null, "Speech Therapy": null, "Clinical Trials": null, "Cloud Computing": null, "Content Writing": null, "Crop Management": null, "Decision Making": null, "Design Thinking": null, "Disaster Relief": null, "Drip Irrigation": null, "Ethical Hacking": null, "Event Marketing": null, "Fashion Styling": null, "Impact Analysis": null, "Interior Design": null, "Market Research": null, "Medical Billing": null, "Microsoft Azure": null, "Motion Graphics": null, "Organic Farming": null, "Pest Management": null, "Pharmacotherapy": null, "Problem Solving": null, "Public Speaking": null, "Risk Assessment": null, "Risk Management": null, "SEO Copywriting": null, "Shell Scripting": null, "Time Management": null, "Web Development": null, "Content Strategy": null, "Customer Service": null, "Drug Development": null, "Embedded Systems": null, "Fitness Training": null, "Game Development": null, "Humanitarian Aid": null, "Legal Compliance": null, "Machine Learning": null, "Mobile Marketing": null, "Music Production": null, "Network Security": null, "Pharmacogenomics": null, "Pharmacokinetics": null, "Project Planning": null, "Public Relations": null, "SEO Optimization": null, "Water Management": null, "AR/VR Development": null, "Agile Methodology": null, "Assembly Language": null, "Branding Strategy": null, "Change Management": null, "Chemical Analysis": null, "Civil Engineering": null, "Clinical Research": null, "Content Marketing": null, "Crisis Management": null, "Critical Thinking": null, "Database Security": null, "Digital Marketing": null, "Food Microbiology": null, "Foreign Languages": null, "Industrial Design": null, "Inventory Control": null, "Petroleum Geology": null, "Pharmacoeconomics": null, "Pharmacovigilance": null, "Quality Assurance": null, "Soil Conservation": null, "Talent Management": null, "Teaching/Tutoring": null, "Technical Writing": null, "Zoology Knowledge": null, "Big Data Analytics": null, "Biomedical Science": null, "Biopharmaceuticals": null, "Cloud Architecture": null, "Community Outreach": null, "Dance Choreography": null, "Data Visualization": null, "Event Coordination": null, "Financial Analysis": null, "Financial Modeling": null, "Financial Planning": null, "Industrial Hygiene": null, "Investment Banking": null, "Irrigation Systems": null, "Livestock Handling": null, "Marine Engineering": null, "Marketing Strategy": null, "Paralegal Services": null, "Petroleum Refining": null, "Product Management": null, "Project Management": null, "Regulatory Affairs": null, "Strategic Planning": null, "Analytical Thinking": null, "Attention to Detail": null, "Conflict Resolution": null, "Database Management": null, "E-commerce Strategy": null, "Genetic Engineering": null, "Livestock Husbandry": null, "Livestock Nutrition": null, "Maritime Navigation": null, "Musical Composition": null, "Network Engineering": null, "Nuclear Engineering": null, "Presentation Skills": null, "Architectural Design": null, "Business Development": null, "Chemical Engineering": null, "Communication Skills": null, "Computer Engineering": null, "Contract Negotiation": null, "Genetic Modification": null, "Hardware Development": null, "Information Security": null, "Interpersonal Skills": null, "Livestock Management": null, "Network Architecture": null, "Pesticide Management": null, "Pharmaceutical Sales": null, "Public Health Policy": null, "Remote Collaboration": null, "Retail Merchandising": null, "Robotics Engineering": null, "Social Work Advocacy": null, "Software Development": null, "Statistical Analysis": null, "Statistical Modeling": null, "Aerospace Engineering": null, "Blockchain Technology": null, "Business Intelligence": null, "Clinical Pharmacology": null, "Database Optimization": null, "E-commerce Management": null, "Facilities Management": null, "Fashion Merchandising": null, "Google Cloud Platform": null, "Greenhouse Management": null, "IT Project Management": null, "Industrial Automation": null, "Irrigation Technology": null, "Laboratory Techniques": null, "Market Trend Analysis": null, "Materials Engineering": null, "Medical Transcription": null, "Nonprofit Fundraising": null, "Operations Management": null, "Organic Certification": null, "Petroleum Engineering": null, "Precision Agriculture": null, "Regulatory Compliance": null, "Reservoir Engineering": null, "System Administration": null, "User Interface Design": null, "Agricultural Economics": null, "Automotive Engineering": null, "Biomedical Engineering": null, "Bioprocess Engineering": null, "Biotechnology Research": null, "Blockchain Development": null, "Cryptocurrency Trading": null, "Educational Psychology": null, "Electrical Engineering": null, "Emotional Intelligence": null, "Fertilizer Application": null, "Food Safety Management": null, "Geological Engineering": null, "Industrial Engineering": null, "Leadership Development": null, "Mechanical Engineering": null, "Mobile App Development": null, "Network Administration": null, "Public Policy Analysis": null, "Stakeholder Management": null, "Wireless Communication": null, "Artificial Intelligence": null, "Crowdfunding Management": null, "Data Privacy Compliance": null, "Database Administration": null, "Food Safety Regulations": null, "International Trade Law": null, "Social Media Management": null, "Supply Chain Management": null, "Sustainable Agriculture": null, "User Experience Testing": null, "Biomolecular Engineering": null, "Clinical Data Management": null, "Corporate Communications": null, "Corporate Sustainability": null, "Creative Problem Solving": null, "Cybersecurity Consulting": null, "Geotechnical Engineering": null, "Market Research Analysis": null, "Mental Health Counseling": null, "Mergers and Acquisitions": null, "Pharmaceutical Chemistry": null, "Pharmaceutical Marketing": null, "Pharmaceutical Packaging": null, "Pharmacokinetic Modeling": null, "Social Media Advertising": null, "Sustainability Reporting": null, "Sustainable Architecture": null, "Transportation Logistics": null, "Environmental Engineering": null, "Financial Risk Management": null, "Gaming Industry Knowledge": null, "Healthcare Administration": null, "Organizational Psychology": null, "Pharmacovigilance Systems": null, "Salesforce Administration": null, "Solar Energy Installation": null, "Supply Chain Optimization": null, "Farm Equipment Maintenance": null, "Pharmaceutical Formulation": null, "Public Relations Campaigns": null, "Control Systems Engineering": null, "Natural Language Processing": null, "Pharmaceutical Distribution": null, "Renewable Energy Technology": null, "Virtual Reality Development": null, "Business Continuity Planning": null, "Business Process Improvement": null, "Environmental Sustainability": null, "Foreign Language Proficiency": null, "IT Infrastructure Management": null, "Laboratory Technician Skills": null, "Pharmaceutical Manufacturing": null, "Renewable Energy Engineering": null, "Political Campaign Management": null, "Business Intelligence Analysis": null, "Clinical Research Coordination": null, "Telecommunications Engineering": null, "Real Estate Investment Analysis": null, "Diversity and Inclusion Training": null, "Pharmaceutical Quality Assurance": null, "Search Engine Optimization (SEO)": null, "Information Technology Management": null, "Pharmaceutical Law and Compliance": null, "International Business Negotiation": null, "Manufacturing Process Optimization": null, "Pharmaceutical Compliance Auditing": null, "Pharmaceutical Process Optimization": null, "Customer Relationship Management (CRM)": null, "Pharmaceutical Formulation Development": null, "Pharmaceutical Research and Development": null, "Human Resources Information Systems (HRIS)": null}	{}	{}
 \.
 
 
@@ -610,6 +767,18 @@ COPY jobmatch.professional_offers (id, professional_id, description, chosen_comp
 1	1	I can create a AAA title video game	1	active	{"English": [7, "Native"], "Computers": [10, "Master"]}	3000	10000
 2	2	You need a data scientist? I am the man for the job.	2	active	{"English": [10, "Native"], "Computers": [3, "Entry"]}	2000	4000
 3	3	I can build simple servers	3	active	{"English": [10, "Native"], "Computers": [3, "Entry"]}	1300	2300
+4	6	An experienced data scientist with a passion for machine learning and predictive modeling.	\N	active	{"R": [7, "Proficient"], "SQL": [7, "Proficient"], "Python": [9, "Expert"], "Statistics": [8, "Advanced"], "Data Analysis": [9, "Expert"], "Machine Learning": [8, "Advanced"], "Big Data Technologies": [7, "Proficient"]}	5000	7000
+5	5	An experienced web developer with a passion for front-end development.	\N	active	{"CSS": [7, "Senior"], "HTML": [9, "Expert"], "React": [6, "Experienced"], "JavaScript": [8, "Advanced"], "UI/UX Design": [5, "Good knowledge"]}	3500	5000
+6	4	A retired tennis champion with a wealth of experience and a passion for coaching and sports management.	\N	active	{"Tennis": [10, "Expert"], "English": [8, "Fluent"], "Spanish": [10, "Native"], "Coaching": [8, "Experienced"], "Leadership": [9, "Inspiring"], "Sports Management": [7, "Skilled"]}	4000	6000
+7	6	A seasoned marketing strategist with a passion for creating compelling brand stories.	\N	active	{"Copywriting": [7, "Advanced"], "Market Research": [8, "Senior"], "Public Speaking": [6, "Intermediate"], "Content Creation": [8, "Senior"], "Digital Marketing": [9, "Expert"], "Social Media Management": [7, "Advanced"]}	4000	6000
+8	6	A motivated marketing specialist with a passion for digital media and brand management.	\N	active	{"Copywriting": [4, "Skilled"], "Content Creation": [3, "Experienced"], "Google Analytics": [3, "Familiar"], "Social Media Marketing": [4, "Proficient"]}	2500	3500
+9	9	A creative graphic designer with a passion for clean and modern design.	\N	active	{"Typography": [7, "Advanced"], "Illustration": [6, "Experienced"], "UI/UX Design": [8, "Senior"], "Adobe Creative Suite": [9, "Expert"]}	2500	4000
+10	6	An experienced digital marketing specialist with a passion for content creation and social media management.	\N	active	{"SEO": [4, "Proficient"], "Content Writing": [3, "Intermediate"], "Google Analytics": [3, "Intermediate"], "Social Media Management": [4, "Proficient"]}	2500	3500
+11	12	An experienced data scientist with a passion for machine learning and predictive analytics.	\N	active	{"R": [7, "Proficient"], "SQL": [7, "Proficient"], "Python": [9, "Expert"], "Communication": [9, "Excellent"], "Data Analysis": [9, "Expert"], "Machine Learning": [8, "Advanced"], "Statistical Modeling": [8, "Advanced"]}	5000	7000
+12	17	A creative graphic designer with a strong eye for detail.	\N	active	{"Typography": [7, "Proficient"], "Illustrator": [8, "Advanced"], "Adobe Photoshop": [9, "Expert"]}	2500	3500
+13	17	An experienced project manager with a proven track record of delivering successful results.	\N	active	{"Agile Methodology": [7, "Proficient"], "Project Management": [9, "Expert"], "Stakeholder Management": [8, "Advanced"]}	4000	6000
+14	17	A skilled full-stack developer with expertise in building scalable web applications.	\N	active	{"Node.js": [7, "Proficient"], "React.js": [8, "Advanced"], "JavaScript": [9, "Expert"]}	3500	5000
+15	17	Experienced software developer with a passion for creating innovative web applications.	\N	active	{"SQL": [6, "Advanced"], "React": [8, "Advanced"], "Node.js": [7, "Proficient"], "HTML/CSS": [7, "Proficient"], "JavaScript": [9, "Expert"]}	5000	7000
 \.
 
 
@@ -621,6 +790,25 @@ COPY jobmatch.professionals (id, first_name, last_name, address, user_id, summar
 1	John	Ivanov	bul.Skobelev, 24, Sofia, BG	2	10 years of experience in C# ASP.NET development	1	t	active
 2	Michael	Livingston	Ubbo-Emmunslaan str., Amsterdam, NE	3	Experienced Python developer	2	t	active
 3	William	Pique	Buterpark str., London, GBT	4	Junior Java developer	3	f	active
+4	Lena	Kovic	Bratislava, Slovakia	13	Experienced professional seeking new opportunities in the tech industry.	\N	t	active
+5	Max	Olovsky	Krakow, Poland	14	Experienced professional with a background in software development and project management. Skilled in leading cross-functional teams and driving successful project outcomes. Seeking new opportunities in the IT industry.	\N	t	active
+6	Erik	Mikhaylov	Sofia, Bulgaria	17	Experienced professional seeking new opportunities in the finance industry.	\N	t	active
+7	Asda	Dad	Eastern Europe	20	Experienced professional seeking new opportunities in the job market.	\N	f	active
+8	Lila	Petrov	Sofia, Bulgaria	21	Creative and passionate junior art graduate seeking opportunities in the art and design industry.	\N	f	active
+9	Natalia	Dmitrov	Lviv, Ukraine	23	Experienced professional seeking new opportunities in project management.	\N	f	active
+10	Lana	Mation	Warsaw, Poland	24	Just graduated in chemistry with a passion for 3D animation. Seeking opportunities to apply chemical knowledge in creative projects.	\N	f	active
+11	Emil	Kozlov	Lviv, Ukraine	25	Experienced professional with expertise in project management and IT. Proven track record of delivering complex projects on time and within budget.	\N	f	active
+12	Lena	Kov	Krakow, Poland	26	Experienced professional seeking new opportunities in the technology industry.	\N	f	active
+13	Adam	Kovacs	Budapest, Hungary	30	Experienced marketing professional with a strong track record of driving successful campaigns and increasing brand visibility.	\N	f	active
+14	Natalie	Kovalenko	Kyiv, Ukraine	39	Experienced software engineer with expertise in full-stack development and project management.	\N	f	active
+15	Daniela	Stoica	Bucharest, Romania	40	Dedicated medical professional with specialization in neurology and research experience in pharmaceutical industry.	\N	f	active
+16	Miroslav	Petrović	Belgrade, Serbia	41	Seasoned financial professional with extensive knowledge in investment banking and risk analysis.	\N	f	active
+17	Jennica	Tsvetkova	Sofia, Bulgaria	42	Experienced professional with a background in finance and marketing. Skilled in data analysis and strategic planning. Seeking new opportunities in the Eastern European market.	\N	f	active
+18	Aiko	Nakamura	Tokyo, Japan	63	Experienced architect specialized in sustainable design.	\N	f	active
+19	Rina	Sato	Osaka, Japan	64	Passionate about creating innovative and functional architectural designs.	\N	f	active
+20	Takumi	Yamamoto	Kyoto, Japan	65	Skilled in project management and construction supervision for large-scale developments.	\N	f	active
+21	Sakura	Tanaka	Seoul, South Korea	66	Expertise in interior architecture and spatial design for commercial spaces.	\N	f	active
+22	Kai	Chen	Shanghai, China	67	Specializing in urban planning and sustainable development strategies.	\N	f	active
 \.
 
 
@@ -646,7 +834,64 @@ COPY jobmatch.users (id, username, admin, password) FROM stdin;
 4	testuser3	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
 5	testuser4	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
 6	testuser5	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+54	sangcraft	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+8	linguisticpro	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+9	linguisticexpert	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+10	linguisticexp	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+11	ace_solutions	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+12	swiftglobe	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+13	projobseeker	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+14	maxwell23	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+17	projobseeker87	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+18	agroalba	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+19	datalakeUSA	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+20	asdadadad	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
 7	testuser6	f	\\x74657374
+21	artgrad21	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+22	globalTechSol	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+23	projobhunter	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+24	chem3D	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+25	pro_jobhunt123	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+26	projobseeker83	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+27	innostorm	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+28	globaltech	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+30	adamsmith87	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+31	globoff	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+32	brightstar	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+33	techdyno	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+34	agilegenius	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+35	techsavy	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+36	healthinno	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+37	fashify	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+38	TradeGenius	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+39	techpro_87	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+40	medpro_dani	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+41	finpro_miro	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+42	jenny007	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+43	yisangco	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+44	sangworks	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+45	yisangdesign	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+46	sangitecture	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+47	yisangconstruct	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+48	sangarch	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+49	yisanginnovate	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+50	sangdesignlab	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+51	yisangstudio	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+52	sangvision	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+53	yisangenvision	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+55	yisangforge	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+56	sangform	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+57	yisangvista	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+58	sangharmony	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+59	yisangformulate	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+60	sangcraftsmen	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+61	yisangsculpt	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+62	sangcanvas	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+63	archasia1	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+64	designer123	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+65	buildingpro	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+66	interiorarch	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
+67	urbanplanner	f	\\x34303161653462353130636139313635316364626334613731343039323261643235363130356438346565646233346334326635623137343633613865393863
 \.
 
 
@@ -662,14 +907,14 @@ COPY jobmatch.web_filters (id, filter, user_id) FROM stdin;
 -- Name: companies_id_seq; Type: SEQUENCE SET; Schema: jobmatch; Owner: postgres
 --
 
-SELECT pg_catalog.setval('jobmatch.companies_id_seq', 4, false);
+SELECT pg_catalog.setval('jobmatch.companies_id_seq', 41, true);
 
 
 --
 -- Name: company_offers_id_seq; Type: SEQUENCE SET; Schema: jobmatch; Owner: postgres
 --
 
-SELECT pg_catalog.setval('jobmatch.company_offers_id_seq', 4, false);
+SELECT pg_catalog.setval('jobmatch.company_offers_id_seq', 16, true);
 
 
 --
@@ -683,14 +928,14 @@ SELECT pg_catalog.setval('jobmatch.messages_id_seq', 1, false);
 -- Name: professional_offers_id_seq; Type: SEQUENCE SET; Schema: jobmatch; Owner: postgres
 --
 
-SELECT pg_catalog.setval('jobmatch.professional_offers_id_seq', 4, false);
+SELECT pg_catalog.setval('jobmatch.professional_offers_id_seq', 15, true);
 
 
 --
 -- Name: professionals_id_seq; Type: SEQUENCE SET; Schema: jobmatch; Owner: postgres
 --
 
-SELECT pg_catalog.setval('jobmatch.professionals_id_seq', 4, false);
+SELECT pg_catalog.setval('jobmatch.professionals_id_seq', 22, true);
 
 
 --
@@ -704,7 +949,7 @@ SELECT pg_catalog.setval('jobmatch.requests_id_seq', 4, false);
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: jobmatch; Owner: postgres
 --
 
-SELECT pg_catalog.setval('jobmatch.users_id_seq', 8, false);
+SELECT pg_catalog.setval('jobmatch.users_id_seq', 67, true);
 
 
 --

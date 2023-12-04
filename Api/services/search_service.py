@@ -187,7 +187,6 @@ def propose_new_skills(skills):
         return Response(status_code=200)
     except:
         return Response(status_code=500)
-    return result
 
 def add_webfilter(id, filters):
     try:
@@ -197,7 +196,6 @@ def add_webfilter(id, filters):
         return Response(status_code=200)
     except:
         return Response(status_code=500)
-    return result
 
 def get_webfilters(id):
     result = read_query(
