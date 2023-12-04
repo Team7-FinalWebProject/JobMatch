@@ -1,6 +1,6 @@
 from services import messages_service
 from services.register_service import check_user_exist
-from fastapi import APIRouter, Header
+from fastapi import APIRouter, Header, Body
 from data.responses import NotFound, Unauthorized, Forbidden
 from data.models.message import Message
 from common.auth import user_or_error, _ADMIN_MESSAGE
@@ -12,7 +12,14 @@ _ERROR_MESSAGE = 'You are not authorized [NOT LOGGED IN | TOKEN EXPIRED]'
 
 
 #TODO Figure out a way to add audio recording ass message
-#TODO See for the most optimal way to aquire the user.
+
+
+@messages_router.post('/chatbot', tags=['Messages'])
+def chatbot_conversation(text: str = Body(default=""), x_token: str = Header(default=None)):
+    user = user_or_error(x_token) if x_token else None
+    if user:
+        return messages_service.create_bot_conv(text)
+    return Unauthorized(content=_ERROR_MESSAGE)
 
 
 @messages_router.get('/{receiver_username}', tags=['Messages'])
