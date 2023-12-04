@@ -1,21 +1,17 @@
-import Cookies from "universal-cookie";
 import { submitSupportRequest } from "../services/submitSupportRequest";
 import SupportForm from "../components/SupportForm";
 import { useState } from "react";
 
 
 function RequestSupport() {
-    const [data, setData] = useState<File | null>(null);
-    const cookies = new Cookies();
-    const getAuthToken = () => {return cookies.get('authToken')};
-    let authToken = getAuthToken();
+    const [data, setData] = useState({ text: '', audio: null});
 
     const handleSupportRequest = async (content: string) => {
-      if (!content || !authToken) {
+      if (!content) {
         return;
       }
       try {
-        const result = await submitSupportRequest(authToken, content);
+        const result = await submitSupportRequest(content);
         setData(result);
       } catch (error) {
         console.error('Error fetching data:', error);
