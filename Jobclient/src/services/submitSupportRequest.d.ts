@@ -1,4 +1,3 @@
 declare function submitSupportRequest(
-    authToken: string | null, 
-    content: string): Promise<File | null>;
+    content: string): Promise<{text: string | null; audio: string | null}>;
 export { submitSupportRequest };

@@ -2,6 +2,7 @@ from io import BytesIO
 from psycopg2.extras import Json
 from psycopg2 import IntegrityError
 from psycopg2.errors import UniqueViolation
+from fastapi import HTTPException
 from data.models.professional import Professional, ProfessionalInfoEdit, ProfessionalRequest
 from data.models.offer import ProfessionalOffer, ProfessionalOfferEdit
 from data.database import update_query, insert_query, read_query, update_queries_transaction
@@ -14,19 +15,34 @@ def edit(new_data: ProfessionalInfoEdit, old_data: Professional):
             id=old_data.id,
             user_id=old_data.user_id,
             default_offer_id=old_data.default_offer_id,
+            username=new_data.username or old_data.username,
             first_name=new_data.first_name or old_data.first_name,
             last_name=new_data.last_name or old_data.last_name,
             summary=new_data.summary or old_data.summary,
             address=new_data.address or old_data.address,
             status=old_data.status)
 
-        update_query(
+        # update_query(
+        #     '''UPDATE professionals SET first_name = %s, last_name = %s,
+        #        summary = %s, address = %s WHERE id = %s''',
+        #        (merged.first_name, merged.last_name, merged.summary, 
+        #         merged.address, merged.id))
+        
+        queries = (
             '''UPDATE professionals SET first_name = %s, last_name = %s,
                summary = %s, address = %s WHERE id = %s''',
-               (merged.first_name, merged.last_name, merged.summary, 
-                merged.address, merged.id))
-        
-        return merged
+            
+            '''UPDATE users SET username = %s WHERE id = %s'''
+        )
+        params = ((merged.first_name, merged.last_name, merged.summary, 
+                merged.address, merged.id), (merged.username, merged.id))
+        try:
+            updated = update_queries_transaction(queries, params)
+            if updated == False:
+                raise HTTPException(status_code=400, detail='Invalid data [Username is taken]')
+            return merged
+        except UniqueViolation as u:
+            raise HTTPException(status_code=403, detail='Username is already taken!')
     
     except IntegrityError as e:
         return e.__str__()

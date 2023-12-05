@@ -39,16 +39,24 @@ def create(sender_username: str, receiver_username: str, message: Message):
 
 
 def create_bot_conv(text: str):
+    '''
+    Start a conversation with the chatbot from OpenAi.\n
+    Returns Json object containing a text param and url to the audio file.
+    '''
     try:
         response = client.chat.completions.create(
             model="gpt-3.5-turbo-1106",
-            response_format={ "type": "json_object" },
             messages=[
-                {"role": "system", "content": """You are a helpful tech support specialist."""},
+                {"role": "system", "content": """You are a helpful tech support specialist
+                                                 who will answer technical questions in a professional manner
+                                                 and provide support to the users."""},
                 {"role": "user", "content": text}
             ])
         
-        data = json.loads(response.choices[0].message.content)
+        data = response.choices[0].message.content
+
+        # NOTE - Generated audio transcription is only available in server
+        # files if used in localhost:8000.
         
         unique_id = str(uuid.uuid4())
         filename = f"speech_{unique_id}.mp3"
@@ -56,15 +64,12 @@ def create_bot_conv(text: str):
         response = client.audio.speech.create(
             model="tts-1",
             voice="alloy",
-            input=str(data["content"])
+            input=data
         )
         response.stream_to_file(speech_file_path)
         
-        def file_generator():
-            with open(speech_file_path, 'rb') as file:
-                yield from iter(lambda: file.read(4096), b"")
-        
-        return StreamingResponse(file_generator(), media_type="audio/mpeg")
+        print(speech_file_path)
+        return data, str(speech_file_path)
 
     except Exception as e:
         print(f"Error: {e}")

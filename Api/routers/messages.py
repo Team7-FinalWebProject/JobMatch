@@ -1,6 +1,7 @@
 from services import messages_service
 from services.register_service import check_user_exist
 from fastapi import APIRouter, Header, Body
+from fastapi.responses import JSONResponse
 from data.responses import NotFound, Unauthorized, Forbidden
 from data.models.message import Message
 from common.auth import user_or_error, _ADMIN_MESSAGE
@@ -18,7 +19,8 @@ _ERROR_MESSAGE = 'You are not authorized [NOT LOGGED IN | TOKEN EXPIRED]'
 def chatbot_conversation(text: str = Body(default=""), x_token: str = Header(default=None)):
     user = user_or_error(x_token) if x_token else None
     if user:
-        return messages_service.create_bot_conv(text)
+        msg, audio = messages_service.create_bot_conv(text)
+        return JSONResponse(content={"text": msg, "audio": audio})
     return Unauthorized(content=_ERROR_MESSAGE)
 
 

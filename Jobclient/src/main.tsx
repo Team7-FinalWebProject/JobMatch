@@ -20,6 +20,7 @@ import AccountProfessional from './pages/AccountProfessional.tsx';
 import UserList from './pages/Professional.tsx';
 import CompanyList from './pages/Company.tsx'
 import RequestSupport from './pages/SupportPage.tsx';
+import ProfessionalOfferPost from './pages/createProfessionalOffer.tsx';
 
 
 const cookies = new Cookies();
@@ -51,6 +52,7 @@ const router = createBrowserRouter(
     <Route path="/professionals" element={<UserList />} loader={tokenLoader}></Route>
     <Route path="/companies" element={<CompanyList />} loader={tokenLoader}></Route>
     <Route path="/support" element={<RequestSupport />} loader={tokenLoader}></Route>
+    <Route path="/offers/professionals/create" element={<ProfessionalOfferPost />} loader={tokenLoader}></Route>
 
     {/* <Route path="/register" element={<App />}></Route> */}
       {/* <Route path="dashboard" element={<Dashboard />} /> */}
