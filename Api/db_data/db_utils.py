@@ -25,7 +25,7 @@ current_directory = getcwd()
 
 def test_db_get_connection(remote=False):
     return psycopg2.connect(
-        host = 'db.gboblangoijwxkkvkmsn.supabase.co' if remote else "localhost",
+        host = _REMOTE_HOST if remote else "localhost",
         user = 'postgres',
         dbname = 'postgres',
         options='-c search_path=test_schema',

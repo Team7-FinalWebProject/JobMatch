@@ -2,6 +2,8 @@ from typing import Annotated
 from data.database import read_query
 from data.readers import reader_one
 from data.models.admin import ReadConfig
+from dotenv import load_dotenv
+load_dotenv()
 
 def check_config():
     data = read_query(

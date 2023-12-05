@@ -2,15 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { getApprovedCompanies } from '../services/getAllCompanies.js';
 import Cookies from 'universal-cookie';
 
-interface Professional {
+interface Company {
   id: number;
   first_name: string;
   last_name: string;
   status: string;
+  name: string;
+  description: string;
 }
 
 function CompaniesList() {
-  const [companies, setCompanies] = useState<Professional[]>([]);
+  const [companies, setCompanies] = useState<Company[]>([]);
   const cookies = new Cookies();
   const getAuthToken = () => cookies.get('authToken');
   let authToken = getAuthToken();

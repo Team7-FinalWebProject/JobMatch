@@ -40,6 +40,10 @@ RUN --mount=type=cache,target=/root/.cache/pip \
  python3 -m pip install -r requirements.txt --no-cache-dir && \
  apk --purge del .build-deps
 
+#  RUN echo "password_docker=" > /run/secrets/db-password.tmp && \
+#     cat /run/secrets/db-password.txt >> /run/secrets/db-password.tmp && \
+#     mv /run/secrets/db-password.tmp /run/secrets/db-password.txt
+
 # RUN apk --no-cache add curl
 
 # Switch to the non-privileged user to run the application.
@@ -47,7 +51,7 @@ USER appuser
 
 # Copy the source code into the container.
 COPY . .
-COPY data/database_docker.py data/database.py
+# COPY data/database_docker.py data/database.py
 
 # Expose the port that the application listens on.
 EXPOSE 8000

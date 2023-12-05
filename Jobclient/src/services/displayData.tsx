@@ -4,7 +4,7 @@ type Data = {
   [key: string]: string | number | Data | null;
 };
 
-const DataDisplay: React.FC<{ data: Data | null, type: string }> = ({ data }) => {
+const DataDisplay: React.FC<{ data: Data | null}> = ({ data }) => {
   if (!data) {
     return <div>No data available</div>;
   }

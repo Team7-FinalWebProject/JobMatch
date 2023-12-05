@@ -3,6 +3,8 @@
 
 import psycopg2 
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
 def _get_connection():
     return psycopg2.connect(

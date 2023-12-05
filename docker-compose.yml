@@ -5,6 +5,14 @@ services:
       target: backutopia
     environment:
       - PORT=8000
+      - docker_password=${password_docker}
+      - PGPASSWORD=${password_docker}
+      - remoteorlocal=${remoteorlocal}
+      - JWT_SECRET=${JWT_SECRET}
+      - _MJ_APIKEY_PUBLIC=${_MJ_APIKEY_PUBLIC}
+      - _API_SECRET=${_API_SECRET}
+      - sender_email=${sender_email}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
     ports:
       - 8000:8000
     networks:
@@ -15,16 +23,14 @@ services:
       db:
         condition: service_healthy
 
-  # frontend:
-  #   build:
-  #     context: Client
-  #     target: frontutopia
-  #   environment:
-  #     NODE_ENV: production
-  #   ports:
-  #     - 5001:8080
-  #   depends_on:
-  #     - backend
+  frontend:
+    build:
+      context: Jobclient
+      target: frontutopia
+    ports:
+      - 80:80
+    depends_on:
+      - backend
 
   db:
     build:

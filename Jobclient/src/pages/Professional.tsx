@@ -8,6 +8,8 @@ interface Professional {
   last_name: string;
   status: string;
   image: string;
+  username: string;
+  summary: string;
 }
 
 function UserList() {
