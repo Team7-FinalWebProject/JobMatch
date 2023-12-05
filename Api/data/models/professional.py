@@ -90,14 +90,16 @@ class ProfessionalRequest(BaseModel):
             request_from=request_from)
     
 class ProfessionalInfoEdit(BaseModel):
+    username: str | None = None
     first_name: str | None = None
     last_name: str | None = None
     summary: str | None = None
     address: str | None = None
 
     @classmethod
-    def from_query_result(cls, first_name, last_name, summary, address):
+    def from_query_result(cls, username, first_name, last_name, summary, address):
         return cls(
+            username=username,
             first_name=first_name,
             last_name=last_name,
             summary=summary,
