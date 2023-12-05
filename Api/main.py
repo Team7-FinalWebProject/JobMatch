@@ -27,10 +27,10 @@ origins = [
     "127.0.0.1:80",
     "http://127.0.0.1:80",
     "https://127.0.0.1:80",
-    "https://job-match-seven.vercel.app/",
-    "http://job-match-seven.vercel.app/",
-    "https://job-match-seven.vercel.app",
-    "http://job-match-seven.vercel.app",
+    "https://jobutopia.vercel.app/.*",
+    "http://jobutopia.vercel.app/.*",
+    "https://jobutopia.vercel.app",
+    "http://jobutopia.vercel.app",
 ]
 
 
@@ -39,7 +39,8 @@ app.add_middleware(
     allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"]
+    allow_headers=["*"],
+    allow_origin_regex=True,
 )
 
 app.include_router(login_router)
