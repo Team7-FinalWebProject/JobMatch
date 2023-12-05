@@ -68,7 +68,8 @@ export default function Heading() {
           <Link to="/professionals" className="text-sm font-semibold leading-6 text-white">
             Professionals
           </Link>
-          <Link to="/offers" className="text-sm font-semibold leading-6 text-white">
+          {/* TODO: CHANGE LINK TO OFFERS MAIN PAGE. */}
+          <Link to="/offers/professionals/create" className="text-sm font-semibold leading-6 text-white">
             Offers
           </Link>
           <Link to="/messages" className="text-sm font-semibold leading-6 text-white">
