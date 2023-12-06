@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getApprovedProfessionals } from '../services/getAllProfessionals.js';
 import Cookies from 'universal-cookie';
-import backgroundSVG from '../assets/subtle-prism.svg'
-
+import Layout from './Layout.js';
 
 interface Professional {
   id: number;
@@ -35,29 +34,28 @@ function UserList() {
 
   // ADD MORE ELEMENTS TO SHOW MORE DATA FOR THE PROFESSIONAL && SHOULD FIX THE PHOTO 
   return (
+    <Layout>
     <div style={styles.container}>
       <h2 style={styles.heading}>Professional List</h2>
       <div style={styles.professionalsContainer}>
         {professionals.map((professional) => (
           <div key={professional.id} style={styles.professionalCard}>
-             <div style={styles.imageContainer}>
-                <img
-                  src={`/Api/data/logos/testuser1.jpg`}
-                  style={styles.image}
-                />
-              </div>
-              <div style={styles.contentContainer}>
-                <p style={styles.name}>
-                  {professional.first_name} {professional.last_name}
-                </p>
-                <p style={styles.status}>Status: {professional.status}</p>
-                <p style={styles.username}>{professional.username}</p>
-                <p style={styles.summary}>{professional.summary}</p>
-              </div>
+             <img
+            src={`Api/data/logos/${professional.username}.jpg`} // Update the path and extension accordingly
+            alt={`${professional.first_name} ${professional.last_name}`}
+            style={styles.image}
+          />
+            <p style={styles.name}>
+              {professional.first_name} {professional.last_name}
+            </p>
+            <p style={styles.status}>Status: {professional.status}</p>
+            <p style={styles.summary}>{professional.summary}</p>
+            {/* <p style={styles.image}>{professional.image}</p> */}
           </div>
         ))}
       </div>
     </div>
+    </Layout>
   );
 }
 
@@ -68,9 +66,6 @@ interface CSSProperties {
 const styles: { [key: string]: CSSProperties } = {
   container: {
     padding: '20px',
-    backgroundImage: `url(${backgroundSVG})`, // Add the path to your background image
-    backgroundSize: 'cover', // Adjust as needed
-    backgroundPosition: 'center', // Adjust as needed
   },
   heading: {
     fontSize: '24px',
@@ -81,20 +76,19 @@ const styles: { [key: string]: CSSProperties } = {
     display: 'flex',
     flexWrap: 'wrap' as 'wrap',
   },
-//   professionalCard: {
-//     background: 'white',
-//     border: '2px solid #ccc',
-//     padding: '15px',
-//     margin: '15px',
-//     width: '2000px',
-//     // textAlign: 'center',
-//     borderRadius: '8px',
-//     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-//     transition: 'transform 0.3s ease-in-out',
-//     '&:hover': {
-//       transform: 'scale(1.05)',
-//     },
-//   },
+  professionalCard: {
+    border: '2px solid #ccc',
+    padding: '15px',
+    margin: '15px',
+    width: '2000px',
+    // textAlign: 'center',
+    borderRadius: '8px',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+    transition: 'transform 0.3s ease-in-out',
+    '&:hover': {
+      transform: 'scale(1.05)',
+    },
+  },
   name: {
     fontSize: '18px',
     fontWeight: 'bold',
@@ -104,36 +98,6 @@ const styles: { [key: string]: CSSProperties } = {
   status: {
     color: '#777',
     margin: '8px 0 0',
-  },
-
-  image: {
-    width: '100px',
-    height: '100px',
-    borderRadius: '50%',
-    objectFit: 'cover',
-  },
-
-  professionalCard: {
-    display: 'flex',
-    background: 'white',
-    border: '2px solid #ccc',
-    padding: '15px',
-    margin: '15px',
-    width: '2000px', // Adjust the width as needed
-    borderRadius: '8px',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-    transition: 'transform 0.3s ease-in-out',
-    '&:hover': {
-      transform: 'scale(1.05)',
-    },
-  },
-
-  imageContainer: {
-    marginRight: '15px', // Adjust the margin as needed
-  },
-
-  contentContainer: {
-    flex: 1, // Takes the remaining space
   },
 };
 

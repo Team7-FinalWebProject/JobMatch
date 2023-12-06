@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getApprovedCompanies } from '../services/getAllCompanies.js';
 import Cookies from 'universal-cookie';
+import Layout from './Layout.js';
 
 interface Company {
   id: number;
@@ -32,6 +33,7 @@ function CompaniesList() {
 
   // ADD MORE ELEMENTS TO SHOW MORE DATA FOR THE PROFESSIONAL && SHOULD FIX THE PHOTO 
   return (
+    <Layout>
     <div style={styles.container}>
       <h2 style={styles.heading}>Companies List</h2>
       <div style={styles.professionalsContainer}>
@@ -46,6 +48,7 @@ function CompaniesList() {
         ))}
       </div>
     </div>
+    </Layout>
   );
 }
 

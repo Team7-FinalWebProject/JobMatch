@@ -1,25 +1,21 @@
-import { Outlet, Link } from "react-router-dom";
+import React, { ReactNode } from 'react';
+import LeftNav from "./LeftNav";
+import TopNav from "./TopNav";
 
-const Layout = () => {
+interface LayoutProps {
+  children: ReactNode;
+}
+
+const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
-    <>
-      <nav>
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/blogs">Blogs</Link>
-          </li>
-          <li>
-            <Link to="/contact">Contact</Link>
-          </li>
-        </ul>
-      </nav>
-
-      <Outlet />
-    </>
-  )
+    <div className="flex">
+      <LeftNav />
+      <div className="flex flex-col flex-1">
+        <TopNav />
+        <div className="mt-4 flex-1">{children}</div>
+      </div>
+    </div>
+  );
 };
 
 export default Layout;

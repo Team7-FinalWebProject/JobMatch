@@ -3,7 +3,7 @@ import backgroundSVG from '../assets/subtle-prism.svg'
 import { submitMessage } from "../services/submitMessage";
 import MessagesForm from "../components/MessageForm";
 import { useState } from "react";
-
+import Layout from "./Layout";
 
 type MessageData = {
   id: number | null;
@@ -32,18 +32,19 @@ function SendMessage() {
     };
   
     return (
-      <>
-      <MessagesForm onSubmit={handleMessageSubmit}/>
-      {messageData && (
-      <p className="bg-gray-200 p-4 rounded-md shadow-md flex justify-center items-center" style={{ backgroundImage: `url(${backgroundSVG})` }}>
-        Message ID: {messageData.id} ||| 
-        Sender: {messageData.sender_username} ||| 
-        Receiver: {messageData.receiver_username} ||| 
-        Content: {messageData.content}
-      </p>
-      )}
-      </>
-     
+      <Layout>
+        <div className="mt-4 flex-1">
+          <MessagesForm onSubmit={handleMessageSubmit} />
+          {messageData && (
+            <p className="bg-gray-200 p-4 rounded-md shadow-md flex justify-center items-center" style={{ backgroundImage: `url(${backgroundSVG})` }}>
+              Message ID: {messageData.id} ||| 
+              Sender: {messageData.sender_username} ||| 
+              Receiver: {messageData.receiver_username} ||| 
+              Content: {messageData.content}
+            </p>
+          )}
+        </div>
+      </Layout>
     );
 }
 
