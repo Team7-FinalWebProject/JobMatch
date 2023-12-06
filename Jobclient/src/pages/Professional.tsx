@@ -85,7 +85,7 @@ const styles: { [key: string]: CSSProperties } = {
     border: '2px solid #ccc',
     padding: '15px',
     margin: '15px',
-    width: '2000px',
+    width: '100%',
     // textAlign: 'center',
     borderRadius: '8px',
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
