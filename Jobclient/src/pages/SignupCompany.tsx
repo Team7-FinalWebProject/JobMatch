@@ -1,6 +1,7 @@
 import Cookies from "universal-cookie";
 import { registerCompany } from "../services/registerCompany";
 import SignupCompanyForm from "../components/SignupCompanyForm";
+import backgroundSVG from '../assets/subtle-prism.svg'
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
