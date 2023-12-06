@@ -5,7 +5,7 @@ from data.models.company import Company
 
 
 def create_upload_file(myfile: UploadFile, user: Professional | Company):
-    _IMAGE_DIR = "./data/logos/"
+    _IMAGE_DIR = "../imgs/"
 
     filename = myfile.filename
     extention = filename.split('.')[-1].lower()
