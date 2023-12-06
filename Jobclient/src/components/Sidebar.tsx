@@ -6,6 +6,10 @@ import { ChevronDoubleLeftIcon } from "@heroicons/react/20/solid";
 // import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { DocumentIcon } from "@heroicons/react/24/solid";
 import Profile_popover from "./Profile_popover";
+import Slider from "rc-slider";
+import "rc-slider/assets/index.css";
+import SkillFilterForm from "./SkillFilterForm";
+
 
 const Sidebar = ({ options, onSelect }) => {
   const [open, setOpen] = useState(true);
@@ -19,12 +23,47 @@ const Sidebar = ({ options, onSelect }) => {
 //     { title: "Files ", src: "Folder", gap: true },
 //     { title: "Setting", src: "Setting" },
 //   ];
+  const [minSalary, setMinSalary] = useState([0]);
+  const [maxSalary, setMaxSalary] = useState([0]);
+  const [salaryThreshold, setSalaryThreshold] = useState([0]);
+  const [skills, setSkills] = useState([]);
+  const [allowMissing, setAllowMissing] = useState([0]);
 
-  const handleSelect = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    const selectedValue = e.currentTarget.value;
-    onSelect(selectedValue);
+  // const handleSelect = (e: React.MouseEvent<HTMLButtonElement>) => {
+  //   e.preventDefault();
+  //   const selectedValue = e.currentTarget.value;
+  //   onSelect(selectedValue);
+  // };
+
+  const handleMinSInputChange = (e) => {
+    setMinSalary(e.target.value)
   };
+  const handleMinSSliderChange = (value) => {
+    setMinSalary(value)
+  };
+  const handleMaxSInputChange = (e) => {
+    setMaxSalary(e.target.value)
+  };
+  const handleMaxSSliderChange = (value) => {
+    setMaxSalary(value)
+  };
+  const handleThreshInputChange = (e) => {
+    setSalaryThreshold(e.target.value)
+  };
+  const handleThreshSliderChange = (value) => {
+    setSalaryThreshold(value)
+  };
+  const handleSkillSubmit = (e) => {
+
+  };
+  const handleMissingInputChange = (e) => {
+    setAllowMissing(e.target.value)
+  };
+  const handleMissingSliderChange = (value) => {
+    setAllowMissing(value)
+  };
+
+
 
   return (
     <div className="flex border-r border-y-neutral-600">
@@ -49,22 +88,134 @@ const Sidebar = ({ options, onSelect }) => {
           </h1>
         </div>
         <ul className="pt-6">
-          {options.map((option, index) => (
+
+
+
+
             <li
-              key={index}
-              className={`flex  rounded-md p-2 cursor-pointer hover:bg-light-white text-black text-sm items-center gap-x-4 
-              ${option.gap ? "mt-9" : "mt-2"} ${
-                index === 0 && "bg-light-white"
+              key="minSalary"
+              className={`flex ${!open && "hidden"} origin-left duration-200 rounded-md p-2 cursor-pointer hover:bg-light-white text-black text-sm items-center gap-x-4 gap-y-4 "mt-9" : "mt-2"} ${
+                1 && "bg-light-white"
               } `}
             >
-              <DocumentIcon className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-black group-hover:text-black"
-                      aria-hidden="true"/>
+              <div>
+                <label htmlFor="minSalary" className="block text-sm font-medium leading-6 text-gray-900">
+                {/* <DocumentIcon className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-black group-hover:text-black"
+                      aria-hidden="true"/> */}
+                      <input
+                      value={minSalary}
+                      onChange={handleMinSInputChange}
+                      type="receiverUsername"
+                      name="receiverUsername"
+                      id="receiverUsername"
+                      autoComplete="given-name"
+                      className="block w-30 rounded-md border-0 px-0 py-1 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-3 bg-opacity-50"
+                    />
                       {/* <h1 className="text-2xl font-semibold ">${Menu.src}</h1> */}
-              <button onClick={handleSelect} className={`${!open && "hidden"} origin-left duration-200 text-black`} value={option}>
-                {option}
-              </button>
+                {"Min Salary"}
+                </label>
+                <div className="mt-2">
+                  <Slider onChange={handleMinSSliderChange} value={minSalary} max={20000}/>
+                </div>
+              </div>
             </li>
-          ))}
+
+
+            <li
+              key="maxSalary"
+              className={`flex ${!open && "hidden"} origin-left duration-200 rounded-md p-2 cursor-pointer hover:bg-light-white text-black text-sm items-center gap-x-4 gap-y-4 "mt-9" : "mt-2"} ${
+                0 && "bg-light-white"
+              } `}
+            >
+              <div>
+                <label htmlFor="maxSalary" className="block text-sm font-medium leading-6 text-gray-900">
+                {/* <DocumentIcon className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-black group-hover:text-black"
+                      aria-hidden="true"/> */}
+                      <input
+                      value={maxSalary}
+                      onChange={handleMaxSInputChange}
+                      type="receiverUsername"
+                      name="receiverUsername"
+                      id="receiverUsername"
+                      autoComplete="given-name"
+                      className="block w-30 rounded-md border-0 px-0 py-1 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-3 bg-opacity-50"
+                    />
+                      {/* <h1 className="text-2xl font-semibold ">${Menu.src}</h1> */}
+                {"Max Salary"}
+                </label>
+                <div className="mt-2">
+                  <Slider onChange={handleMaxSSliderChange} value={maxSalary} max={20000}/>
+                </div>
+              </div>
+            </li>
+
+
+            <li
+              key="salaryThreshold"
+              className={`flex ${!open && "hidden"} origin-left duration-200 rounded-md p-2 cursor-pointer hover:bg-light-white text-black text-sm items-center gap-x-4 gap-y-4 "mt-9" : "mt-2"} ${
+                0 && "bg-light-white"
+              } `}
+            >
+              <div>
+                <label htmlFor="salaryThreshold" className="block text-sm font-medium leading-6 text-gray-900">
+                {/* <DocumentIcon className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-black group-hover:text-black"
+                      aria-hidden="true"/> */}
+                      <input
+                      value={salaryThreshold}
+                      onChange={handleThreshInputChange}
+                      type="receiverUsername"
+                      name="receiverUsername"
+                      id="receiverUsername"
+                      autoComplete="given-name"
+                      className="block w-30 rounded-md border-0 px-0 py-1 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-3 bg-opacity-50"
+                    />
+                      {/* <h1 className="text-2xl font-semibold ">${Menu.src}</h1> */}
+                {"Salary Strictness (0=Exact)"}
+                </label>
+                <div className="mt-2">
+                  <Slider onChange={handleThreshSliderChange} value={salaryThreshold} min={-100} max={1000}/>
+                </div>
+              </div>
+            </li>
+
+
+            <li
+              key="allowMissing"
+              className={`flex ${!open && "hidden"} origin-left duration-200 rounded-md p-2 cursor-pointer hover:bg-light-white text-black text-sm items-center gap-x-4 gap-y-4 "mt-9" : "mt-2"} ${
+                0 && "bg-light-white"
+              } `}
+            >
+              <div>
+                <label htmlFor="allowMissing" className="block text-sm font-medium leading-6 text-gray-900">
+                {/* <DocumentIcon className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-black group-hover:text-black"
+                      aria-hidden="true"/> */}
+                      <input
+                      value={allowMissing}
+                      onChange={handleMissingInputChange}
+                      type="receiverUsername"
+                      name="receiverUsername"
+                      id="receiverUsername"
+                      autoComplete="given-name"
+                      className="block w-30 rounded-md border-0 px-0 py-1 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-3 bg-opacity-50"
+                    />
+                      {/* <h1 className="text-2xl font-semibold ">${Menu.src}</h1> */}
+                {"Allow Missing Skills (0=No)"}
+                </label>
+                <div className="mt-2">
+                  <Slider onChange={handleMissingSliderChange} value={allowMissing} max={20}/>
+                </div>
+              </div>
+            </li>
+
+            <li className={`${!open && "hidden"} origin-left duration-200`}>
+              <SkillFilterForm onSubmitSFilters={<div></div>}></SkillFilterForm>
+            </li>
+
+
+
+
+
+  
         </ul>
       </div>
       {/* <div className="h-screen flex-1 p-7">
