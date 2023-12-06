@@ -1,6 +1,7 @@
 import { submitSupportRequest } from "../services/submitSupportRequest";
 import SupportForm from "../components/SupportForm";
 import { useState } from "react";
+import Layout from "./Layout";
 
 
 function RequestSupport() {
@@ -19,7 +20,9 @@ function RequestSupport() {
     };
   
     return (
-      <SupportForm onSubmit={handleSupportRequest}/>
+      <Layout>
+        <SupportForm onSubmit={handleSupportRequest}/>
+      </Layout>
     );
 }
 
