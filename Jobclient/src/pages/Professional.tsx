@@ -80,6 +80,8 @@ const styles: { [key: string]: CSSProperties } = {
     flexWrap: 'wrap' as 'wrap',
   },
   professionalCard: {
+    color: '',  // Add the desired text color if needed
+    background: 'white',  // Set the background color to white
     border: '2px solid #ccc',
     padding: '15px',
     margin: '15px',
@@ -90,7 +92,7 @@ const styles: { [key: string]: CSSProperties } = {
     transition: 'transform 0.3s ease-in-out',
     '&:hover': {
       transform: 'scale(1.05)',
-    },
+    }
   },
   name: {
     fontSize: '18px',
