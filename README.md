@@ -19,12 +19,12 @@ cd JobMatch
 ```
 
 Register and setup accounts at OpenAPI and Mailjet.
-Save the API keys and prepare other details to fill in
+Prepare the following details to fill in
 
- - Mailjet sender e-mail, API_secret
- - user password for the jobmatch admin and initial users
- - db password (same password in several files)
- - JWT_Secret for login security
+ - OpenAPI -> API Key
+ - Mailjet -> APi Key, sender e-mail, API_secret
+ - Authentication -> user password (admin, dummy users), JWT_Secret
+ - DB -> db password
 
 Fill the details in the template configuration files identified with ".sample" extension and rename the files.
 ```bash
@@ -39,9 +39,9 @@ docker-compose up -d --build
 ## Hosting:
 
 Project is currently hosted here:
-[Fronted -> Vercel](https://jobutopia.vercel.app/)
-[Backend -> Heroku (Swagger API docs)](https://jobutopia-82f9ec412313.herokuapp.com/docs)
-[DB -> Supabase (private)](https://supabase.com/)
+ - [Fronted -> Vercel](https://jobutopia.vercel.app/)
+ - [Backend -> Heroku (Swagger API docs)](https://jobutopia-82f9ec412313.herokuapp.com/docs)
+ - [DB -> Supabase (private)](https://supabase.com/)
 
 
 ## Database:
