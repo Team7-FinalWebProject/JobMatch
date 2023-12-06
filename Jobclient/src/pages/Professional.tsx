@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { getApprovedProfessionals } from '../services/getAllProfessionals.js';
 import Cookies from 'universal-cookie';
 import Layout from './Layout.js';
+import backgroundSVG from '../assets/subtle-prism.svg'
 
 interface Professional {
   id: number;
@@ -42,7 +43,6 @@ function UserList() {
           <div key={professional.id} style={styles.professionalCard}>
              <img
             src={`Api/data/logos/${professional.username}.jpg`} // Update the path and extension accordingly
-            alt={`${professional.first_name} ${professional.last_name}`}
             style={styles.image}
           />
             <p style={styles.name}>
@@ -66,6 +66,9 @@ interface CSSProperties {
 const styles: { [key: string]: CSSProperties } = {
   container: {
     padding: '20px',
+    backgroundImage: `url(${backgroundSVG})`, // Use backticks (`) for string interpolation
+    backgroundSize: 'cover', // Adjust as needed
+    backgroundPosition: 'center', // Adjust as needed
   },
   heading: {
     fontSize: '24px',
@@ -99,6 +102,8 @@ const styles: { [key: string]: CSSProperties } = {
     color: '#777',
     margin: '8px 0 0',
   },
+
+
 };
 
 export default UserList;
