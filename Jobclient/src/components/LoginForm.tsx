@@ -1,6 +1,7 @@
 import '../index.css';
 import jobutopia_logo from '../assets/images/jobutopia-logo-black.png'
 // import backgroundSVG from '../assets/endless-constellation.svg'
+import backgroundSVG from '../assets/subtle-prism.svg'
 import jobutopiaLogo from '../assets/jobutipiaLogo.svg'
 import { Link } from 'react-router-dom';
 
@@ -30,7 +31,7 @@ const LoginForm: React.FC<LoginForm_Props> = ({ onSubmit }) => {
           <body class="h-full">
           ```
         */}
-        <div className="flex min-h-screen flex-1 flex-col justify-center px-6 py-12 lg:px-8" >
+        <div className="flex min-h-screen flex-1 flex-col justify-center px-6 py-12 lg:px-8" style={{ backgroundImage: `url(${backgroundSVG})` }}>
         {/* <div className="flex min-h-screen flex-1 flex-col justify-center px-6 py-12 lg:px-8" style={{ backgroundImage: `url(${backgroundSVG})` }}> */}
           <div className="sm:mx-auto sm:w-full sm:max-w-sm">
             <img
@@ -48,7 +49,7 @@ const LoginForm: React.FC<LoginForm_Props> = ({ onSubmit }) => {
           <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
             <form className="space-y-6" onSubmit={handleSubmit}>
               <div>
-                <label htmlFor="email" className="block text-sm font-medium leading-6 text-white">
+                <label htmlFor="email" className="block text-sm font-medium leading-6 text-black">
                   Username
                 </label>
                 <div className="mt-2">
@@ -65,10 +66,10 @@ const LoginForm: React.FC<LoginForm_Props> = ({ onSubmit }) => {
   
               <div>
                 <div className="flex items-center justify-between">
-                  <label htmlFor="password" className="block text-sm font-medium leading-6 text-white">
+                  <label htmlFor="password" className="block text-sm font-medium leading-6 text-black">
                     Password
                   </label>
-                  <div className="text-white">
+                  <div className="text-black">
                     Register as: <Link to="/signup/company" className="font-semibold text-indigo-600 hover:text-indigo-500">Company</Link> or <Link to="/signup/professional" className="font-semibold text-indigo-600 hover:text-indigo-500">Professional</Link>
                   </div>
                 </div>
