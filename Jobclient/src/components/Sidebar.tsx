@@ -207,8 +207,12 @@ const Sidebar = ({ options, onSelect }) => {
               </div>
             </li>
 
-            <li className={`${!open && "hidden"} origin-left duration-200`}>
+            <li key="skillFilters" className={`${!open && "hidden"} origin-left duration-200 rounded-md p-2 cursor-pointer hover:bg-light-white text-black text-sm items-center gap-x-4 gap-y-4 "mt-9" : "mt-2"} ${
+                0 && "bg-light-white"
+              } `}>
               <SkillFilterForm onSubmitSFilters={<div></div>}></SkillFilterForm>
+              <label htmlFor="skillFilters" className="block text-sm font-medium leading-6 text-gray-900">
+              {"Skill Filters"}</label>
             </li>
 
 
