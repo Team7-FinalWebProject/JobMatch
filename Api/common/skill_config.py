@@ -32,5 +32,9 @@ class Config:
         return Skills
     
     @classmethod
+    def FILTER_SKILLS(cls):
+        return dict[str, int]
+
+    @classmethod
     def USE_STATIC(cls):
         return cls._USE_STATIC
