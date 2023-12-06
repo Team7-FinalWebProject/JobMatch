@@ -43,7 +43,7 @@ function UserList() {
           <div key={professional.id} style={styles.professionalCard}>
               <div style={styles.imageContainer}>
                 <img
-                  src={`../public/testuser1.jpg`}
+                  src={'../imgs/testuser1.png'}
                   style={styles.image}
                 />
               </div>
