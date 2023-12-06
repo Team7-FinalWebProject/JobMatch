@@ -2,6 +2,7 @@ from data.database import read_query, update_query, insert_query
 from data.models.company import Company, Company_Slim
 from data.models.professional import Professional, Professional_Slim
 from data.models.offer import CompanyOffer, ProfessionalOffer
+from data.models.search import Filter
 from data.readers import reader_one, reader_many
 from psycopg2.extras import Json
 from common.utils.calc import apply_salary_threshold
@@ -151,6 +152,7 @@ def get_professional_offers(
     min_filter, max_filter = apply_salary_threshold(min_salary, max_salary, salary_threshold_pct)
     user_id = user_id if filter_distance_from_latest is not None else None
     limit, offset = 1, 0 + (filter_distance_from_latest if filter_distance_from_latest else 0)
+    print("user id",user_id,"filter_distance_from_latest",filter_distance_from_latest,"all", allowed_missing_skills)
     data = read_query(
          '''WITH filter_skills AS
             (SELECT COALESCE
@@ -191,14 +193,16 @@ def propose_new_skills(skills):
 def add_webfilter(id, filters):
     try:
         result = insert_query(
-            '''INSERT INTO web_filters (filter, user_id) VALUES (%s, %s) RETURNING id''',
-            (Json(filters), id))
-        return Response(status_code=200)
-    except:
+            '''DELETE from web_filters WHERE user_id = %s
+            AND id = any(array(SELECT id FROM web_filters ORDER BY id DESC OFFSET 2));
+            INSERT INTO web_filters (filter, user_id) VALUES (%s, %s) RETURNING id;''',
+            (id, Json(filters), id))
+        return reader_one(Filter, ((1, filters,),))
+    except Exception as e:
         return Response(status_code=500)
 
 def get_webfilters(id):
     result = read_query(
-        '''select * from web_filters where user_id = %s ORDER BY id desc''',
-        (id))
-    return result
+        '''select ROW_NUMBER() OVER (ORDER BY id desc) -1 as id, filter from web_filters where user_id = %s ORDER BY id asc''',
+        (id,))
+    return reader_many(Filter, result)
