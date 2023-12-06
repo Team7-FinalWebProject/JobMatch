@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getApprovedProfessionals } from '../services/getAllProfessionals.js';
 import Cookies from 'universal-cookie';
+import Layout from './Layout.js';
 
 interface Professional {
   id: number;
@@ -33,6 +34,7 @@ function UserList() {
 
   // ADD MORE ELEMENTS TO SHOW MORE DATA FOR THE PROFESSIONAL && SHOULD FIX THE PHOTO 
   return (
+    <Layout>
     <div style={styles.container}>
       <h2 style={styles.heading}>Professional List</h2>
       <div style={styles.professionalsContainer}>
@@ -53,6 +55,7 @@ function UserList() {
         ))}
       </div>
     </div>
+    </Layout>
   );
 }
 
