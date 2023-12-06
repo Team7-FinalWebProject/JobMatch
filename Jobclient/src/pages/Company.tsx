@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { getApprovedCompanies } from '../services/getAllCompanies.js';
 import Cookies from 'universal-cookie';
+import Layout from './Layout.js';
+import backgroundSVG from '../assets/subtle-prism.svg'
+
 
 interface Company {
   id: number;
@@ -32,6 +35,7 @@ function CompaniesList() {
 
   // ADD MORE ELEMENTS TO SHOW MORE DATA FOR THE PROFESSIONAL && SHOULD FIX THE PHOTO 
   return (
+    <Layout>
     <div style={styles.container}>
       <h2 style={styles.heading}>Companies List</h2>
       <div style={styles.professionalsContainer}>
@@ -46,6 +50,7 @@ function CompaniesList() {
         ))}
       </div>
     </div>
+    </Layout>
   );
 }
 
@@ -56,7 +61,11 @@ interface CSSProperties {
 const styles: { [key: string]: CSSProperties } = {
   container: {
     padding: '20px',
+    backgroundImage: `url(${backgroundSVG})`, // Use backticks (`) for string interpolation
+    backgroundSize: 'cover', // Adjust as needed
+    backgroundPosition: 'center', // Adjust as needed
   },
+
   heading: {
     fontSize: '24px',
     marginBottom: '15px',
@@ -69,8 +78,9 @@ const styles: { [key: string]: CSSProperties } = {
   professionalCard: {
     border: '2px solid #ccc',
     padding: '15px',
+    background: 'white',
     margin: '15px',
-    width: '2000px',
+    width: '100%',
     // textAlign: 'center',
     borderRadius: '8px',
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
