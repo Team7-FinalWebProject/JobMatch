@@ -41,16 +41,20 @@ function UserList() {
       <div style={styles.professionalsContainer}>
         {professionals.map((professional) => (
           <div key={professional.id} style={styles.professionalCard}>
-             <img
-            src={`Api/data/logos/${professional.username}.jpg`} // Update the path and extension accordingly
-            style={styles.image}
-          />
-            <p style={styles.name}>
-              {professional.first_name} {professional.last_name}
-            </p>
-            <p style={styles.status}>Status: {professional.status}</p>
-            <p style={styles.summary}>{professional.summary}</p>
-            {/* <p style={styles.image}>{professional.image}</p> */}
+              <div style={styles.imageContainer}>
+                <img
+                  src={`../public/testuser1.jpg`}
+                  style={styles.image}
+                />
+              </div>
+              <div style={styles.contentContainer}>
+                <p style={styles.name}>
+                  {professional.first_name} {professional.last_name}
+                </p>
+                <p style={styles.status}>Status: {professional.status}</p>
+                <p style={styles.username}>{professional.username}</p>
+                <p style={styles.summary}>{professional.summary}</p>
+              </div>
           </div>
         ))}
       </div>
@@ -79,20 +83,20 @@ const styles: { [key: string]: CSSProperties } = {
     display: 'flex',
     flexWrap: 'wrap' as 'wrap',
   },
-  professionalCard: {
-    color: '',  // Add the desired text color if needed
-    background: 'white',  // Set the background color to white
+
+   professionalCard: {
+    display: 'flex',
+    background: 'white',
     border: '2px solid #ccc',
     padding: '15px',
     margin: '15px',
-    width: '100%',
-    // textAlign: 'center',
+    width: '100%', // Adjust the width as needed
     borderRadius: '8px',
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
     transition: 'transform 0.3s ease-in-out',
     '&:hover': {
       transform: 'scale(1.05)',
-    }
+    },
   },
   name: {
     fontSize: '18px',
@@ -112,6 +116,13 @@ const styles: { [key: string]: CSSProperties } = {
     objectFit: 'cover',
   },
 
+  imageContainer: {
+    marginRight: '15px', // Adjust the margin as needed
+  },
+
+  contentContainer: {
+    flex: 1, // Takes the remaining space
+  },
 
 };
 
