@@ -1,8 +1,7 @@
 import '../index.css';
-import jobutopia_logo from '../assets/images/jobutopia-logo-black.png'
 // import backgroundSVG from '../assets/endless-constellation.svg'
 import backgroundSVG from '../assets/subtle-prism.svg'
-import jobutopiaLogo from '../assets/jobutipiaLogo.svg'
+import jobutopiaLogo from '../assets/jobutopia-high-resolution-logo-black-transparent.svg'
 import { Link } from 'react-router-dom';
 
 interface LoginForm_Props {

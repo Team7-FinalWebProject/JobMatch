@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from data.models.offer import CompanyOffer_NoCompanyId
 from datetime import datetime
-
+from typing import Any
 
 class Company(BaseModel):
     id: int | None = None

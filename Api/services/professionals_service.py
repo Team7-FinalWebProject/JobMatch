@@ -180,10 +180,10 @@ def check_prof_offer_exists(offer_id: int):
 
 def get_match_requests(prof: Professional):
     data = read_query(
-        '''SELECT r.professional_offer_id, r.company_offer_id, r.request_from
+        '''SELECT r.id, r.professional_offer_id, r.company_offer_id, r.request_from
            FROM requests AS r
            JOIN professional_offers AS p ON r.professional_offer_id = p.id
-           WHERE p.professional_id = %s''', (prof.id,))
+           WHERE p.professional_id = %s AND r.request_from = "company"''', (prof.id,))
     
     return (ProfessionalRequest.from_query_result(*row) for row in data)
 
