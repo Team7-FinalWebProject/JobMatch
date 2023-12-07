@@ -44,8 +44,8 @@ export default function Heading() {
           </div>
         </NavLink>
         <Popover.Group className="hidden lg:flex lg:gap-x-12">
-          <NavLink to="/admins" className="text-sm font-semibold leading-6 text-black">
-            Admin
+          <NavLink to="/requests" className="text-sm font-semibold leading-6 text-black">
+            Requests
           </NavLink>
           <NavLink onClick={() => handleNavigation('companies')} to="/companies" className="text-sm font-semibold leading-6 text-black">
             Companies

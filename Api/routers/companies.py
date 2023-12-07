@@ -5,6 +5,8 @@ from services import companies_service, professionals_service
 from common.auth import company_or_401
 from data.responses import BadRequest, Unauthorized, NotFound, Forbidden
 from common.utils.file_uploader import create_upload_file
+import os
+from common.utils.emailing import data_input, mailjet
 
 
 
@@ -95,8 +97,6 @@ def match(offer_id: int, prof_offer_id: int, private_or_hidden = 'hidden', x_tok
         private_or_hidden = 'hidden'
     if not company:
         return Unauthorized(content=_ERROR_MESSAGE)
-    # if company.status == 'busy':
-    #     return Forbidden(content='You have already matched an offer!')
     prof_offer = professionals_service.check_prof_offer_exists(prof_offer_id)
     if not prof_offer:
         return NotFound(content=f'No professional offer with id: {prof_offer}')
@@ -104,15 +104,15 @@ def match(offer_id: int, prof_offer_id: int, private_or_hidden = 'hidden', x_tok
         return Forbidden(content=f'You are not the owner of offer {offer_id}')
     prof_id = companies_service.get_prof_id_from_prof_offer_id(prof_offer_id)
     
-    # match = companies_service.match_prof_offer(offer_id, prof_id, prof_offer_id, private_or_hidden)
+    match = companies_service.match_prof_offer(offer_id, prof_id, prof_offer_id, private_or_hidden)
     
-    companies_service.match_prof_offer(offer_id, prof_id, prof_offer_id, private_or_hidden)
+    # companies_service.match_prof_offer(offer_id, prof_id, prof_offer_id, private_or_hidden)
     
-    # if match is True:
-    #     mail_data = data_input(os.getenv('sender_email'), prof.username, 'usermail@mailsac.com')
-    #     result = mailjet.send.create(mail_data)
-    #     print(result.status_code)
-    #     print(result.json())
+    if match is True:
+        mail_data = data_input(os.getenv('sender_email'), company.name, 'usermail@mailsac.com')
+        result = mailjet.send.create(mail_data)
+        print(result.status_code)
+        print(result.json())
     return f'Matched with company offer: {prof_offer_id}'
 
 
