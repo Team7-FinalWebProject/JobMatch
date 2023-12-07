@@ -23,11 +23,11 @@ const Sidebar = ({ onSelect, handleSaveLoad }) => {
 //     { title: "Files ", src: "Folder", gap: true },
 //     { title: "Setting", src: "Setting" },
 //   ];
-  const [minSalary, setMinSalary] = useState([0]);
-  const [maxSalary, setMaxSalary] = useState([20000]);
-  const [salaryThreshold, setSalaryThreshold] = useState([0]);
-  const [allowMissing, setAllowMissing] = useState([0]);
-  const [skillID, setSkillID] = useState([null]);
+  const [minSalary, setMinSalary] = useState(0);
+  const [maxSalary, setMaxSalary] = useState(20000);
+  const [salaryThreshold, setSalaryThreshold] = useState(0);
+  const [allowMissing, setAllowMissing] = useState(0);
+  const [skillID, setSkillID] = useState(null);
 
   // const handleSelect = (e: React.MouseEvent<HTMLButtonElement>) => {
   //   e.preventDefault();
