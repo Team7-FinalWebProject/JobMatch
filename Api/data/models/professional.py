@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from data.models.offer import ProfessionalOffer_NoProfessionalId
 from datetime import datetime
+from typing import Any
 
 
 
@@ -16,9 +17,10 @@ class Professional(BaseModel):
     username: str | None = None
     approved: bool | None = None
     issued: datetime | None = None
+    user_type: Any | None = None
 
     @classmethod
-    def from_query_result(cls, id, user_id, default_offer_id, first_name, last_name, summary, address, status, username, approved, issued=None):
+    def from_query_result(cls, id, user_id, default_offer_id, first_name, last_name, summary, address, status, username, approved, issued=None, user_type=None):
         return cls(
             id=id,
             user_id=user_id,

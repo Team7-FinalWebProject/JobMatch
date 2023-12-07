@@ -6,6 +6,8 @@ import { ProfOffers } from '../services/getProfOffers.js';
 import { CompOffers } from '../services/getCompanyOffers.js';
 import ProfessionalOfferPost from './createProfessionalOffer.js';
 import { Link } from 'react-router-dom';
+import ProfMatchRequestPopover from '../components/ProfSendMatch.js';
+import CompMatchRequestPopover from '../components/CompSendMatch.js';
 
 
 interface ProfessionalOffer {
@@ -53,6 +55,7 @@ function Offers() {
         fetchOffers();
     }, []);
 
+
     return (
         <Layout>
             <div>
@@ -81,11 +84,7 @@ function Offers() {
                             <p>Status: {profOffer.status}</p>
                             <p>Skills: {renderProfSkills(profOffer.skills)}</p>
                             <p>Salary Range: {profOffer.min_salary} - {profOffer.max_salary}</p>
-                            <div className='flex justify-end'>
-                                <button className='px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue active:bg-blue-800' style={{border: '1px solid #ccc', boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)"}}>
-                                Match
-                                </button>
-                            </div>
+                            <CompMatchRequestPopover offerId={profOffer.id} authToken={authToken}/>
                         </div>
                         ))}
                         </div>
@@ -99,16 +98,13 @@ function Offers() {
                         <div className='grid grid-cols-1 sm:grid-cols-2 gap-6 justify-center'>
                         {companyOffers.map((compOffer) => (
                         <div key={compOffer.id} className='bg-white p-6 rounded-md shadow-md transition-transform hover:scale-105' style={{border: '2px solid #ccc', maxWidth: '500px'}}>
+                            <p className='font-semibold top-0 right-0'>Company ID: {compOffer.company_id}</p>
                             <p className='text-lg font-semibold mb-2'>
                                 Requirements: {renderCompReqirements(compOffer.requirements)}
                             </p>
                             <p>Status: {compOffer.status}</p>
                             <p>Salary Range: {compOffer.min_salary} - {compOffer.max_salary}</p>
-                            <div className='flex justify-end'>
-                                <button className='px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue active:bg-blue-800' style={{border: '1px solid #ccc', boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)"}}>
-                                Match
-                                </button>
-                            </div>
+                            <ProfMatchRequestPopover offerId={compOffer.id} authToken={authToken}/>
                         </div>
                         ))}
                         </div>

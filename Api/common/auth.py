@@ -102,7 +102,8 @@ def create_prof_token(prof: Professional) -> str:
         "status": prof.status,
         "username": prof.username,
         "approved": prof.approved,
-        "issued": str(datetime.now())
+        "issued": str(datetime.now()),
+        "user_type": "Professional"
     }
 
     return jwt.encode(payload, _JWT_SECRET, algorithm="HS256")
@@ -117,7 +118,8 @@ def create_company_token(comp: Company) -> str:
         "address": comp.address,
         "username": comp.username,
         "approved": comp.approved,
-        "issued": str(datetime.now())
+        "issued": str(datetime.now()),
+        "user_type": "Company"
     }
 
     return jwt.encode(payload, _JWT_SECRET, algorithm="HS256")
