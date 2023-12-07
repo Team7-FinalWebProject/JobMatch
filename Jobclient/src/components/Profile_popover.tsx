@@ -1,9 +1,7 @@
-import { useState } from 'react'
-import { useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
 import { Popover, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
 import Cookies from 'universal-cookie';
-import { getImage } from '../services/getImage.js';
 import {
     Bars3Icon,
     ChartPieIcon,
@@ -13,26 +11,29 @@ import {
   } from '@heroicons/react/24/outline'
   import { ChevronDownIcon, PhoneIcon, PlayCircleIcon } from '@heroicons/react/20/solid'
 import { Link } from 'react-router-dom';
+import { getUserInfo } from "../services/getUserInfo"
+
 
 const Profile = () => {
-    const [img, setImg] = useState();
-
-    const cookies = new Cookies();
-    const getAuthToken = () => cookies.get('authToken');
-    let authToken = getAuthToken();
-
-    const fetchImage = async () => {
-        if (!authToken) {
-            return}
-        const imageBlob = await getImage(authToken,"/professionals/image")
-        const imageObjectURL = URL.createObjectURL(imageBlob);
-        setImg(imageObjectURL);
-      };
-    
-      useEffect(() => {
-        fetchImage();
-      }, []);
 //   let [isOpen, setIsOpen] = useState(true)
+  const cookies = new Cookies();
+  const [userType, setUserType] = useState(null);
+//   const getAuthToken = () => cookies.get('authToken');
+//   let authToken = getAuthToken();
+
+  useEffect(() => {
+    // Assuming you have a state to store the user's type
+    const authToken = cookies.get('authToken');
+    getUserInfo(authToken)
+        .then(data => {
+            console.log('User Info:', data);
+            setUserType(data.type);
+        })
+        .catch(error => {
+            console.error('Error fetching user info:', error);
+        });
+  }, []); // Ensure the effect runs only once on mount
+
 
   return (
     <Popover className="relative">
@@ -60,14 +61,28 @@ const Profile = () => {
                 <CursorArrowRaysIcon className="h-6 w-6 text-gray-600 group-hover:text-indigo-600" aria-hidden="true" />
                 </div>
                 <div className="flex-auto">
-                <Link to="/account/professional" className="block font-semibold text-gray-900">
+                <Link to={userType === 'professional' ? '/account/professional' : '/account/company'} className="block font-semibold text-gray-900">
                     Account Info
                     <span className="absolute inset-0" />
                 </Link>
                 <p className="mt-1 text-gray-600">{"View/Edit Account"}</p>
                 </div>
             </div>
-            <img src={img} alt="icons" />
+            <div
+                key="Sign Out"
+                className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-50"
+            >
+                <div className="flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white">
+                <CursorArrowRaysIcon className="h-6 w-6 text-gray-600 group-hover:text-indigo-600" aria-hidden="true" />
+                </div>
+                <div className="flex-auto">
+                <Link to="/signout" className="block font-semibold text-gray-900">
+                    Sign Out
+                    <span className="absolute inset-0" />
+                </Link>
+                <p className="mt-1 text-gray-600">{"Logout"}</p>
+                </div>
+            </div>
         </div>
         <div className="grid grid-cols-2 divide-x divide-gray-900/5 bg-gray-50">
             <Link
