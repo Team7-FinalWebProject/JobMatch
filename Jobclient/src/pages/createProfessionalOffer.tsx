@@ -40,7 +40,7 @@ function ProfessionalOfferPost() {
           <p className="bg-gray-200 p-4 rounded-md shadow-md flex justify-center items-center" style={{ backgroundImage: `url(${backgroundSVG})` }}>
             Description: {offerData.description} |||
             Status: {offerData.offerStatus} |||
-            Skills: {offerData.skills} |||
+            Skills: {JSON.stringify(offerData.skills)} |||
             Min Salary: {offerData.minSalary} |||
             Max Salary: {offerData.maxSalary}
           </p>
