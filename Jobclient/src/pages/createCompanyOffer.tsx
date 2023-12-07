@@ -34,15 +34,11 @@ function CompanyOfferPost() {
       <>
       <div style={{ backgroundImage: `url(${backgroundSVG})` }}>
         <CompanyOfferCreate onSubmit={handleOfferSubmit}/>
-        {offerData ? (
+        {offerData && (
           <p className="bg-gray-200 p-4 rounded-md shadow-md flex justify-center items-center" style={{ backgroundImage: `url(${backgroundSVG})` }}>
             Requirements: {offerData.requirements} |||
             Min Salary: {offerData.minSalary} |||
             Max Salary: {offerData.maxSalary}
-          </p>
-        ) : (
-          <p className="bg-red-200 p-4 rounded-md shadow-md flex justify-center items-center" style={{ backgroundImage: `url(${backgroundSVG})` }}>
-            Oops! Something went wrong.
           </p>
         )}
       </div>
