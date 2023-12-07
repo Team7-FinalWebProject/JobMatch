@@ -1,4 +1,4 @@
-export const getData = async (authToken, apiUrl) => {
+export const postData = async (authToken, apiUrl, content) => {
     const baseURL = import.meta.env.VITE_BE_URL || 'http://localhost:8000'
     try {
 
@@ -6,8 +6,11 @@ export const getData = async (authToken, apiUrl) => {
             'Content-Type': 'application/json',
             'x-token': authToken,
           };
+
         const response = await fetch(baseURL + apiUrl, {
+            method: 'POST',
             headers: headers,
+            body: JSON.stringify(content),
         });
 
         if (!response.ok) {
@@ -15,8 +18,8 @@ export const getData = async (authToken, apiUrl) => {
             console.error('Error fetching data');
         }
         // console.log('Headers:', JSON.stringify(headers));
-        const data = await response.json();
-        return data
+        await response
+        return null
     }
     catch (error) {
         console.error('Error fetching data:', error);

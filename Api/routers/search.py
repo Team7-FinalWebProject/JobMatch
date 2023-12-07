@@ -42,8 +42,8 @@ def view_approved_company_offer(id: int, x_token: str = Header()):
 @search_router.get('/company_offers', tags=["Search Global"])
 def view_approved_company_offers(min_salary: int = 0, max_salary: int = 1000000, saved_skill_filters_desc: int | None = None, salary_threshold_pct: float = 20, allowed_missing_skills: int = 0, x_token: str = Header()):
     user = user_or_error(x_token)
-    filters = (min_salary, max_salary, saved_skill_filters_desc, salary_threshold_pct, allowed_missing_skills, user.id)
-    return search_service.get_company_offers(*filters)
+    filters = (min_salary, max_salary, saved_skill_filters_desc, salary_threshold_pct, allowed_missing_skills)
+    return search_service.get_company_offers(*filters, user.id)
 
 # --view professional offer (hide hidden)
 @search_router.get('/professional_offer/{id}', tags=["Search Global"])
@@ -56,10 +56,10 @@ def view_approved_professional_offer(id: int, x_token: str = Header()):
 @search_router.get('/professional_offers', tags=["Search Global"])
 def view_approved_professional_offers(min_salary: int = 0, max_salary: int = 1000000, saved_skill_filters_desc: int | None = None, salary_threshold_pct: float = 20, allowed_missing_skills: int = 0, x_token: str = Header()):
     user = user_or_error(x_token)
-    filters = (min_salary, max_salary, saved_skill_filters_desc, salary_threshold_pct, allowed_missing_skills, user.id)
-    return search_service.get_professional_offers(*filters)
+    filters = (min_salary, max_salary, saved_skill_filters_desc, salary_threshold_pct, allowed_missing_skills)
+    return search_service.get_professional_offers(*filters, user.id)
 
-@search_router.put('/propose_skills', tags=["Search Extra"])
+@search_router.put('/propose_skills', tags=["Search Global"])
 def propose_skills(skills: list = Body(default=["Skill1", "Skill2"]), x_token: str = Header()):
     user = user_or_error(x_token)
     if not skills:
@@ -71,6 +71,7 @@ def propose_skills(skills: list = Body(default=["Skill1", "Skill2"]), x_token: s
 @search_router.post('/filter', tags=["Search Global"])
 def save_filter(skill_filters:dict = Body(default={"Computers" : 1, "English": 1}), x_token: str = Header()):
     user = user_or_error(x_token)
+    print(skill_filters)
     return search_service.add_webfilter(user.user_id, skill_filters)
 
 
@@ -112,8 +113,8 @@ def view_approved_active_company_offer(id:int, x_token: str = Header()):
 @search_professional_router.get('/company_offers', tags=["Professional"])
 def view_approved_active_company_offers(min_salary: int = 0, max_salary: int = 1000000, saved_skill_filters_desc: int | None = None, salary_threshold_pct: float = 20, allowed_missing_skills: int = 0, x_token: str = Header()):
     user = user_or_error(x_token)
-    filters = (min_salary, max_salary, saved_skill_filters_desc, salary_threshold_pct, allowed_missing_skills, user.id)
-    return search_service.get_company_offers(*filters) if user.__class__.__name__ == 'Professional' else None
+    filters = (min_salary, max_salary, saved_skill_filters_desc, salary_threshold_pct, allowed_missing_skills)
+    return search_service.get_company_offers(*filters, user.id) if user.__class__.__name__ == 'Professional' else None
 
 ##TODO: Throw error instead of if user.__class__.__name__ else None etc ?
 # ####Company:
@@ -142,7 +143,7 @@ def view_approved_active_company_professional_offer(id:int,x_token: str = Header
 def view_approved_active_company_professional_offers(min_salary: int = 0, max_salary: int = 1000000, saved_skill_filters_desc: int | None = None, salary_threshold_pct: float = 20, allowed_missing_skills: int = 0, x_token: str = Header()):
     user = user_or_error(x_token)
     filters = (min_salary, max_salary, saved_skill_filters_desc, salary_threshold_pct, allowed_missing_skills, user.id)
-    return search_service.get_professional_offers(*filters) if user.__class__.__name__ == 'Company' else None
+    return search_service.get_professional_offers(*filters, user.id) if user.__class__.__name__ == 'Company' else None
 
 
 ###ADMIN:

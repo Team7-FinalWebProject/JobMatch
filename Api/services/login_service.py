@@ -35,26 +35,39 @@ def find_user_by_username(username: str):
     admin = read_query(
         '''SELECT id, id, username, password from users
            WHERE username = %s''', (username,))
-    
+
     if prof:
-        password_bytes = bytes(prof[0][-1])
-        password_string = password_bytes.decode('utf-8')
-        return password_string, next(
-            (Professional.from_query_result(*row[1:-1]) for row in prof), None)
-    
+        return "professional"
+
     if comp:
-        password_bytes = bytes(comp[0][-1])
-        password_string = password_bytes.decode('utf-8')
-        return password_string, next(
-            (Company.from_query_result(*row[1:-1]) for row in comp), None)
-    
+        return "company"
+
     if admin:
-        password_bytes = bytes(admin[0][-1])
-        password_string = password_bytes.decode('utf-8')
-        return password_string, reader_one(Admin, admin)
-    
-    else:
-        return None, None
+        return "admin"
+
+    return None
+
+    # if prof:
+    #     password_bytes = bytes(prof[0][-1])
+    #     password_string = password_bytes.decode('utf-8')
+    #     return "professional", password_string, next(
+    #         (Professional.from_query_result(*row[1:-1]) for row in prof), None)
+    #
+    # if comp:
+    #     password_bytes = bytes(comp[0][-1])
+    #     password_string = password_bytes.decode('utf-8')
+    #     return "company", password_string, next(
+    #         (Company.from_query_result(*row[1:-1]) for row in comp), None)
+    #
+    # if admin:
+    #     password_bytes = bytes(admin[0][-1])
+    #     password_string = password_bytes.decode('utf-8')
+    #     return "admin", password_string, reader_one(Admin, admin)
+    #
+    # else:
+    #     return None, None, None
+
+
 
 
 

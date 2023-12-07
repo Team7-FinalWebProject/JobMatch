@@ -19,4 +19,4 @@ _ERROR_MESSAGE = 'You are not authorized [NOT LOGGED IN | TOKEN EXPIRED | NOT AP
 @users_router.get('/user_info', tags=['User'])
 def get_user_info(x_token: str = Header()):
     user = user_or_error(x_token)
-    return login_service.find_user_by_username(user.id) if user.__class__.__name__ == 'Professional' else None
+    return login_service.find_user_by_username(user.username)
