@@ -60,6 +60,38 @@ def find_user_by_username(username: str):
 
 
 
+def get_user_type(username: str):
+    prof = read_query(
+        '''SELECT u.id, p.id,
+           p.user_id, p.default_offer_id, p.first_name,
+           p.last_name, p.summary, p.address,
+           p.status, u.username, p.approved, u.password 
+           FROM users AS u
+           JOIN professionals AS p ON u.id = p.user_id
+           WHERE u.username = %s''', (username,))
+
+    comp = read_query(
+        '''SELECT u.id, c.id, c.user_id, 
+           c.name, c.description, c.address, 
+           u.username, c.approved, u.password
+           FROM users AS u
+           JOIN companies AS c ON u.id = c.user_id
+           WHERE u.username = %s''', (username,))
+
+    admin = read_query(
+        '''SELECT id, id, username, password from users
+           WHERE username = %s''', (username,))
+
+    if prof:
+        return "professional"
+
+    if comp:
+        return "company"
+
+    if admin:
+        return "admin"
+
+    return None
 
 
 # DEPRECATED
