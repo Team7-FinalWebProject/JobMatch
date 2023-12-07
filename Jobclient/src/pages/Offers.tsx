@@ -42,9 +42,6 @@ function Offers() {
     const getAuthToken = () => cookies.get('authToken');
     let authToken = getAuthToken();
 
-    const jwtPayload = authToken ? JSON.parse(atob(authToken.split('.')[1])) : null;
-    const isProfessional = jwtPayload && jwtPayload.summary;
-    const isCompany = jwtPayload && jwtPayload.description;
 
     const min_salary = searchParams.get("mins") || null
     const max_salary = searchParams.get("maxs") || null
@@ -108,7 +105,7 @@ function Offers() {
         handleQueryParam(min_salary, max_salary, salary_threshold_pct, allowed_missing_skills, saved_skill_filters_desc);
     }
 
-    if (isProfessional) {
+    if (1) {
         return (
             <Layout>
                 <div>

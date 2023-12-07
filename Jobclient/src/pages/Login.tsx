@@ -71,8 +71,8 @@ function Login() {
       setAuthToken(token);
 
       // Fetch user information after successful login
-      const userInfo = await getUserInfo(token);
-      console.log('User Information:', userInfo);
+      // const userInfo = await getUserInfo(token);
+      // console.log('User Information:', userInfo);
 
       // You can do something with the user information here
 
