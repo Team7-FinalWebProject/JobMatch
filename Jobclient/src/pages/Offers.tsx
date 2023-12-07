@@ -160,7 +160,7 @@ function Offers() {
                         </div>
                         <div className='space-y-6'>
                          
-                            <Link to="/offers/professionals/create">
+                            <Link to="/offers/companies/create">
                                 <button className='top-0 left-0 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue active:bg-blue-800 z-10' style={{border: '1px solid #ccc', boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)"}}>
                                 Create Offer
                                 </button>

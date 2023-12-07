@@ -25,7 +25,12 @@ function ProfessionalOfferPost() {
       }
       try {
         const result = await createProfOffer(description, offerStatus, skills, minSalary, maxSalary, authToken);
-        setOfferData(result);
+        if (result.status === 403) {
+          setOfferData(null);
+        }
+        else{
+          setOfferData(result);
+        }
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -35,14 +40,18 @@ function ProfessionalOfferPost() {
       <>
       <div style={{ backgroundImage: `url(${backgroundSVG})` }}>
         <ProfessionalOfferCreate onSubmit={handleOfferSubmit}/>
-        {offerData && (
-        <p className="bg-gray-200 p-4 rounded-md shadow-md flex justify-center items-center" style={{ backgroundImage: `url(${backgroundSVG})` }}>
-            Description: { offerData.description } ||| 
-            Status: { offerData.offerStatus } ||| 
-            Skills: { offerData.skills } ||| 
-            Min Salary: { offerData.minSalary } |||
-            Max Salary: { offerData.maxSalary }
-        </p>
+        {offerData ? (
+          <p className="bg-gray-200 p-4 rounded-md shadow-md flex justify-center items-center" style={{ backgroundImage: `url(${backgroundSVG})` }}>
+            Description: {offerData.description} |||
+            Status: {offerData.offerStatus} |||
+            Skills: {offerData.skills} |||
+            Min Salary: {offerData.minSalary} |||
+            Max Salary: {offerData.maxSalary}
+          </p>
+        ) : (
+          <p className="bg-red-200 p-4 rounded-md shadow-md flex justify-center items-center" style={{ backgroundImage: `url(${backgroundSVG})` }}>
+            Can't create offer when busy.
+          </p>
         )}
       </div>
       </>
