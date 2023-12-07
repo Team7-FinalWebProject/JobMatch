@@ -8,12 +8,14 @@ import { Link } from 'react-router-dom';
 
 
 interface ProfessionalRequest {
+    id: number;
     professional_offer_id: number;
     company_offer_id: number;
     request_from: string;
 }
 
 interface CompanyRequest {
+    id: number;
     professional_offer_id: number;
     company_offer_id: number;
     request_from: string;
@@ -60,19 +62,12 @@ function MatchRequests() {
                         <h2 className='text-3xl font-bold tracking-tight text-black sm:text-4xl'>Available Offers</h2>
                     </div>
                     <div className='space-y-6'>
-                     
-                        <Link to="/offers/professionals/create">
-                            <button className='top-0 left-0 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue active:bg-blue-800 z-10' style={{border: '1px solid #ccc', boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)"}}>
-                            Create Offer
-                            </button>
-                        </Link>
-                        
                         <div className='border-b border-gray-400'>
-                        <h3 className='text-xl font-bold mb-6 text-left'>Professional Offers</h3>
+                        <h3 className='text-xl font-bold mb-6 text-left'>Receieved Offers</h3>
                         </div>
                         <div className='grid grid-cols-1 sm:grid-cols-2 gap-6 justify-center'>
                         {ProfessionalRequests.map((ProfRequests) => (
-                        <div key={ProfRequests.request_from} className='bg-white p-6 rounded-md shadow-md transition-transform hover:scale-105' style={{border: '2px solid #ccc', maxWidth: '500px'}}>
+                        <div key={ProfRequests.id} className='bg-white p-6 rounded-md shadow-md transition-transform hover:scale-105' style={{border: '2px solid #ccc', maxWidth: '500px'}}>
                             <p className='font-semibold top-0 right-0'>Your Offer ID: {ProfRequests.professional_offer_id}</p>
                             <p className='font-semibold top-0 right-0'>Company Offer ID: {ProfRequests.company_offer_id}</p>
                         </div>
@@ -87,7 +82,7 @@ function MatchRequests() {
                         </div>
                         <div className='grid grid-cols-1 sm:grid-cols-2 gap-6 justify-center'>
                         {companyRequests.map((compOffer) => (
-                        <div key={compOffer.request_from} className='bg-white p-6 rounded-md shadow-md transition-transform hover:scale-105' style={{border: '2px solid #ccc', maxWidth: '500px'}}>
+                        <div key={compOffer.id} className='bg-white p-6 rounded-md shadow-md transition-transform hover:scale-105' style={{border: '2px solid #ccc', maxWidth: '500px'}}>
                             <p className='font-semibold top-0 right-0'>Your Offer ID: {compOffer.company_offer_id}</p>
                             <p className='font-semibold top-0 right-0'>Professional Offer ID: {compOffer.professional_offer_id}</p>
                         </div>
