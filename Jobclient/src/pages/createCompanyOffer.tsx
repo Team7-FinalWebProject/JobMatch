@@ -36,7 +36,7 @@ function CompanyOfferPost() {
         <CompanyOfferCreate onSubmit={handleOfferSubmit}/>
         {offerData && (
           <p className="bg-gray-200 p-4 rounded-md shadow-md flex justify-center items-center" style={{ backgroundImage: `url(${backgroundSVG})` }}>
-            Requirements: {offerData.requirements} |||
+            Requirements: {JSON.stringify(offerData.requirements)} |||
             Min Salary: {offerData.minSalary} |||
             Max Salary: {offerData.maxSalary}
           </p>
