@@ -3,6 +3,7 @@ import { getApprovedProfessionals } from '../services/getAllProfessionals.js';
 import Cookies from 'universal-cookie';
 import Layout from './Layout.js';
 import backgroundSVG from '../assets/subtle-prism.svg'
+import { getImage } from '../services/getImage.js';
 
 interface Professional {
   id: number;
@@ -16,6 +17,7 @@ interface Professional {
 
 function UserList() {
   const [professionals, setProfessionals] = useState<Professional[]>([]);
+  const [imgs, setImgs] = useState({});
   const cookies = new Cookies();
   const getAuthToken = () => cookies.get('authToken');
   let authToken = getAuthToken();
@@ -33,6 +35,24 @@ function UserList() {
     fetchProfessionals();
   }, []);
 
+  
+  const fetchImage = async (username) => {
+    if (!authToken || !username) {
+      return;
+    }
+  
+    const imageBlob = await getImage(authToken,`/professionals/image/${username}`)
+    const imageObjectURL = URL.createObjectURL(imageBlob);
+    setImgs((prevImgs) => ({ ...prevImgs, [username]: imageObjectURL }));
+  };
+
+  useEffect(() => {
+    // Load images for each username
+    professionals.forEach((prof) => {
+      fetchImage(prof.username);
+    });
+  }, [professionals]);
+
   // ADD MORE ELEMENTS TO SHOW MORE DATA FOR THE PROFESSIONAL && SHOULD FIX THE PHOTO 
   return (
     <Layout>
@@ -42,8 +62,7 @@ function UserList() {
         {professionals.map((professional) => (
           <div key={professional.id} style={styles.professionalCard}>
               <div style={styles.imageContainer}>
-                <img
-                  src={'../imgs/testuser1.png'}
+              <img key={professional.username} src={imgs[professional.username]} alt={`Image for ${professional.username}`}
                   style={styles.image}
                 />
               </div>
