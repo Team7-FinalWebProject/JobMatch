@@ -4,25 +4,30 @@
 import { loginUser } from './login';
 
 // Add a new function to fetch user information
-export const getUserInfo = async (token) => {
+export const getUserInfo = async (authToken) => {
     const baseURL = import.meta.env.VITE_BE_URL || 'http://localhost:8000';
-
+    
     try {
+
         const response = await fetch(baseURL + '/user/user_info', {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+                'x-token': authToken,
             },
         });
 
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
 
+        if (!response.ok) {
+            // TODO: catch expired token and delete token + re-login
+            console.error('Error fetching data');
+        }
+        // console.log('Headers:', JSON.stringify(headers));
         const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Error fetching user info:', error);
+        return data
+    }
+    catch (error) {
+        console.error('Error fetching data:', error);
     }
 }
 
