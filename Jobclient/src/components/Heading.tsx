@@ -29,8 +29,14 @@ export default function Heading() {
           <NavLink to="/professionals" className="text-sm font-semibold leading-6 text-black">
             Professionals
           </NavLink>
-          <NavLink to="/offers" className="text-sm font-semibold leading-6 text-black">
+          {/* <NavLink to="/offers" className="text-sm font-semibold leading-6 text-black">
             Offers
+          </NavLink> */}
+          <NavLink to="/jobs" className="text-sm font-semibold leading-6 text-black">
+            Jobs
+          </NavLink>
+          <NavLink to="/candidates" className="text-sm font-semibold leading-6 text-black">
+            Candidates
           </NavLink>
           <NavLink to="/messages" className="text-sm font-semibold leading-6 text-black">
             Messages
