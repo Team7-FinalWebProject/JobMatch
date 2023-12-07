@@ -11,15 +11,10 @@ const ProfMatchRequestPopover = ({ offerId, authToken }) => {
 
     const handleButtonClick = async() => {
         try {
-            if (authToken.user_type === "Professional") {
-                const result = await ProfRequestMatch(offerId, offerIdInput, authToken);
-                setResponseMessage(result.text);
+            const result = await ProfRequestMatch(offerId, offerIdInput, authToken);
+            setResponseMessage(result.text);
             }
-            else {
-                console.log("Prof", authToken.user_type)
-                setResponseMessage('You are not authorized')
-            }
-        } catch (error) {
+        catch (error) {
             console.error('Error sending match request:', error);
             setResponseMessage('Error sending request');
        

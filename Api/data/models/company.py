@@ -15,7 +15,7 @@ class Company(BaseModel):
     user_type: Any | None = None
 
     @classmethod
-    def from_query_result(cls, id, user_id, name, description, address, username, approved, issued=None, user_type=None):
+    def from_query_result(cls, id, user_id, name, description, address, username, approved, issued=None):
         return cls(
             id=id,
             user_id=user_id,

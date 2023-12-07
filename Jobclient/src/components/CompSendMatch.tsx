@@ -10,13 +10,8 @@ const CompMatchRequestPopover = ({ offerId, authToken }) => {
 
     const handleButtonClick = async() => {
         try {
-            if (authToken.user_type === "Company") {
-                const result = await CompRequestMatch(offerIdInput, offerId, authToken);
-                setResponseMessage(result.text);
-            }
-            else {
-                setResponseMessage('You are not authorized')
-            }
+            const result = await CompRequestMatch(offerIdInput, offerId, authToken);
+            setResponseMessage(result.text);
             
         } catch (error) {
             console.error('Error sending match request:', error);
