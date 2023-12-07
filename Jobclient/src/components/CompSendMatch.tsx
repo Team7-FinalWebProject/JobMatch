@@ -11,7 +11,9 @@ const CompMatchRequestPopover = ({ offerId, authToken }) => {
     const handleButtonClick = async() => {
         try {
             const result = await CompRequestMatch(offerIdInput, offerId, authToken);
-            setResponseMessage(result.text);
+            if (result.text === undefined) {
+                setResponseMessage('Sent match request');
+            }
             
         } catch (error) {
             console.error('Error sending match request:', error);

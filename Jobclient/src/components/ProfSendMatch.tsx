@@ -12,7 +12,10 @@ const ProfMatchRequestPopover = ({ offerId, authToken }) => {
     const handleButtonClick = async() => {
         try {
             const result = await ProfRequestMatch(offerId, offerIdInput, authToken);
-            setResponseMessage(result.text);
+            console.log(result.text);
+                if (result.text === undefined) {
+                    setResponseMessage('Sent match request');
+                }
             }
         catch (error) {
             console.error('Error sending match request:', error);

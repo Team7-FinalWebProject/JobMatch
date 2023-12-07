@@ -11,11 +11,11 @@ export const CompRequestMatch = async(profOfferId, compOfferId, authToken) => {
         });
         
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            throw new Error(response.statusText);
         }
-
-        const data = await response.text();
-        return data;
+        else {
+            return true;
+        }
     } catch (error) {
         console.error('Error fetching data:', error)
     }
