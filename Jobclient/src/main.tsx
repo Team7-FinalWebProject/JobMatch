@@ -22,6 +22,8 @@ import CompanyList from './pages/Company.tsx'
 import RequestSupport from './pages/SupportPage.tsx';
 import ProfessionalOfferPost from './pages/createProfessionalOffer.tsx';
 import Offers from './pages/Offers.tsx';
+import CompanyOffers from './pages/CompanyOffers.tsx';
+import ProfessionalOffers from './pages/ProfessionalOffers.tsx';
 import MatchRequests from './pages/MatchRequests.tsx';
 import CompanyOfferPost from './pages/createCompanyOffer.tsx';
 
@@ -55,7 +57,9 @@ const router = createBrowserRouter(
     <Route path="/companies" element={<CompanyList />} loader={tokenLoader}></Route>
     <Route path="/support" element={<RequestSupport />} loader={tokenLoader}></Route>
     <Route path="/offers/professionals/create" element={<ProfessionalOfferPost />} loader={tokenLoader}></Route>
-    <Route path="/offers" element={<Offers />} loader={tokenLoader}></Route>
+    {/* <Route path="/offers" element={<Offers />} loader={tokenLoader}></Route> */}
+    <Route path="/jobs" element={<CompanyOffers />} loader={tokenLoader}></Route>
+    <Route path="/candidates" element={<ProfessionalOffers />} loader={tokenLoader}></Route>
     <Route path="/requests" element={<MatchRequests />} loader={tokenLoader}></Route>
     <Route path="/offers/companies/create" element={< CompanyOfferPost/>} loader={tokenLoader}></Route>
     {/* <Route path="/register" element={<App />}></Route> */}
