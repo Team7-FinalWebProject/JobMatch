@@ -1,5 +1,5 @@
 import { useState } from "react";
-// import backgroundSVG from '../assets/endless-constellation.svg';
+import backgroundSVG from '../assets/subtle-prism.svg';
 // import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon } from '@heroicons/react/20/solid'
 import { BookOpenIcon } from "@heroicons/react/24/outline";
 import { ChevronDoubleLeftIcon } from "@heroicons/react/20/solid";
@@ -69,7 +69,7 @@ const Sidebar = ({ onSelect, handleSaveLoad }) => {
 
 
   return (
-    <div className="flex border-r border-y-neutral-600">
+    <div className="flex border-r border-y-neutral-600 shadow-md" style={{border: '1px solid white', borderRadius: '8px', boxShadow: "5px 0 10px rgba(0, 0, 0, 0.1), 0 0 0 2px rgba(0, 0, 0, 0.1)",backgroundImage: `url(${backgroundSVG})`, backgroundSize: '900% 900%'}}>
     {/* <div className="flex border-r border-white" style={{ backgroundImage: `url(${backgroundSVG})` }}> */}
       <div
         className={` ${
@@ -100,7 +100,7 @@ const Sidebar = ({ onSelect, handleSaveLoad }) => {
             >
               <button
               onClick={handleSubmit}
-              className="bg-blue-500 text-white w-10/12 px-2 py-2 rounded-md hover:bg-blue-600 mr-2">
+              className="bg-blue-500 text-white w-10/12 px-2 py-2 rounded-md hover:bg-blue-600 mr-2" style={{border: '1px solid #ccc', boxShadow: "0 10px 20px rgba(0, 0, 0, 0.1)"}}>
               Apply
               </button>
             </li>
@@ -126,7 +126,7 @@ const Sidebar = ({ onSelect, handleSaveLoad }) => {
                       name="receiverUsername"
                       id="receiverUsername"
                       autoComplete="given-name"
-                      className="block w-30 rounded-md border-0 px-0 py-1 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-3 bg-opacity-50"
+                      className="block w-30 rounded-md border-0 px-0 py-1 pl-2 text-gray-900 shadow-md ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-3 bg-opacity-50"
                     />
                 </label>
                 <div className="mt-2">
@@ -154,7 +154,7 @@ const Sidebar = ({ onSelect, handleSaveLoad }) => {
                       name="receiverUsername"
                       id="receiverUsername"
                       autoComplete="given-name"
-                      className="block w-30 rounded-md border-0 px-0 py-1 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-3 bg-opacity-50"
+                      className="block w-30 rounded-md border-0 px-0 py-1 pl-2 text-gray-900 shadow-md ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-3 bg-opacity-50"
                     />
                       {/* <h1 className="text-2xl font-semibold ">${Menu.src}</h1> */}
                 </label>
@@ -183,7 +183,7 @@ const Sidebar = ({ onSelect, handleSaveLoad }) => {
                       name="receiverUsername"
                       id="receiverUsername"
                       autoComplete="given-name"
-                      className="block w-30 rounded-md border-0 px-0 py-1 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-3 bg-opacity-50"
+                      className="block w-30 rounded-md border-0 px-0 py-1 pl-2 text-gray-900 shadow-md ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-3 bg-opacity-50"
                     />
                       {/* <h1 className="text-2xl font-semibold ">${Menu.src}</h1> */}
                 </label>
@@ -212,7 +212,7 @@ const Sidebar = ({ onSelect, handleSaveLoad }) => {
                       name="receiverUsername"
                       id="receiverUsername"
                       autoComplete="given-name"
-                      className="block w-30 rounded-md border-0 px-0 py-1 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-3 bg-opacity-50"
+                      className="block w-30 rounded-md border-0 px-0 py-1 pl-2 text-gray-900 shadow-md ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-3 bg-opacity-50"
                     />
                       {/* <h1 className="text-2xl font-semibold ">${Menu.src}</h1> */}
                 </label>
