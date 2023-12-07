@@ -12,7 +12,6 @@ class Company(BaseModel):
     username: str | None = None
     approved: bool | None = None
     issued: datetime | None = None
-    user_type: Any | None = None
 
     @classmethod
     def from_query_result(cls, id, user_id, name, description, address, username, approved, issued=None):
