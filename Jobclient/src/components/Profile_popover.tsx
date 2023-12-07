@@ -15,7 +15,7 @@ import {
 import { Link } from 'react-router-dom';
 
 const Profile = () => {
-    const [img, setImg] = useState();
+    const [img, setImg] = useState("");
 
     const cookies = new Cookies();
     const getAuthToken = () => cookies.get('authToken');
