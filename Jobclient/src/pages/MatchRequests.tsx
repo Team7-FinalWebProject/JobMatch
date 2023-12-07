@@ -125,7 +125,7 @@ function MatchRequests() {
                             <div className='grid grid-cols-1 sm:grid-cols-2 gap-6 justify-center'>
                             {companyRequests.length === 0 ? (
                                 <div className='text-center text-gray-500'>
-                                    <p>You have not received any company offers.</p>
+                                    <p>You have not received any requests.</p>
                                 </div>
                             ) : (
                                 companyRequests.map((compRequest) => (
