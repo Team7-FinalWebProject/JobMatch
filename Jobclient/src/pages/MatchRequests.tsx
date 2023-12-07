@@ -58,18 +58,18 @@ function MatchRequests() {
 
     const handleCompanyOfferMatch = async(offerId, compOfferId, authToken) => {
         const response = await MatchCompOffer(offerId, compOfferId, authToken);
-        if (response === undefined) {
+        console.log(response)
+        if (response.text === true) {
             setResponseMessage('You have a match!')
         }
-        setResponseMessage(response.text);
     };
 
     const handleProfessionalOfferMatch = async(offerId, profOfferId, authToken) => {
         const response = await MatchProfOffer(offerId, profOfferId, authToken);
-        if (response === undefined) {
+        console.log(response)
+        if (response.text === true) {
             setResponseMessage('You have a match!')
         }
-        setResponseMessage(response)
     }
 
     if (isProfessional) {
@@ -98,15 +98,15 @@ function MatchRequests() {
                                             Match
                                             </button>
                                         </div>
-                                        {responseMessage && (
-                                            <div className="p-4 text-center">
-                                                <p className="text-gray-800">{responseMessage}</p>
-                                            </div>
-                                        )}
                                     </div>
                                 ))
                             )}
                             </div>
+                            {responseMessage && (
+                                <div className="p-4 text-center">
+                                    <p className="text-gray-800">{responseMessage}</p>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
