@@ -55,7 +55,7 @@ const router = createBrowserRouter(
     <Route path="/support" element={<RequestSupport />} loader={tokenLoader}></Route>
     <Route path="/offers/professionals/create" element={<ProfessionalOfferPost />} loader={tokenLoader}></Route>
     <Route path="/offers" element={<Offers />} loader={tokenLoader}></Route>
-    <Route path="/professional/requests" element={<MatchRequests />} loader={tokenLoader}></Route>
+    <Route path="/requests" element={<MatchRequests />} loader={tokenLoader}></Route>
     {/* <Route path="/register" element={<App />}></Route> */}
       {/* <Route path="dashboard" element={<Dashboard />} /> */}
       {/* ... etc. */}

@@ -190,10 +190,10 @@ def set_status(comp_id: int, comp_offer_id: int, status):
 
 def get_match_requests(company: Company):
     data = read_query(
-        '''SELECT r.professional_offer_id, r.company_offer_id, r.request_from
+        '''SELECT r.id, r.professional_offer_id, r.company_offer_id, r.request_from
            FROM requests AS r
            JOIN company_offers AS p ON r.company_offer_id = p.id
-           WHERE p.company_id = %s''', (company.id,))
+           WHERE p.company_id = %s AND r.request_from = %s''', (company.id, 'professional'))
 
     return (CompanyRequest.from_query_result(*row) for row in data)
 

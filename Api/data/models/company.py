@@ -80,13 +80,15 @@ class Company_Data_For_Return(BaseModel):
         
         
 class CompanyRequest(BaseModel):
+    id: int | None = None
     prof_offer_id: int
     comp_offer_id: int
     request_from: str
 
     @classmethod
-    def from_query_result(cls, prof_offer_id, comp_offer_id, request_from):
+    def from_query_result(cls, id, prof_offer_id, comp_offer_id, request_from):
         return cls(
+            id=id,
             prof_offer_id=prof_offer_id,
             comp_offer_id=comp_offer_id,
             request_from=request_from)
