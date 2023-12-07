@@ -15,6 +15,23 @@ import { getUserInfo } from "../services/getUserInfo"
 
 
 const Profile = () => {
+    const [img, setImg] = useState();
+
+    const cookies = new Cookies();
+    const getAuthToken = () => cookies.get('authToken');
+    let authToken = getAuthToken();
+
+    const fetchImage = async () => {
+        if (!authToken) {
+            return}
+        const imageBlob = await getImage(authToken,"/professionals/image")
+        const imageObjectURL = URL.createObjectURL(imageBlob);
+        setImg(imageObjectURL);
+      };
+    
+      useEffect(() => {
+        fetchImage();
+      }, []);
 //   let [isOpen, setIsOpen] = useState(true)
   const cookies = new Cookies();
   const [userType, setUserType] = useState(null);

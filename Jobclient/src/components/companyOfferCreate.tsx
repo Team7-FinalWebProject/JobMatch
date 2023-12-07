@@ -1,40 +1,32 @@
 import { useState } from 'react';
 import SkillForm from './SkillsForm';
 
-interface ProfOfferForm_Props {
+interface CompOfferForm_Props {
   onSubmit: (
-    description: string,
-    status: string,
-    skills: any,
+    requirements: any,
     min_salary: number,
     max_salary: number
     ) => void;
 }
 
-const ProfessionalOfferCreate: React.FC<ProfOfferForm_Props> = ({ onSubmit }) => {
-  const [skills, setSkills] = useState<any>(null);
+const CompanyOfferCreate: React.FC<CompOfferForm_Props> = ({ onSubmit }) => {
+  const [requirements, setRequirements] = useState<any>(null);
 
   const handleAddSkill = (skillsDictionary: any) => {
-    setSkills(skillsDictionary);
+    setRequirements(skillsDictionary);
   };
   
   const handleSubmit = async (e:React.FormEvent) => {
     e.preventDefault();
     const target = e.target as typeof e.target & {
-        offerDescription: { value: string };
-        offerStatus: { value: string };
         offerMinSalary: { value: number };
         offerMaxSalary: { value: number };
     };
-    const offerDescription = target.offerDescription.value;
-    const offerStatus = target.offerStatus.value;
     const offerMinSalary = target.offerMinSalary.value;
     const offerMaxSalary = target.offerMaxSalary.value;
 
     onSubmit(
-      offerDescription, 
-      offerStatus, 
-      skills,
+      requirements,
       offerMinSalary,
       offerMaxSalary);
   };
@@ -48,33 +40,7 @@ const ProfessionalOfferCreate: React.FC<ProfOfferForm_Props> = ({ onSubmit }) =>
         <div className="mt-6 border-t border-gray-100">
           <dl className="divide-y divide-gray-100">
             <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-              <dt className="text-sm font-medium leading-6 text-gray-900">Description</dt>
-              <textarea
-                  name="offerDescription"
-                  id="offerDescription"
-                  rows={3}
-                  className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  style={{
-                    border: '2px solid white',
-                    boxShadow: "0 6px 10px rgba(0, 0, 0, 0.1)"}}
-                  defaultValue={''}
-                />
-            </div>
-            <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-              <dt className="text-sm font-medium leading-6 text-gray-900">Status</dt>
-              <textarea
-                  name="offerStatus"
-                  id="offerStatus"
-                  rows={1}
-                  className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  style={{
-                    border: '2px solid white',
-                    boxShadow: "0 6px 10px rgba(0, 0, 0, 0.1)"}}
-                  defaultValue={''}
-                />
-            </div>
-            <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-              <dt className="text-sm font-medium leading-6 text-gray-900">Skills</dt>
+              <dt className="text-sm font-medium leading-6 text-gray-900">Requirements</dt>
               <SkillForm onAddSkill={handleAddSkill}/>
             </div>
             <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -110,4 +76,4 @@ const ProfessionalOfferCreate: React.FC<ProfOfferForm_Props> = ({ onSubmit }) =>
   )
 }
 
-export default ProfessionalOfferCreate;
+export default CompanyOfferCreate;

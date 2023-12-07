@@ -42,9 +42,9 @@ function Offers() {
     const getAuthToken = () => cookies.get('authToken');
     let authToken = getAuthToken();
 
-    const jwtPayload = authToken ? JSON.parse(atob(authToken.split('.')[1])) : null;
-    const isProfessional = jwtPayload && jwtPayload.summary;
-    const isCompany = jwtPayload && jwtPayload.description;
+    // const jwtPayload = authToken ? JSON.parse(atob(authToken.split('.')[1])) : null;
+    // const isProfessional = jwtPayload && jwtPayload.summary;
+    // const isCompany = jwtPayload && jwtPayload.description;
 
     const min_salary = searchParams.get("mins") || null
     const max_salary = searchParams.get("maxs") || null
@@ -108,7 +108,7 @@ function Offers() {
         handleQueryParam(min_salary, max_salary, salary_threshold_pct, allowed_missing_skills, saved_skill_filters_desc);
     }
 
-    if (isProfessional) {
+    if (1) {
         return (
             <Layout>
                 <div>
@@ -150,7 +150,7 @@ function Offers() {
         );
     }
 
-    else if (isCompany) {
+    if (1) {
         return (
             <Layout>
                 <div>
@@ -160,7 +160,7 @@ function Offers() {
                         </div>
                         <div className='space-y-6'>
                          
-                            <Link to="/offers/professionals/create">
+                            <Link to="/offers/companies/create">
                                 <button className='top-0 left-0 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue active:bg-blue-800 z-10' style={{border: '1px solid #ccc', boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)"}}>
                                 Create Offer
                                 </button>

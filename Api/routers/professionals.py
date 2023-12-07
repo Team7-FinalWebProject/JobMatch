@@ -139,3 +139,18 @@ def get_prof_image(x_token: str = Header(default=None)):
     if not file_path:
         return NotFound(content="File not found")
     return FileResponse(file_path)
+
+
+@professionals_router.get('/image/{username}', tags=['Professional'])
+def get_prof_image(username: str, x_token: str = Header(default=None)):
+    prof = professional_or_401(x_token) if x_token else None
+    if not prof:
+        return Unauthorized(content=_ERROR_MESSAGE)
+    base_path = Path(f"./data/logos/{username}")
+    extensions = ('.png', '.jpg', '.jpeg')
+    file_path = next(
+        (base_path.with_suffix(ext) for ext in extensions if (
+            base_path.with_suffix(ext)).is_file()), None)
+    if not file_path:
+        return NotFound(content="File not found")
+    return FileResponse(file_path)
