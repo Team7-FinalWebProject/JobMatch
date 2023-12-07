@@ -1,12 +1,12 @@
 // File: "../services/login"
 
 // Import the original loginUser function
-import { loginUser } from './login';
+//import { loginUser } from './login';
 
 // Add a new function to fetch user information
 export const getUserInfo = async (authToken) => {
     const baseURL = import.meta.env.VITE_BE_URL || 'http://localhost:8000';
-    
+
     try {
 
         const response = await fetch(baseURL + '/user/user_info', {
@@ -32,4 +32,3 @@ export const getUserInfo = async (authToken) => {
 }
 
 // Export both functions
-export { loginUser, getUserInfo };
