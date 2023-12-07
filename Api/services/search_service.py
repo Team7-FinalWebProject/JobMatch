@@ -192,12 +192,15 @@ def propose_new_skills(skills):
 
 def add_webfilter(id, filters):
     try:
+        new_filter = reader_one(Filter, ((1, filters,),))
+        if len(filters) < 1:
+            return Response(status_code=400, content="Filter requires at least one skill")
         result = insert_query(
             '''DELETE from web_filters WHERE user_id = %s
             AND id = any(array(SELECT id FROM web_filters ORDER BY id DESC OFFSET 2));
             INSERT INTO web_filters (filter, user_id) VALUES (%s, %s) RETURNING id;''',
             (id, Json(filters), id))
-        return reader_one(Filter, ((1, filters,),))
+        return new_filter
     except Exception as e:
         return Response(status_code=500)
 
