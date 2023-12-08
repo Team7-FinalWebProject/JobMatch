@@ -8,7 +8,7 @@ import { NavLink } from 'react-router-dom';
 export default function Heading() {
 
   return (
-    <header className="bg-gray-200 border-b border-white" style={{border: '1px solid white', borderRadius: '8px', boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)", backgroundImage: `url(${backgroundSVG})` }} >
+    <header className="bg-gray-200 border-b border-white shadow-md" style={{border: '1px solid white', borderRadius: '8px', backgroundImage: `url(${backgroundSVG})` }} >
       <nav className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8 mt-2" aria-label="Global">
         <NavLink to='/'>
           <div>

@@ -69,46 +69,46 @@ try {
 };
 
   return (
-<div>
+<div className='space-y-6'>
     <button
         onClick={handleClear}
-        className="bg-blue-500 text-white w-7 px-2 py-2 rounded-md hover:bg-blue-600"
+        className="bg-blue-500 text-white w-7 px-2 py-2 rounded-md hover:bg-blue-600 mr-1 shadow-md"
     >
         Clr
     </button>
     <button
         onClick={handleAddSkill}
-        className="bg-blue-500 text-white w-7 px-2 py-2 rounded-md hover:bg-blue-600"
+        className="bg-blue-500 text-white w-7 px-2 py-2 rounded-md hover:bg-blue-600 mr-1 shadow-md"
     >
         +
     </button>
     <button
         onClick={handleRemoveSkill}
-        className="bg-blue-500 text-white w-7 px-2 py-2 rounded-md hover:bg-blue-600 mr-1"
+        className="bg-blue-500 text-white w-7 px-2 py-2 rounded-md hover:bg-blue-600 mr-1 shadow-md"
     >
         -
     </button>
     <button
         onClick={handleSave}
-        className="bg-green-500 text-white w-12 px-2 py-2 rounded-md hover:bg-green-600"
+        className="bg-green-500 text-white w-12 px-2 py-2 rounded-md hover:bg-green-600 mr-1 shadow-md"
     >
         Save
     </button>
     <button
         onClick={handleLoad(0)}
-        className="bg-green-500 text-white w-7 px-2 py-2 rounded-md hover:bg-green-600"
+        className="bg-green-500 text-white w-7 px-2 py-2 rounded-md hover:bg-green-600 mr-1 shadow-md"
     >
         L1
     </button>
     <button
         onClick={handleLoad(1)}
-        className="bg-green-500 text-white w-7 px-2 py-2 rounded-md hover:bg-green-600"
+        className="bg-green-500 text-white w-7 px-2 py-2 rounded-md hover:bg-green-600 mr-1 shadow-md"
     >
         L2
     </button>
     <button
         onClick={handleLoad(2)}
-        className="bg-green-500 text-white w-7 px-2 py-2 rounded-md hover:bg-green-600"
+        className="bg-green-500 text-white w-7 px-2 py-2 rounded-md hover:bg-green-600 mr-1 shadow-md"
     >
         L3
     </button>
