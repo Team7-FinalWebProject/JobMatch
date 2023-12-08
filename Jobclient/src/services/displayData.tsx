@@ -1,4 +1,6 @@
 import React from 'react';
+import { Disclosure } from '@headlessui/react'
+import { ChevronUpIcon } from '@heroicons/react/20/solid'
 
 type Data = {
   [key: string]: string | number | Data | null;
@@ -12,12 +14,11 @@ const DataDisplay: React.FC<{ data: Data | null}> = ({ data }) => {
   const keys = Object.keys(data);
 
   return (
-    <div>
-      <h2>Data Display</h2>
-      <ul>
-        {keys.map((key) => (
-          <li key={key}>
-            <strong>{key}:</strong> {renderValue(data[key])}
+    <div className="shadow-zinc-200 shadow-sm mr-5 rounded-lg text-sm font-medium leading-5 'ring-white/60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2">
+      <ul className="ring-white/60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2 justify-between rounded-lg px-4 text-left text-sm font-medium text-purple-90 focus-visible:ring focus-visible:ring-purple-500/75">
+        {keys.map((key) => ((key !== 'chosen_professional_offer_id' &&  key !== "status" &&  key !== "status" ) &&
+          <li key={key} className="px-4 text-sm text-black">
+            <strong className="px-4text-sm text-black">{key}:</strong> {renderValue(data[key])}
           </li>
         ))}
       </ul>

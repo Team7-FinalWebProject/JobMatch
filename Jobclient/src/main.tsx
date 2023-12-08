@@ -27,6 +27,7 @@ import CompanyOffers from './pages/CompanyOffers.tsx';
 import ProfessionalOffers from './pages/ProfessionalOffers.tsx';
 import MatchRequests from './pages/MatchRequests.tsx';
 import CompanyOfferPost from './pages/createCompanyOffer.tsx';
+import Generate from './pages/admin/generate.tsx';
 
 const cookies = new Cookies();
 const setAuthToken = (authToken: string) => {cookies.set('authToken', authToken, { path: '/' });};
@@ -64,6 +65,7 @@ const router = createBrowserRouter(
     <Route path="/candidates" element={<ProfessionalOffers />} loader={tokenLoader}></Route>
     <Route path="/requests" element={<MatchRequests />} loader={tokenLoader}></Route>
     <Route path="/offers/companies/create" element={< CompanyOfferPost/>} loader={tokenLoader}></Route>
+    <Route path='/generate' element={<Generate/>} loader={tokenLoader}></Route>
     {/* <Route path="/register" element={<App />}></Route> */}
       {/* <Route path="dashboard" element={<Dashboard />} /> */}
       {/* ... etc. */}

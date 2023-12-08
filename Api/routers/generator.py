@@ -24,12 +24,12 @@ def fake_professional(x_token: str = Header(), count = Depends(validate_count), 
     return generator_service.generate_professional(prompt, count)
 
 @generator_router.post('/company_offer', tags=["Generate"])
-def fake_company_offer(x_token: str, id: int = Header(), count = Depends(validate_count), prompt: str | None = Body(default="Please suggest a json for a company job offer!")):
+def fake_company_offer(x_token: str = Header(), id: int = Header(), count = Depends(validate_count), prompt: str | None = Body(default="Please suggest a json for a company job offer!")):
     admin = admin_or_error(x_token)
     return generator_service.generate_company_offer(id, prompt, count)
 
 @generator_router.post('/professional_offer', tags=["Generate"])
-def fake_professional_offer(x_token: str, id: int = Header(), count = Depends(validate_count), prompt: str | None = Body(default="Please suggest a json for a professional bio!")):
+def fake_professional_offer(x_token: str = Header(), id: int = Header(), count = Depends(validate_count), prompt: str | None = Body(default="Please suggest a json for a professional bio!")):
     admin = admin_or_error(x_token)
     return generator_service.generate_professional_offer(id, prompt, count)
 
