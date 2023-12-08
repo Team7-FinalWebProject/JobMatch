@@ -1,6 +1,7 @@
 # Job Utopia
 
-Work in progress
+Group project for training purpouses.
+Job matching website
 
 ## Run Locally
 
