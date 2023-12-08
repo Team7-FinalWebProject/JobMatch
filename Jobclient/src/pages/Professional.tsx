@@ -62,9 +62,10 @@ function UserList() {
         {professionals.map((professional) => (
           <div key={professional.id} style={styles.professionalCard}>
               <div style={styles.imageContainer}>
-              <img key={professional.username} src={imgs[professional.username]} alt={`Image for ${professional.username}`}
+              <img key={professional.username} src={imgs[professional.username]} 
                   style={styles.image}
                 />
+                {/* alt={`Image for ${professional.username}`} */}
               </div>
               <div style={styles.contentContainer}>
                 <p style={styles.name}>

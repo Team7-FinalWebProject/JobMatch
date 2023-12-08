@@ -12,6 +12,7 @@ import {
   import { ChevronDownIcon, PhoneIcon, PlayCircleIcon } from '@heroicons/react/20/solid'
 import { Link } from 'react-router-dom';
 import { getUserInfo } from "../services/getUserInfo"
+import backgroundSVG from '../assets/subtle-prism.svg';
 
 
 const Profile = () => {
@@ -52,8 +53,8 @@ const Profile = () => {
         leaveTo="opacity-0 translate-y-1"
     >
         <Popover.Panel className="absolute -left-8 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5">
-        <div className="p-4">
-            <div
+        {/* <div className="p-4" style={{ backgroundImage: `url(${backgroundSVG})` }}> */}
+            {/* <div
                 key="Account Info"
                 className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-50"
             >
@@ -67,8 +68,8 @@ const Profile = () => {
                 </Link>
                 <p className="mt-1 text-gray-600">{"View/Edit Account"}</p>
                 </div>
-            </div>
-            <div
+            </div> */}
+            {/* <div
                 key="Sign Out"
                 className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-50"
             >
@@ -82,9 +83,9 @@ const Profile = () => {
                 </Link>
                 <p className="mt-1 text-gray-600">{"Logout"}</p>
                 </div>
-            </div>
-        </div>
-        <div className="grid grid-cols-2 divide-x divide-gray-900/5 bg-gray-50">
+            </div> */}
+        {/* </div> */}
+        <div className="grid grid-cols-2 divide-x divide-gray-900/5 " style={{ backgroundImage: `url(${backgroundSVG})` }}>
             <Link
                 key="Sign Out"
                 to="/signout"

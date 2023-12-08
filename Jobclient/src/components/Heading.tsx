@@ -20,9 +20,9 @@ export default function Heading() {
           </div>
         </NavLink>
         <Popover.Group className="hidden lg:flex lg:gap-x-12">
-          <NavLink to="/requests" className="text-sm font-semibold leading-6 text-black">
+          {/* <NavLink to="/requests" className="text-sm font-semibold leading-6 text-black">
             Requests
-          </NavLink>
+          </NavLink> */}
           <NavLink to="/companies" className="text-sm font-semibold leading-6 text-black">
             Companies
           </NavLink>
@@ -43,6 +43,9 @@ export default function Heading() {
           </NavLink>
           <NavLink to="/support"className="text-sm font-semibold leading-6 text-black">
             Support
+          </NavLink>
+          <NavLink to="/generate" className="text-sm font-semibold leading-6 text-black">
+            Generate
           </NavLink>
         </Popover.Group>
       </nav>
