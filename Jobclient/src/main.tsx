@@ -27,7 +27,7 @@ import CompanyOffers from './pages/CompanyOffers.tsx';
 import ProfessionalOffers from './pages/ProfessionalOffers.tsx';
 import MatchRequests from './pages/MatchRequests.tsx';
 import CompanyOfferPost from './pages/createCompanyOffer.tsx';
-import Generate from './pages/admin/generate.tsx';
+import Generate from './pages/admin/Generate.tsx';
 
 const cookies = new Cookies();
 const setAuthToken = (authToken: string) => {cookies.set('authToken', authToken, { path: '/' });};
