@@ -7,18 +7,21 @@ remoteorlocal = os.getenv('remoteorlocal')
 
 if remoteorlocal=="remote":
     _host = os.getenv('REMOTE_HOST')
+    _user = os.getenv('REMOTE_USER')
     _password = os.getenv('jobgrepass')
 elif remoteorlocal=="local":
     _host = 'localhost'
+    _user = 'postgres'
     _password = os.getenv('password')
 elif remoteorlocal=="docker":
     _host = 'db'
+    _user = 'postgres'
     _password = os.getenv('password_docker')
 
 def _get_connection():
     return psycopg2.connect(
         host = _host,
-        user = 'postgres',
+        user = _user,
         dbname = 'postgres',
         options='-c search_path=jobmatch',
         password = _password,
