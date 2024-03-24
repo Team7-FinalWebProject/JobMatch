@@ -23,15 +23,18 @@ def _get_connection():
         host = _host,
         user = _user,
         dbname = 'postgres',
-        options='-c search_path=jobmatch',
+        # options='-c search_path=jobmatch',
         password = _password,
         port = 5432
     )
 
+def _set_search_path(cur):
+    cur.execute("SET search_path = jobmatch")
 
 def read_query(sql: str, sql_params=()):
     with _get_connection() as conn:
         cursor = conn.cursor()
+        _set_search_path(cursor)
         cursor.execute(sql, sql_params)
 
         return list(cursor)
@@ -40,6 +43,7 @@ def read_query(sql: str, sql_params=()):
 def insert_query(sql: str, sql_params=()) -> int:
     with _get_connection() as conn:
         cursor = conn.cursor()
+        _set_search_path(cursor)
         cursor.execute(sql, sql_params)
         conn.commit()
         last_row_id = cursor.fetchone()
@@ -49,6 +53,7 @@ def insert_query(sql: str, sql_params=()) -> int:
 def update_query(sql: str, sql_params=()) -> bool:
     with _get_connection() as conn:
         cursor = conn.cursor()
+        _set_search_path(cursor)
         cursor.execute(sql, sql_params)
         conn.commit()
 
@@ -59,6 +64,7 @@ def update_queries_transaction(sql_queries: tuple[str], sql_params: tuple[tuple]
     with _get_connection() as conn:
         try:
             cursor = conn.cursor()
+            _set_search_path(cursor)
             for i in range(len(sql_queries)):
                 cursor.execute(sql_queries[i], sql_params[i])
 
@@ -74,6 +80,7 @@ def insert_queries_trasnaction(sql_queries: tuple[str], sql_params: tuple[tuple]
     with _get_connection() as conn:
         try:
             cursor = conn.cursor()
+            _set_search_path(cursor)
             for i in range(len(sql_queries)):
                 cursor.execute(sql_queries[i], sql_params[i])
 
@@ -90,6 +97,7 @@ def multi_read_query_transaction(sql_queries: tuple[str], sql_params: tuple[tupl
     with _get_connection() as conn:
         try:
             cursor = conn.cursor()
+            _set_search_path(cursor)
             for i in range(len(sql_queries)):
                 cursor.execute(sql_queries[i], sql_params[i])
 
